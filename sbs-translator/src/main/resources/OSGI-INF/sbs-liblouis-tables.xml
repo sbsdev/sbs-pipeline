@@ -4,6 +4,6 @@
     <scr:service>
         <scr:provide interface="org.daisy.pipeline.liblouis.LiblouisTableSet"/>
     </scr:service>
-    <scr:property name="identifier" type="String" value="ch.sbs.liblouis.SBSLiblouisTableSet"/>
+    <scr:property name="identifier" type="String" value="http://www.sbs.ch/pipeline/modules/braille/sbs-translator/tables/"/>
     <scr:property name="directory" type="String" value="/tables"/>
 </scr:component>
