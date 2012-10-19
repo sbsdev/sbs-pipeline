@@ -2,9 +2,9 @@
 <p:declare-step
     xmlns:p="http://www.w3.org/ns/xproc"
     xmlns:px="http://www.daisy.org/ns/pipeline/xproc"
-    xmlns:sbs="http://www.sbs.ch/pipeline/modules/braille/"
+    xmlns:sbs="http://www.sbs.ch/pipeline"
     exclude-inline-prefixes="px sbs"
-    type="sbs:preprocessor" version="1.0">
+    type="sbs:zedai-preprocessor" version="1.0">
 
     <p:input port="source" primary="true" px:media-type="application/z3998-auth+xml"/>
     <p:output port="result" primary="true" px:media-type="application/z3998-auth+xml"/>

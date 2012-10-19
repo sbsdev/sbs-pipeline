@@ -4,7 +4,7 @@
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:z="http://www.daisy.org/ns/z3998/authoring/"
 	xmlns:louis="http://liblouis.org/liblouis"
-	xmlns:my="http://www.sbs.ch/pipeline/modules/braille/sbs-translator"
+	xmlns:my="http://www.sbs.ch/pipeline"
 	xmlns:css="http://www.daisy.org/ns/pipeline/braille-css"
 	exclude-result-prefixes="xs louis my z css">
 	
@@ -86,7 +86,9 @@
 			</xsl:choose>
 			<xsl:sequence select="'sbs-special.mod'"/>
 		</xsl:variable>
-		<xsl:sequence select="string-join($table-list, ',')"/>
+		<xsl:sequence select="concat(
+			'http://www.sbs.ch/pipeline/modules/braille/tables/',
+			'unicode.dis,', string-join($table-list, ','))"/>
 	</xsl:function>
 
 	<!-- ======== -->
