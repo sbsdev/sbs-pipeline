@@ -11,6 +11,7 @@
   <uri name="http://www.sbs.ch/pipeline/modules/braille/dtbook-to-pef.xpl" uri="../xml/xproc/dtbook-to-pef.xpl" px:script="true"/>
   <nextCatalog catalog="org:daisy:pipeline:modules:braille:utilities" />
   <nextCatalog catalog="ch:sbs:pipeline:modules:braille:sbs-braille-tables" />
+  <nextCatalog catalog="ch:sbs:pipeline:modules:braille:sbs-hyphenation-tables" />
   <nextCatalog catalog="org:daisy:pipeline:modules:braille:xml-to-pef" />
   <nextCatalog catalog="org:daisy:pipeline:modules:braille:zedai-to-pef" />
   <nextCatalog catalog="org:daisy:pipeline:modules:dtbook-utils"/>

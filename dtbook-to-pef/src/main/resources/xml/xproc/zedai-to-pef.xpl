@@ -62,6 +62,7 @@
     
     <p:variable name="stylesheet" select="'http://www.sbs.ch/pipeline/modules/braille/zedai.css'"/>
     <p:variable name="preprocessor" select="'http://www.sbs.ch/pipeline/modules/braille/zedai-preprocessor.xpl'"/>
+    <p:variable name="hyphenator" select="'http://www.daisy.org/pipeline/modules/braille/utilities/xslt/generic-libhyphen-hyphenate.xsl'"/>
     <p:variable name="translator" select="'http://www.sbs.ch/pipeline/modules/braille/zedai-translator.xsl'"/>
     <p:variable name="brf-table" select="'ch.sbs.pef.SBSTableProvider.TableType.DE_CH_SBS'"/>
     
@@ -72,6 +73,10 @@
     <px:xml-to-pef.load-preprocessor name="preprocessor">
         <p:with-option name="preprocessor" select="$preprocessor"/>
     </px:xml-to-pef.load-preprocessor>
+    <p:sink/>
+    <px:xml-to-pef.load-translator name="hyphenator">
+        <p:with-option name="translator" select="$hyphenator"/>
+    </px:xml-to-pef.load-translator>
     <p:sink/>
     <px:xml-to-pef.load-translator name="translator">
         <p:with-option name="translator" select="$translator"/>
@@ -140,6 +145,7 @@
             <p:pipe step="preprocessor" port="result"/>
         </p:input>
         <p:input port="translators">
+            <p:pipe step="hyphenator" port="result"/>
             <p:pipe step="translator" port="result"/>
         </p:input>
         <p:with-option name="stylesheet" select="$stylesheet"/>

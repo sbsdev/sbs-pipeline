@@ -44,6 +44,7 @@
             <Require-Bundle>
               org.daisy.pipeline.modules.braille.utilities,
               ch.sbs.pipeline.modules.braille.sbs-braille-tables,
+              ch.sbs.pipeline.modules.braille.sbs-hyphenation-tables,
               org.daisy.pipeline.modules.braille.xml-to-pef,
               org.daisy.pipeline.modules.braille.zedai-to-pef,
               org.daisy.pipeline.modules.dtbook-utils,
