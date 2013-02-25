@@ -63,6 +63,7 @@
     <p:variable name="stylesheet" select="'http://www.sbs.ch/pipeline/modules/braille/zedai.css'"/>
     <p:variable name="preprocessor" select="'http://www.sbs.ch/pipeline/modules/braille/zedai-preprocessor.xpl'"/>
     <p:variable name="translator" select="'http://www.sbs.ch/pipeline/modules/braille/zedai-translator.xsl'"/>
+    <p:variable name="brf-table" select="'ch.sbs.pef.SBSTableProvider.TableType.DE_CH_SBS'"/>
     
     <!-- =============== -->
     <!-- LOAD COMPONENTS -->
@@ -106,6 +107,7 @@
         </p:with-option>
         <p:with-option name="preview" select="$preview"/>
         <p:with-option name="brf" select="$brf"/>
+        <p:with-option name="brf-table" select="$brf-table"/>
     </px:xml-to-pef.store>
     
 </p:declare-step>

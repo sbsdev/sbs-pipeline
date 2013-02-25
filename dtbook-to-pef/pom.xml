@@ -19,6 +19,48 @@
   
   <name>DAISY Pipeline 2 module :: sbs:dtbook-to-pef</name>
   
+  <dependencies>
+    <dependency>
+      <groupId>org.daisy.libs</groupId>
+      <artifactId>brailleutils-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.googlecode.guava-osgi</groupId>
+      <artifactId>guava-osgi</artifactId>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration combine.self="override">
+          <instructions>
+            <Include-Resource>
+              {maven-resources},
+              OSGI-INF=${project.build.directory}/generated-resources/OSGI-INF
+            </Include-Resource>
+            <Require-Bundle>
+              org.daisy.pipeline.modules.braille.utilities,
+              ch.sbs.pipeline.modules.braille.sbs-braille-tables,
+              org.daisy.pipeline.modules.braille.xml-to-pef,
+              org.daisy.pipeline.modules.braille.zedai-to-pef,
+              org.daisy.pipeline.modules.dtbook-utils,
+              org.daisy.pipeline.modules.dtbook-to-zedai
+            </Require-Bundle>
+            <Import-Package>*, org.daisy.pipeline.script</Import-Package>
+            <SPI-Provider>javax.imageio.spi.ServiceRegistry</SPI-Provider>
+            <Service-Component>
+              OSGI-INF/zedai-to-pef.xml,
+              OSGI-INF/dtbook-to-pef.xml
+            </Service-Component>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
   <repositories>
     <repository>
         <id>sonatype-nexus-snapshots</id>
