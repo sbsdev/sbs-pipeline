@@ -11,23 +11,30 @@
 /*                           general                             */
 /* ------------------------------------------------------------- */
 
-head {
-    display: none;
+@page {
+    size: 28 28;
+    @top-right {
+        content: string(print-page);
+    }
+    @bottom-right {
+        content: counter(braille-page);
+    }
 }
 
-/* ------------------------------------------------------------- */
-/*                           blocks                              */
-/* ------------------------------------------------------------- */
+pagebreak {
+    display: none;
+    string-set: print-page attr(value);
+}
 
 section,
-frontmatter,
-bodymatter,
-block,
-lngroup,
-ln,
-object,
-verse {
+frontmatter {
     display: block;
+    page-break-before: always;
+    page-break-after: always;
+}
+
+head {
+    display: none;
 }
 
 /* ------------------------------------------------------------- */
@@ -44,6 +51,17 @@ h {
     page-break-after: avoid;
 }
 
+h[role='title'] {
+    padding-top: 1;
+    padding-bottom: 1;
+    padding-left: 1;
+    padding-right: 1;
+    border-left: ⠇;
+    border-right: ⠸;
+    border-top: ⠒;
+    border-bottom: ⠒;
+}
+
 /* ------------------------------------------------------------- */
 /*                          paragraphs                           */
 /* ------------------------------------------------------------- */
@@ -53,4 +71,77 @@ p {
     text-indent: 2;
 }
 
+section.titlepage p,
+section.boilerplate p {
+    margin-left: 2;
+    text-indent: -2;
+}
 
+p[role='author'] {
+    margin-top: 1;
+    margin-bottom: 1;
+    margin-left: 3;
+    margin-right: 3;
+    text-align: center;
+    text-indent: 0;
+}
+
+p.precedingemptyline {
+    margin-top: 1;
+}
+
+/* ------------------------------------------------------------- */
+/*                      table of contents                        */
+/* ------------------------------------------------------------- */
+
+toc > entry > ref {
+    display: toc-item;
+    margin-left: 2;
+    text-indent: -2;
+}
+
+section.toc {
+    display: none;
+}
+
+/* ------------------------------------------------------------- */
+/*                           lists                               */
+/* ------------------------------------------------------------- */
+
+list {
+    display: block;
+}
+
+item {
+    display: list-item;
+}
+
+/* ------------------------------------------------------------- */
+/*                         footnotes                             */
+/* ------------------------------------------------------------- */
+
+note {
+    display: block;
+    margin-left: 5;
+    margin-top: 1;
+    margin-bottom: 1;
+}
+
+section[role='notes'] > note {
+    margin-left: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    text-indent: 2;
+}
+
+/* ------------------------------------------------------------- */
+/*                        other blocks                           */
+/* ------------------------------------------------------------- */
+
+block,
+lngroup,
+ln,
+object,
+verse {
+    display: block;
+}

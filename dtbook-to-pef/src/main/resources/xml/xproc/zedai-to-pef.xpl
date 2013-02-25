@@ -78,6 +78,56 @@
     </px:xml-to-pef.load-translator>
     <p:sink/>
     
+    <!-- ================ -->
+    <!-- BOILERPLATE TEXT -->
+    <!-- ================ -->
+    
+    <p:xslt>
+        <p:input port="source">
+            <p:pipe step="zedai-to-pef" port="source"/>
+        </p:input>
+        <p:input port="stylesheet">
+            <p:document href="../xslt/add-boilerplate.xsl"/>
+        </p:input>
+        <p:input port="parameters">
+            <p:empty/>
+        </p:input>
+    </p:xslt>
+    
+    <!-- ============== -->
+    <!-- TOC GENERATION -->
+    <!-- ============== -->
+    
+    <p:xslt>
+        <p:input port="stylesheet">
+            <p:document href="../xslt/generate-ids.xsl"/>
+        </p:input>
+        <p:input port="parameters">
+            <p:empty/>
+        </p:input>
+    </p:xslt>
+    <p:xslt>
+        <p:input port="stylesheet">
+            <p:document href="../xslt/generate-toc.xsl"/>
+        </p:input>
+        <p:input port="parameters">
+            <p:empty/>
+        </p:input>
+    </p:xslt>
+    
+    <!-- ================== -->
+    <!-- FOOTNOTE PLACEMENT -->
+    <!-- ================== -->
+    
+    <p:xslt>
+        <p:input port="stylesheet">
+            <p:document href="../xslt/place-footnotes.xsl"/>
+        </p:input>
+        <p:input port="parameters">
+            <p:empty/>
+        </p:input>
+    </p:xslt>
+    
     <!-- ============ -->
     <!-- ZEDAI TO PEF -->
     <!-- ============ -->

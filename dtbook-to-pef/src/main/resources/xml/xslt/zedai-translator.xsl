@@ -9,14 +9,14 @@
 	exclude-result-prefixes="xs louis my z css">
 	
 	<xsl:output method="xml" encoding="utf-8"/>
-
+	
 	<xsl:param name="contraction" as="xs:integer" select="2"/>
 	<xsl:param name="enable-capitalization" as="xs:boolean" select="false()"/>
 	<xsl:param name="detailed-accents" as="xs:string" select="'all'"/>
 	
 	<xsl:variable name="LETTER" select="'\p{L}+'"/>
 	<xsl:variable name="UPPERCASE" select="'\p{Lu}+'"/>
-
+	
 	<xsl:template match="/css:block">
 		<xsl:copy>
 			<xsl:apply-templates/>
@@ -30,9 +30,9 @@
 	<xsl:function name="my:translate" as="xs:string">
 		<xsl:param name="table" as="xs:string"/>
 		<xsl:param name="string" as="xs:string"/>
-		<xsl:sequence select="translate(louis:translate($table, $string), '−', '⠤')"/>
+		<xsl:sequence select="translate(louis:translate($table, $string), '−┎', '⠤&#xAD;')"/>
 	</xsl:function>
-
+	
 	<!-- ======================== -->
 	<!-- LIBLOUIS TABLE SELECTION -->
 	<!-- ======================== -->
@@ -90,11 +90,17 @@
 			'http://www.sbs.ch/pipeline/modules/braille/tables/',
 			'unicode.dis,', string-join($table-list, ','))"/>
 	</xsl:function>
-
+	
+	<!-- ============ -->
+	<!-- PAGE NUMBERS -->
+	<!-- ============ -->
+	
+	
+	
 	<!-- ======== -->
 	<!-- EMPHASIS -->
 	<!-- ======== -->
-
+	
 	<xsl:template match="z:emph">
 		<xsl:variable name="braille"
 			select="my:translate(my:get-table(.), translate(string(.), '╠╣', ''))"/>
@@ -144,11 +150,11 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-
+	
 	<!-- ============= -->
 	<!-- ABBREVIATIONS -->
 	<!-- ============= -->
-
+	
 	<xsl:template match="z:abbr">
 		<xsl:variable name="text" as="xs:string*">
 			<xsl:choose>
@@ -183,7 +189,7 @@
 					</xsl:analyze-string>
 				</xsl:otherwise>
 			</xsl:choose>
-			<xsl:if test="matches(string(.), '.*\p{Lu}\p{Lu}$') and 
+			<xsl:if test="matches(string(.), '.*\p{Lu}$') and 
 				following-sibling::node()[1][self::text()] and
 				matches(string(following-sibling::node()[1]), '^\p{Ll}.*')">
 				<xsl:value-of select="'╩'"/>
@@ -191,11 +197,11 @@
 		</xsl:variable>
 		<xsl:value-of select="my:translate(my:get-table(.), string-join($text, ''))"/>
 	</xsl:template>
-
+	
 	<!-- ======================= -->
 	<!-- OTHER (INLINE) ELEMENTS -->
 	<!-- ======================= -->
-
+	
 	<xsl:template match="*">
 		<xsl:sequence select="my:translate(my:get-table(.), string(.))"/>
 	</xsl:template>
@@ -211,7 +217,7 @@
 	<!-- ================ -->
 	<!-- HELPER FUNCTIONS -->
 	<!-- ================ -->
-
+	
 	<xsl:function name="my:contains-period" as="xs:boolean">
 		<xsl:param name="string"/>
 		<xsl:value-of select="contains($string, '.')"/>
@@ -226,7 +232,7 @@
 		<xsl:param name="char"/>
 		<xsl:value-of select="$char=upper-case($char)"/>
 	</xsl:function>
-
+	
 	<xsl:function name="my:ends-with-word" as="xs:boolean">
 		<xsl:param name="string"/>
 		<xsl:value-of select="not(empty($string)) and matches($string, '\w$')"/>
@@ -246,5 +252,5 @@
 		<xsl:param name="string"/>
 		<xsl:value-of select="empty($string) or matches($string, '^\W')"/>
 	</xsl:function>
-
+	
 </xsl:stylesheet>
