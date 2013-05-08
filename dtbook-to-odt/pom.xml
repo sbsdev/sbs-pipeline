@@ -19,6 +19,57 @@
   
   <name>DAISY Pipeline 2 module :: sbs:dtbook-to-odt</name>
   
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>templates/**</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <directory>target/generated-resources</directory>
+        <includes>
+          <include>templates/**</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>shell-maven-plugin</artifactId>
+        <configuration>
+          <chmod>true</chmod>
+        </configuration>
+        <executions>
+          <execution>
+            <id>generate-ott</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>shell</goal>
+            </goals>
+            <configuration>
+              <workDir>${project.basedir}</workDir>
+              <script>
+                #!/bin/sh
+                zip_odt() {
+                  cd $1
+                  zip -0 -X $2 mimetype
+                  zip -r $2 * -x mimetype
+                }
+                rm -rf target/generated-resources/templates
+                mkdir target/generated-resources/templates
+                for template in $(ls src/main/resources/templates); do
+                  zip_odt src/main/resources/templates/${template} $(pwd)/target/generated-resources/templates/${template}
+                done
+                </script>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+    </plugins>
+  </build>
+  
   <repositories>
     <repository>
         <id>sonatype-nexus-snapshots</id>

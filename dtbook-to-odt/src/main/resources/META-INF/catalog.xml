@@ -4,7 +4,6 @@
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" xmlns:px="http://www.daisy.org/ns/pipeline">
   <uri name="http://www.sbs.ch/pipeline/modules/dtbook-to-odt/dtbook-to-odt.xpl" uri="../xml/xproc/dtbook-to-odt.xpl" px:script="true"/>
   <uri name="http://www.sbs.ch/pipeline/modules/dtbook-to-odt/templates/default.ott" uri="../templates/default.ott"/>
-  <uri name="http://www.sbs.ch/pipeline/modules/dtbook-to-odt/templates/largeprint.ott" uri="../templates/largeprint.ott"/>
   <nextCatalog catalog="org:daisy:pipeline:modules:dtbook-utils"/>
   <nextCatalog catalog="org:daisy:pipeline:modules:odt-utils"/>
   <nextCatalog catalog="org:daisy:pipeline:modules:file-utils"/>
