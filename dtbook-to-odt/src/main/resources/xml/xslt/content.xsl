@@ -122,6 +122,30 @@
 		</xsl:element>
 	</xsl:template>
 	
+	<xsl:template match="dtb:dl" mode="office:text text:section">
+		<xsl:element name="text:list">
+			<xsl:attribute name="text:style-name" select="dtb:style-name(.)"/>
+			<xsl:apply-templates mode="text:list"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="dtb:dt[following-sibling::*[1]/self::dtb:dd]" mode="text:list"/>
+	
+	<xsl:template match="dtb:dd[preceding-sibling::*[1]/self::dtb:dt]" mode="text:list">
+		<xsl:variable name="dt" select="preceding-sibling::*[1]"/>
+		<xsl:element name="text:list-item">
+			<xsl:element name="text:p">
+				<xsl:attribute name="text:style-name" select="dtb:style-name(.)"/>
+				<xsl:element name="text:span">
+					<xsl:attribute name="text:style-name" select="dtb:style-name($dt)"/>
+					<xsl:apply-templates select="$dt/*|$dt/text()" mode="text:span"/>
+				</xsl:element>
+				<xsl:text>: </xsl:text>
+				<xsl:apply-templates mode="text:p"/>
+			</xsl:element>
+		</xsl:element>
+	</xsl:template>
+	
 	<!-- ====== -->
 	<!-- TABLES -->
 	<!-- ====== -->
