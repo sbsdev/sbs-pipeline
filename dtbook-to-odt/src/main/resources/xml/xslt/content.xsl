@@ -320,11 +320,18 @@
 		<xsl:apply-templates mode="#current"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:br" mode="text:p text:h">
+	<xsl:template match="dtb:sub|dtb:sup" mode="text:p text:h text:span">
+		<xsl:element name="text:span">
+			<xsl:attribute name="text:style-name" select="dtb:style-name(.)"/>
+			<xsl:apply-templates mode="text:span"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="dtb:br" mode="text:p text:h text:span">
 		<text:line-break/>
 	</xsl:template>
 	
-	<xsl:template match="text()" mode="text:p text:h">
+	<xsl:template match="text()" mode="text:p text:h text:span">
 		<xsl:sequence select="."/>
 	</xsl:template>
 	

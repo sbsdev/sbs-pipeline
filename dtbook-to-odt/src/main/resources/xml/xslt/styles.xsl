@@ -43,6 +43,7 @@
 		<xsl:copy>
 			<xsl:apply-templates mode="template"/>
 			<xsl:call-template name="missing-paragraph-styles"/>
+			<xsl:call-template name="missing-text-styles"/>
 			<xsl:call-template name="missing-list-styles"/>
 			<xsl:call-template name="missing-graphic-styles"/>
 			<xsl:call-template name="error-styles"/>
@@ -90,6 +91,22 @@
 	<!-- TEXT STYLES -->
 	<!-- =========== -->
 	
+	<xsl:template name="missing-text-styles">
+		<xsl:variable name="text_styles" select="style:style[@style:family='text']/@style:name"/>
+		<xsl:if test="not('Numbering_20_Symbols'=$text_styles)">
+			<xsl:call-template name="text-style">
+				<xsl:with-param name="style:name" select="'Numbering_20_Symbols'"/>
+			</xsl:call-template>
+		</xsl:if>
+		<xsl:for-each select="distinct-values(collection()[2]//*[self::text:span]/@text:style-name)">
+			<xsl:if test="not(.=('Numbering_20_Symbols', $text_styles))">
+				<xsl:call-template name="text-style">
+					<xsl:with-param name="style:name" select="."/>
+				</xsl:call-template>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	
 	<xsl:template name="text-style">
 		<xsl:param name="style:name" as="xs:string"/>
 		<xsl:element name="style:style">
@@ -105,12 +122,6 @@
 	
 	<xsl:template name="missing-list-styles">
 		<xsl:variable name="list_styles" select="text:list-style/@style:name"/>
-		<!-- FIXME: include 'Numbering_20_Symbols' in missing-text-styles -->
-		<xsl:if test="not(style:style[@style:family='text' and @style:name='Numbering_20_Symbols'])">
-			<xsl:call-template name="text-style">
-				<xsl:with-param name="style:name" select="'Numbering_20_Symbols'"/>
-			</xsl:call-template>
-		</xsl:if>
 		<xsl:for-each select="distinct-values(collection()[2]//text:list/@text:style-name)">
 			<xsl:if test="not(.=$list_styles)">
 				<xsl:element name="text:list-style">
