@@ -50,6 +50,23 @@
 		</xsl:copy>
 	</xsl:template>
 	
+	<xsl:template match="//style:default-style//@fo:language" mode="template">
+		<xsl:variable name="xml_lang" select="collection()[3]/dtb:dtbook/@xml:lang"/>
+		<xsl:if test="exists($xml_lang)">
+			<xsl:attribute name="fo:language" select="lower-case(replace($xml_lang, '^([^-_]+).*', '$1'))"/>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="//style:default-style//@fo:country" mode="template">
+		<xsl:variable name="xml_lang" select="collection()[3]/dtb:dtbook/@xml:lang"/>
+		<xsl:if test="exists($xml_lang)">
+			<xsl:variable name="country" select="upper-case(substring-after(translate($xml_lang, '-', '_'), '_'))"/>
+			<xsl:if test="$country!=''">
+				<xsl:attribute name="fo:country" select="$country"/>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
+	
 	<!-- ================ -->
 	<!-- PARAGRAPH STYLES -->
 	<!-- ================ -->

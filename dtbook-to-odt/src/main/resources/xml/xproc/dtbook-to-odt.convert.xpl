@@ -137,6 +137,7 @@
         <p:input port="source">
             <p:pipe step="template-styles" port="matched"/>
             <p:pipe step="content" port="result"/>
+            <p:pipe step="convert" port="in-memory.in"/>
         </p:input>
         <p:input port="stylesheet">
             <p:document href="../xslt/styles.xsl"/>
