@@ -81,7 +81,7 @@
 	<!-- PARAGRAPHS -->
 	<!-- ========== -->
 	
-	<xsl:template match="dtb:p" mode="office:text text:section text:list-item table:table-cell">
+	<xsl:template match="dtb:p" mode="office:text text:section text:list-item table:table-cell text:note-body">
 		<xsl:param name="paragraph_style" as="xs:string?" tunnel="yes"/>
 		<xsl:call-template name="text:p">
 			<xsl:with-param name="text:style-name" select="$paragraph_style"/>
@@ -183,6 +183,56 @@
 	<!-- NOTES -->
 	<!-- ===== -->
 	
+	<xsl:template match="dtb:noteref" mode="text:p text:h text:span">
+		<xsl:variable name="id" select="translate(@idref,'#','')"/>
+		<xsl:variable name="note" select="//dtb:note[@id=$id]"/>
+		<xsl:choose>
+			<xsl:when test="exists($note)">
+				<xsl:element name="text:note">
+					<xsl:attribute name="text:note-class" select="$note/@class"/>
+					<xsl:attribute name="text:id" select="$note/@id"/>
+					<!-- LO takes care of updating this -->
+					<xsl:element name="text:note-citation">1</xsl:element>
+					<xsl:element name="text:note-body">
+						<xsl:choose>
+							<xsl:when test="dtb:p">
+								<xsl:apply-templates select="$note/*|$note/text()" mode="text:note-body">
+									<xsl:with-param name="paragraph_style" select="dtb:style-name($note)" tunnel="yes"/>
+								</xsl:apply-templates>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:element name="text:p">
+									<xsl:attribute name="text:style-name" select="dtb:style-name($note)"/>
+									<xsl:apply-templates select="$note/*|$note/text()" mode="text:p"/>
+								</xsl:element>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:element>
+				</xsl:element>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:message>
+					<xsl:text>WARNING! dtb:note with id #</xsl:text>
+					<xsl:sequence select="$id"/>
+					<xsl:text> not found. </xsl:text>
+				</xsl:message>
+				<xsl:call-template name="skip"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="dtb:note" mode="#all">
+		<xsl:variable name="id" select="string(@id)"/>
+		<xsl:variable name="noterefs" select="//dtb:noteref[@idref=concat('#',$id)]"/>
+		<xsl:if test="not(exists($noterefs))">
+			<xsl:message>
+				<xsl:text>WARNING! dtb:note with id #</xsl:text>
+				<xsl:sequence select="$id"/>
+				<xsl:text> is never referenced.</xsl:text>
+			</xsl:message>
+		</xsl:if>
+	</xsl:template>
+	
 	<!-- ==================== -->
 	<!-- OTHER BLOCK ELEMENTS -->
 	<!-- ==================== -->
@@ -265,7 +315,8 @@
 	<!-- INLINE ELEMENTS & TEXT -->
 	<!-- ====================== -->
 	
-	<xsl:template match="dtb:span|dtb:sent|dtb:em|dtb:strong|dtb:abbr|dtb:a|dtb:acronym" mode="text:p text:h">
+	<xsl:template match="dtb:span|dtb:sent|dtb:em|dtb:strong|dtb:abbr|dtb:a|dtb:acronym|dtb:cite|dtb:author|dtb:title"
+	              mode="text:p text:h">
 		<xsl:apply-templates mode="#current"/>
 	</xsl:template>
 	
@@ -385,7 +436,7 @@
 	
 	<xsl:template name="skip">
 		<xsl:message>
-			<xsl:text>Skipping node </xsl:text>
+			<xsl:text>Skipping </xsl:text>
 			<xsl:sequence select="dtb:node-trace(.)"/>
 		</xsl:message>
 	</xsl:template>
@@ -400,7 +451,7 @@
 		</xsl:call-template>
 		<xsl:text>FIXME!!</xsl:text>
 	</xsl:template>
-
+	
 	<xsl:template name="TERMINATE">
 		<xsl:message terminate="yes">
 			<xsl:text>FIXME!! </xsl:text>
