@@ -133,17 +133,21 @@
 	
 	<xsl:template match="dtb:dd[preceding-sibling::*[1]/self::dtb:dt]" mode="text:list">
 		<xsl:variable name="dt" select="preceding-sibling::*[1]"/>
+		<xsl:variable name="colon">
+			<xsl:text>: </xsl:text>
+		</xsl:variable>
 		<xsl:element name="text:list-item">
-			<xsl:element name="text:p">
-				<xsl:attribute name="text:style-name" select="dtb:style-name(.)"/>
-				<xsl:element name="text:span">
-					<xsl:attribute name="text:style-name" select="dtb:style-name($dt)"/>
-					<xsl:apply-templates select="$dt/*|$dt/text()" mode="text:span"/>
-				</xsl:element>
-				<xsl:text>: </xsl:text>
-				<xsl:apply-templates mode="text:p"/>
-			</xsl:element>
+			<xsl:call-template name="text:p">
+				<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
+				<xsl:with-param name="apply-templates" select="($dt, $colon, *|text())"/>
+			</xsl:call-template>
 		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="dtb:dt" mode="text:p">
+		<xsl:call-template name="text:span">
+			<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
+		</xsl:call-template>
 	</xsl:template>
 	
 	<!-- ====== -->
@@ -218,19 +222,7 @@
 					<!-- LO takes care of updating this -->
 					<xsl:element name="text:note-citation">1</xsl:element>
 					<xsl:element name="text:note-body">
-						<xsl:choose>
-							<xsl:when test="dtb:p">
-								<xsl:apply-templates select="$note/*|$note/text()" mode="text:note-body">
-									<xsl:with-param name="paragraph_style" select="dtb:style-name($note)" tunnel="yes"/>
-								</xsl:apply-templates>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:element name="text:p">
-									<xsl:attribute name="text:style-name" select="dtb:style-name($note)"/>
-									<xsl:apply-templates select="$note/*|$note/text()" mode="text:p"/>
-								</xsl:element>
-							</xsl:otherwise>
-						</xsl:choose>
+						<xsl:apply-templates select="$note" mode="text:note-body"/>
 					</xsl:element>
 				</xsl:element>
 			</xsl:when>
@@ -238,9 +230,24 @@
 				<xsl:message>
 					<xsl:text>WARNING! dtb:note with id #</xsl:text>
 					<xsl:sequence select="$id"/>
-					<xsl:text> not found. </xsl:text>
+					<xsl:text> not found.</xsl:text>
 				</xsl:message>
 				<xsl:call-template name="skip"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="dtb:note" mode="text:note-body" priority="1">
+		<xsl:choose>
+			<xsl:when test="dtb:p">
+				<xsl:apply-templates mode="#current">
+					<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
+				</xsl:apply-templates>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="text:p">
+					<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
+				</xsl:call-template>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -286,32 +293,34 @@
 	
 	<xsl:template match="dtb:img" mode="office:text text:section">
 		<xsl:variable name="src" select="resolve-uri(@src, base-uri(.))"/>
-		<xsl:element name="text:p">
-			<xsl:attribute name="text:style-name" select="dtb:style-name(.)"/>
-			<xsl:element name="draw:frame">
-				<xsl:attribute name="draw:name" select="concat('dtb:img#', count(preceding::dtb:img) + 1)"/>
-				<xsl:attribute name="draw:style-name" select="dtb:style-name(.)"/>
-				<xsl:attribute name="text:anchor-type" select="'as-char'"/>
-				<xsl:attribute name="draw:z-index" select="'0'"/>
-				<xsl:element name="draw:image">
-					<xsl:attribute name="xlink:href"
-					               select="pf:relativize-uri(
-					                         collection()[3]//d:file[resolve-uri(@original-href,base-uri(.))=$src]/resolve-uri(@href,base-uri(.)),
-					                         collection()[1]/*/base-uri(.))"/>
-					<xsl:attribute name="xlink:type" select="'simple'"/>
-					<xsl:attribute name="xlink:show" select="'embed'"/>
-					<xsl:attribute name="xlink:actuate" select="'onLoad'"/>
-					<xsl:attribute name="svg:width" select="'25%'"/>
-					<xsl:attribute name="svg:height" select="'25%'"/>
-					<xsl:attribute name="svg:y" select="'0in'"/>
-				</xsl:element>
-				<xsl:if test="@alt">
-					<xsl:element name="svg:title">
-						<xsl:sequence select="string(@alt)"/>
+		<xsl:call-template name="text:p">
+			<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
+			<xsl:with-param name="sequence">
+				<xsl:element name="draw:frame">
+					<xsl:attribute name="draw:name" select="concat('dtb:img#', count(preceding::dtb:img) + 1)"/>
+					<xsl:attribute name="draw:style-name" select="dtb:style-name(.)"/>
+					<xsl:attribute name="text:anchor-type" select="'as-char'"/>
+					<xsl:attribute name="draw:z-index" select="'0'"/>
+					<xsl:element name="draw:image">
+						<xsl:attribute name="xlink:href"
+						               select="pf:relativize-uri(
+						                       collection()[3]//d:file[resolve-uri(@original-href,base-uri(.))=$src]/resolve-uri(@href,base-uri(.)),
+						                       collection()[1]/*/base-uri(.))"/>
+						<xsl:attribute name="xlink:type" select="'simple'"/>
+						<xsl:attribute name="xlink:show" select="'embed'"/>
+						<xsl:attribute name="xlink:actuate" select="'onLoad'"/>
+						<xsl:attribute name="svg:width" select="'25%'"/>
+						<xsl:attribute name="svg:height" select="'25%'"/>
+						<xsl:attribute name="svg:y" select="'0in'"/>
 					</xsl:element>
-				</xsl:if>
-			</xsl:element>
-		</xsl:element>
+					<xsl:if test="@alt">
+						<xsl:element name="svg:title">
+							<xsl:sequence select="string(@alt)"/>
+						</xsl:element>
+					</xsl:if>
+				</xsl:element>
+			</xsl:with-param>
+		</xsl:call-template>
 	</xsl:template>
 	
 	<xsl:template match="dtb:imggroup/dtb:caption" mode="office:text text:section">
@@ -345,10 +354,9 @@
 	</xsl:template>
 	
 	<xsl:template match="dtb:sub|dtb:sup" mode="text:p text:h text:span">
-		<xsl:element name="text:span">
-			<xsl:attribute name="text:style-name" select="dtb:style-name(.)"/>
-			<xsl:apply-templates mode="text:span"/>
-		</xsl:element>
+		<xsl:call-template name="text:span">
+			<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
+		</xsl:call-template>
 	</xsl:template>
 	
 	<xsl:template match="dtb:br" mode="text:p text:h text:span">
@@ -418,11 +426,26 @@
 	<!-- UTILITIES -->
 	<!-- ========= -->
 	
+	<xsl:template name="text:span">
+		<xsl:param name="text:style-name" as="xs:string?"/>
+		<xsl:element name="text:span">
+			<xsl:attribute name="text:style-name" select="$text:style-name"/>
+			<xsl:apply-templates mode="text:span"/>
+		</xsl:element>
+	</xsl:template>
+	
 	<xsl:template name="text:p">
 		<xsl:param name="text:style-name" as="xs:string?"/>
 		<xsl:element name="text:p">
 			<xsl:attribute name="text:style-name" select="($text:style-name, 'Standard')[1]"/>
-			<xsl:apply-templates mode="text:p"/>
+			<xsl:choose>
+				<xsl:when test="exists($sequence)">
+					<xsl:sequence select="$sequence"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="$apply-templates" mode="text:p"/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:element>
 	</xsl:template>
 	

@@ -51,19 +51,16 @@
 	</xsl:template>
 	
 	<xsl:template match="//style:default-style//@fo:language" mode="template">
-		<xsl:variable name="xml_lang" select="collection()[3]/dtb:dtbook/@xml:lang"/>
-		<xsl:if test="exists($xml_lang)">
-			<xsl:attribute name="fo:language" select="lower-case(replace($xml_lang, '^([^-_]+).*', '$1'))"/>
+		<xsl:variable name="lang" select="collection()[3]/dtb:dtbook/@xml:lang"/>
+		<xsl:if test="exists($lang)">
+			<xsl:attribute name="fo:language" select="fo:language($lang)"/>
 		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="//style:default-style//@fo:country" mode="template">
-		<xsl:variable name="xml_lang" select="collection()[3]/dtb:dtbook/@xml:lang"/>
-		<xsl:if test="exists($xml_lang)">
-			<xsl:variable name="country" select="upper-case(substring-after(translate($xml_lang, '-', '_'), '_'))"/>
-			<xsl:if test="$country!=''">
-				<xsl:attribute name="fo:country" select="$country"/>
-			</xsl:if>
+		<xsl:variable name="lang" select="collection()[3]/dtb:dtbook/@xml:lang"/>
+		<xsl:if test="exists($lang)">
+			<xsl:attribute name="fo:country" select="fo:country($lang)"/>
 		</xsl:if>
 	</xsl:template>
 	
@@ -262,6 +259,17 @@
 	<xsl:function name="style:display-name">
 		<xsl:param name="style-name" as="xs:string"/>
 		<xsl:sequence select="replace(replace(replace(replace($style-name, '_20_', ' '), '_3a_', ':'), '_5f_', '_'), '_23_', '#')"/>
+	</xsl:function>
+	
+	<xsl:function name="fo:language">
+		<xsl:param name="lang" as="xs:string"/>
+		<xsl:sequence select="lower-case(replace($lang, '^([^-_]+).*', '$1'))"/>
+	</xsl:function>
+	
+	<xsl:function name="fo:country">
+		<xsl:param name="lang" as="xs:string"/>
+		<xsl:variable name="country" select="upper-case(substring-after(translate($lang, '-', '_'), '_'))"/>
+		<xsl:sequence select="if ($country!='') then $country else 'none'"/>
 	</xsl:function>
 	
 </xsl:stylesheet>
