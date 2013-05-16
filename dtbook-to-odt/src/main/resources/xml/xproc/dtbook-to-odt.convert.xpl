@@ -119,7 +119,7 @@
     </p:identity>
     <p:sink/>
     
-    <p:xslt name="content">
+    <p:xslt name="content-1">
         <p:input port="source">
             <p:pipe step="template-content" port="matched"/>
             <p:pipe step="convert" port="in-memory.in"/>
@@ -133,10 +133,20 @@
         </p:input>
     </p:xslt>
     
+    <p:xslt name="content">
+        <p:input port="stylesheet">
+            <p:document href="../xslt/automatic-styles.xsl"/>
+        </p:input>
+        <p:input port="parameters">
+            <p:empty/>
+        </p:input>
+    </p:xslt>
+    <p:sink/>
+    
     <p:xslt name="styles">
         <p:input port="source">
             <p:pipe step="template-styles" port="matched"/>
-            <p:pipe step="content" port="result"/>
+            <p:pipe step="content-1" port="result"/>
             <p:pipe step="convert" port="in-memory.in"/>
         </p:input>
         <p:input port="stylesheet">

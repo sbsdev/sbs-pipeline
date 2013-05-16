@@ -394,6 +394,16 @@
 		<xsl:apply-templates mode="#current"/>
 	</xsl:template>
 	
+	<!-- ======== -->
+	<!-- LANGUAGE -->
+	<!-- ======== -->
+	
+	<xsl:template match="*" mode="#all" priority="10">
+		<xsl:next-match>
+			<xsl:with-param name="lang" select="string(ancestor-or-self::*[@xml:lang][1]/@xml:lang)" tunnel="yes"/>
+		</xsl:next-match>
+	</xsl:template>
+	
 	<!-- =============== -->
 	<!-- EVERYTHING ELSE -->
 	<!-- =============== -->
@@ -427,35 +437,57 @@
 	<!-- ========= -->
 	
 	<xsl:template name="text:span">
+		<xsl:param name="lang" as="xs:string" tunnel="yes"/>
+		<xsl:param name="paragraph-lang" as="xs:string" tunnel="yes"/>
+		<xsl:param name="span-lang" as="xs:string?" tunnel="yes"/>
 		<xsl:param name="text:style-name" as="xs:string?"/>
 		<xsl:element name="text:span">
+			<xsl:if test="$lang!=($span-lang,$paragraph-lang)[1]">
+				<xsl:attribute name="xml:lang" select="$lang"/>
+			</xsl:if>
 			<xsl:attribute name="text:style-name" select="$text:style-name"/>
-			<xsl:apply-templates mode="text:span"/>
+			<xsl:apply-templates mode="text:span">
+				<xsl:with-param name="span-lang" tunnel="yes" select="$lang"/>
+			</xsl:apply-templates>
 		</xsl:element>
 	</xsl:template>
 	
 	<xsl:template name="text:p">
+		<xsl:param name="lang" as="xs:string" tunnel="yes"/>
 		<xsl:param name="text:style-name" as="xs:string?"/>
+		<xsl:param name="apply-templates" as="node()*" select="*|text()"/>
+		<xsl:param name="sequence" as="node()*"/>
 		<xsl:element name="text:p">
+			<xsl:if test="$lang!=string(/dtb:dtbook/@xml:lang)">
+				<xsl:attribute name="xml:lang" select="$lang"/>
+			</xsl:if>
 			<xsl:attribute name="text:style-name" select="($text:style-name, 'Standard')[1]"/>
 			<xsl:choose>
 				<xsl:when test="exists($sequence)">
 					<xsl:sequence select="$sequence"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:apply-templates select="$apply-templates" mode="text:p"/>
+					<xsl:apply-templates select="$apply-templates" mode="text:p">
+						<xsl:with-param name="paragraph-lang" tunnel="yes" select="$lang"/>
+					</xsl:apply-templates>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:element>
 	</xsl:template>
 	
 	<xsl:template name="text:h">
+		<xsl:param name="lang" as="xs:string" tunnel="yes"/>
 		<xsl:param name="text:style-name" as="xs:string?"/>
 		<xsl:param name="text:outline-level" as="xs:double"/>
 		<xsl:element name="text:h">
+			<xsl:if test="$lang!=string(/dtb:dtbook/@xml:lang)">
+				<xsl:attribute name="xml:lang" select="$lang"/>
+			</xsl:if>
 			<xsl:attribute name="text:outline-level" select="$text:outline-level"/>
 			<xsl:attribute name="text:style-name" select="($text:style-name, concat('Heading_20_', $text:outline-level))[1]"/>
-			<xsl:apply-templates mode="text:h"/>
+			<xsl:apply-templates mode="text:h">
+				<xsl:with-param name="paragraph-lang" tunnel="yes" select="$lang"/>
+			</xsl:apply-templates>
 		</xsl:element>
 	</xsl:template>
 	
