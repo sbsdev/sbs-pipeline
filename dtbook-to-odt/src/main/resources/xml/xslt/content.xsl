@@ -250,15 +250,16 @@
 	</xsl:template>
 	
 	<xsl:template match="dtb:note" mode="text:note-body" priority="1">
+		<xsl:variable name="style_name" select="style:name(concat('dtb:note_', @class))"/>
 		<xsl:choose>
 			<xsl:when test="dtb:p">
 				<xsl:apply-templates mode="#current">
-					<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
+					<xsl:with-param name="paragraph_style" select="$style_name" tunnel="yes"/>
 				</xsl:apply-templates>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:call-template name="text:p">
-					<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
+					<xsl:with-param name="text:style-name" select="$style_name"/>
 				</xsl:call-template>
 			</xsl:otherwise>
 		</xsl:choose>
