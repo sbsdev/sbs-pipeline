@@ -290,6 +290,12 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
+	<xsl:template match="dtb:doctitle|dtb:docauthor" mode="office:text text:section">
+		<xsl:call-template name="text:p">
+			<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
+		</xsl:call-template>
+	</xsl:template>
+	
 	<!-- ====== -->
 	<!-- IMAGES -->
 	<!-- ====== -->
