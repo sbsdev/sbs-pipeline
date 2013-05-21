@@ -92,34 +92,37 @@
 	<!-- LISTS -->
 	<!-- ===== -->
 	
-	<xsl:template match="dtb:list" mode="office:text text:section table:table-cell">
+	<xsl:template match="dtb:list" mode="office:text text:section table:table-cell text:list-item">
 		<xsl:element name="text:list">
-			<xsl:attribute name="text:style-name" select="dtb:style-name(.)"/>
-			<xsl:apply-templates mode="text:list"/>
-		</xsl:element>
-	</xsl:template>
-	
-	<xsl:template match="dtb:list" mode="text:list-item">
-		<xsl:element name="text:list">
+			<xsl:attribute name="text:style-name" select="style:name(concat('dtb:list_', @type))"/>
 			<xsl:apply-templates mode="text:list"/>
 		</xsl:element>
 	</xsl:template>
 	
 	<xsl:template match="dtb:li" mode="text:list">
+		<xsl:variable name="style_name" select="dtb:style-name(.)"/>
 		<xsl:element name="text:list-item">
-			<xsl:choose>
-				<xsl:when test="dtb:p">
-					<xsl:apply-templates mode="text:list-item">
-						<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
-					</xsl:apply-templates>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:call-template name="text:p">
-						<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
-					</xsl:call-template>
-				</xsl:otherwise>
-			</xsl:choose>
+			<xsl:for-each-group select="*|text()" group-by="boolean(self::dtb:p or self::dtb:list)">
+				<xsl:choose>
+					<xsl:when test="current-grouping-key()">
+						<xsl:apply-templates select="current-group()" mode="text:list-item">
+							<xsl:with-param name="paragraph_style" select="$style_name" tunnel="yes"/>
+						</xsl:apply-templates>
+					</xsl:when>
+					<xsl:when test="normalize-space(string-join(current-group()/string(.), ''))=''"/>
+					<xsl:otherwise>
+						<xsl:call-template name="text:p">
+							<xsl:with-param name="text:style-name" select="$style_name"/>
+							<xsl:with-param name="apply-templates" select="current-group()"/>
+						</xsl:call-template>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:for-each-group>
 		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="dtb:lic" mode="text:p">
+		<xsl:apply-templates mode="#current"/>
 	</xsl:template>
 	
 	<xsl:template match="dtb:dl" mode="office:text text:section">
@@ -573,12 +576,37 @@
 	
 	<xsl:function name="dtb:style-name">
 		<xsl:param name="element" as="element()"/>
-		<xsl:sequence select="concat('dtb_3a_', local-name($element))"/>
+		<xsl:sequence select="style:name(concat('dtb:', local-name($element)))"/>
 	</xsl:function>
 	
+	<xsl:function name="style:name">
+		<xsl:param name="style-name" as="xs:string"/>
+		<xsl:sequence select="replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(
+		                      $style-name, '_', '_5f_'),
+		                                   ' ', '_20_'),
+		                                   '#', '_23_'),
+		                                   '/', '_2f_'),
+		                                   ':', '_3a_'),
+		                                   '=', '_3d_'),
+		                                   '>', '_3e_'),
+		                                   '\[', '_5b_'),
+		                                   '\]', '_5d_'),
+		                                   '\|', '_7c_')"/>
+	</xsl:function>
+		
 	<xsl:function name="style:display-name">
 		<xsl:param name="style-name" as="xs:string"/>
-		<xsl:sequence select="replace(replace(replace(replace($style-name, '_20_', ' '), '_3a_', ':'), '_5f_', '_'), '_23_', '#')"/>
+		<xsl:sequence select="replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(
+		                      $style-name, '_20_', ' '),
+		                                   '_23_', '#'),
+		                                   '_2f_', '/'),
+		                                   '_3a_', ':'),
+		                                   '_3d_', '='),
+		                                   '_3e_', '>'),
+		                                   '_5b_', '['),
+		                                   '_5d_', ']'),
+		                                   '_5f_', '_'),
+		                                   '_7c_', '|')"/>
 	</xsl:function>
 	
 	<xsl:function name="dtb:node-trace">

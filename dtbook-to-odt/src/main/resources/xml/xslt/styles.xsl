@@ -258,7 +258,17 @@
 	
 	<xsl:function name="style:display-name">
 		<xsl:param name="style-name" as="xs:string"/>
-		<xsl:sequence select="replace(replace(replace(replace($style-name, '_20_', ' '), '_3a_', ':'), '_5f_', '_'), '_23_', '#')"/>
+		<xsl:sequence select="replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(
+		                      $style-name, '_20_', ' '),
+		                                   '_23_', '#'),
+		                                   '_2f_', '/'),
+		                                   '_3a_', ':'),
+		                                   '_3d_', '='),
+		                                   '_3e_', '>'),
+		                                   '_5b_', '['),
+		                                   '_5d_', ']'),
+		                                   '_5f_', '_'),
+		                                   '_7c_', '|')"/>
 	</xsl:function>
 	
 	<xsl:function name="fo:language">
