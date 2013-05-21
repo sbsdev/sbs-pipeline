@@ -202,9 +202,18 @@
 	</xsl:template>
 	
 	<xsl:template match="dtb:table/dtb:caption" mode="office:text text:section">
-		<xsl:call-template name="text:p">
-			<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
-		</xsl:call-template>
+		<xsl:choose>
+			<xsl:when test="dtb:p">
+				<xsl:apply-templates mode="#current">
+					<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
+				</xsl:apply-templates>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="text:p">
+					<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- ===== -->
@@ -324,9 +333,18 @@
 	</xsl:template>
 	
 	<xsl:template match="dtb:imggroup/dtb:caption" mode="office:text text:section">
-		<xsl:call-template name="text:p">
-			<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
-		</xsl:call-template>
+		<xsl:choose>
+			<xsl:when test="dtb:p">
+				<xsl:apply-templates mode="#current">
+					<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
+				</xsl:apply-templates>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="text:p">
+					<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- ==== -->
