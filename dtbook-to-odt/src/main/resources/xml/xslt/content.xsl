@@ -366,12 +366,12 @@
 	<!-- INLINE ELEMENTS & TEXT -->
 	<!-- ====================== -->
 	
-	<xsl:template match="dtb:span|dtb:sent|dtb:em|dtb:strong|dtb:abbr|dtb:a|dtb:acronym|dtb:cite|dtb:author|dtb:title"
-	              mode="text:p text:h">
+	<xsl:template match="dtb:span|dtb:sent|dtb:abbr|dtb:a|dtb:acronym|dtb:cite|dtb:author|dtb:title"
+	              mode="text:p text:h text:span">
 		<xsl:apply-templates mode="#current"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:sub|dtb:sup" mode="text:p text:h text:span">
+	<xsl:template match="dtb:em|dtb:strong|dtb:sub|dtb:sup" mode="text:p text:h text:span">
 		<xsl:call-template name="text:span">
 			<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
 		</xsl:call-template>
