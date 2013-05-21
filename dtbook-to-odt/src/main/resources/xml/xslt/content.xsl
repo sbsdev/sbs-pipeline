@@ -92,7 +92,7 @@
 	<!-- LISTS -->
 	<!-- ===== -->
 	
-	<xsl:template match="dtb:list" mode="office:text text:section">
+	<xsl:template match="dtb:list" mode="office:text text:section table:table-cell">
 		<xsl:element name="text:list">
 			<xsl:attribute name="text:style-name" select="dtb:style-name(.)"/>
 			<xsl:apply-templates mode="text:list"/>
@@ -187,7 +187,7 @@
 		<xsl:element name="table:table-cell">
 			<xsl:attribute name="office:value-type" select="'string'"/>
 			<xsl:choose>
-				<xsl:when test="dtb:p">
+				<xsl:when test="dtb:p|dtb:imggroup|dtb:list">
 					<xsl:apply-templates mode="table:table-cell">
 						<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 					</xsl:apply-templates>
@@ -294,13 +294,13 @@
 	<!-- IMAGES -->
 	<!-- ====== -->
 	
-	<xsl:template match="dtb:imggroup" mode="office:text text:section">
+	<xsl:template match="dtb:imggroup" mode="office:text text:section table:table-cell">
 		<xsl:apply-templates mode="#current"/>
 	</xsl:template>
 	
 	<!-- FIXME: svg:width, svg:height ?? -->
 	
-	<xsl:template match="dtb:img" mode="office:text text:section">
+	<xsl:template match="dtb:img" mode="office:text text:section table:table-cell">
 		<xsl:variable name="src" select="resolve-uri(@src, base-uri(.))"/>
 		<xsl:call-template name="text:p">
 			<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
@@ -332,7 +332,7 @@
 		</xsl:call-template>
 	</xsl:template>
 	
-	<xsl:template match="dtb:imggroup/dtb:caption" mode="office:text text:section">
+	<xsl:template match="dtb:imggroup/dtb:caption" mode="office:text text:section table:table-cell">
 		<xsl:choose>
 			<xsl:when test="dtb:p">
 				<xsl:apply-templates mode="#current">
