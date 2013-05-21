@@ -60,7 +60,7 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
-	<xsl:template match="dtb:book|dtb:frontmatter|dtb:bodymatter|
+	<xsl:template match="dtb:book|dtb:frontmatter|dtb:bodymatter|dtb:rearmatter|
 	                     dtb:level1|dtb:level2|dtb:level3|dtb:level4|dtb:level5|dtb:level6"
 	              mode="office:text">
 		<xsl:apply-templates mode="#current"/>
