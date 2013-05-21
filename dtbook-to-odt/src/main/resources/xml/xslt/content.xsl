@@ -284,7 +284,7 @@
 	<xsl:template match="dtb:sidebar" mode="office:text text:section">
 		<xsl:call-template name="text:section">
 			<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
-			<xsl:with-param name="number" select="count(preceding::dtb:sidebar) + 1"/>
+			<xsl:with-param name="number" select="count(preceding::dtb:sidebar) + count(ancestor::dtb:sidebar) + 1"/>
 		</xsl:call-template>
 	</xsl:template>
 	
