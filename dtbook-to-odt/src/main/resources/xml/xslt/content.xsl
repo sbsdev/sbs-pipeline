@@ -377,7 +377,7 @@
 	<!-- INLINE ELEMENTS & TEXT -->
 	<!-- ====================== -->
 	
-	<xsl:template match="dtb:span|dtb:sent|dtb:abbr|dtb:a|dtb:acronym|dtb:cite|dtb:author|dtb:title"
+	<xsl:template match="dtb:span|dtb:sent|dtb:abbr|dtb:acronym|dtb:cite|dtb:author|dtb:title"
 	              mode="text:p text:h text:span">
 		<xsl:param name="lang" as="xs:string" tunnel="yes"/>
 		<xsl:param name="paragraph-lang" as="xs:string" tunnel="yes"/>
@@ -398,11 +398,18 @@
 		</xsl:call-template>
 	</xsl:template>
 	
-	<xsl:template match="dtb:br" mode="text:p text:h text:span">
+	<xsl:template match="dtb:a[@external='true']" mode="text:p text:h text:span">
+		<xsl:call-template name="text:a">
+			<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
+			<xsl:with-param name="xlink:href" select="@href"/>
+		</xsl:call-template>
+	</xsl:template>
+	
+	<xsl:template match="dtb:br" mode="text:p text:h text:span text:a">
 		<text:line-break/>
 	</xsl:template>
 	
-	<xsl:template match="text()" mode="text:p text:h text:span">
+	<xsl:template match="text()" mode="text:p text:h text:span text:a">
 		<xsl:sequence select="."/>
 	</xsl:template>
 	
@@ -458,7 +465,7 @@
 		</xsl:element>
 	</xsl:template>
 	
-	<xsl:template match="*" mode="text:p">
+	<xsl:template match="*" mode="text:p text:h text:span text:a">
 		<xsl:element name="text:span">
 			<xsl:attribute name="text:style-name" select="'ERROR'"/>
 			<xsl:call-template name="FIXME"/>
@@ -488,6 +495,27 @@
 				<xsl:attribute name="text:style-name" select="$text:style-name"/>
 			</xsl:if>
 			<xsl:apply-templates mode="text:span">
+				<xsl:with-param name="span-lang" tunnel="yes" select="$lang"/>
+			</xsl:apply-templates>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template name="text:a">
+		<xsl:param name="lang" as="xs:string" tunnel="yes"/>
+		<xsl:param name="paragraph-lang" as="xs:string" tunnel="yes"/>
+		<xsl:param name="span-lang" as="xs:string?" tunnel="yes"/>
+		<xsl:param name="text:style-name" as="xs:string?"/>
+		<xsl:param name="xlink:href" as="xs:string"/>
+		<xsl:element name="text:a">
+			<xsl:if test="$lang!=($span-lang,$paragraph-lang)[1]">
+				<xsl:attribute name="xml:lang" select="$lang"/>
+			</xsl:if>
+			<xsl:if test="$text:style-name">
+				<xsl:attribute name="text:style-name" select="$text:style-name"/>
+			</xsl:if>
+			<xsl:attribute name="xlink:href" select="$xlink:href"/>
+			<xsl:attribute name="xlink:type" select="'simple'"/>
+			<xsl:apply-templates mode="text:a">
 				<xsl:with-param name="span-lang" tunnel="yes" select="$lang"/>
 			</xsl:apply-templates>
 		</xsl:element>

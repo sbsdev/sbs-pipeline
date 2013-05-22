@@ -112,8 +112,8 @@
 				<xsl:with-param name="style:name" select="'Numbering_20_Symbols'"/>
 			</xsl:call-template>
 		</xsl:if>
-		<xsl:for-each select="distinct-values(collection()[2]//*[self::text:span]/@text:style-name)">
 			<xsl:if test="not(.=('Numbering_20_Symbols', $text_styles))">
+		<xsl:for-each select="distinct-values(collection()[2]//*[self::text:span or self::text:a]/@text:style-name)">
 				<xsl:call-template name="text-style">
 					<xsl:with-param name="style:name" select="."/>
 				</xsl:call-template>

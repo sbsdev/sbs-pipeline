@@ -37,7 +37,7 @@
 	<xsl:variable name="automatic-styles" as="element()*">
 		<xsl:call-template name="automatic-styles">
 			<xsl:with-param name="elements" as="element()*">
-				<xsl:for-each-group select="//*[self::text:p or self::text:h or self::text:span][@xml:lang]" group-by="@xml:lang">
+				<xsl:for-each-group select="//*[self::text:p or self::text:h or self::text:span or self::text:a][@xml:lang]" group-by="@xml:lang">
 					<xsl:for-each-group select="current-group()" group-by="string(@text:style-name)">
 						<xsl:for-each-group select="current-group()" group-by="style:family(.)">
 							<xsl:sequence select="current-group()[1]"/>
@@ -66,7 +66,7 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="text:p|text:h|text:span">
+	<xsl:template match="text:p|text:h|text:span|text:a">
 		<xsl:choose>
 			<xsl:when test="@xml:lang">
 				<xsl:variable name="parent-style-name" select="string(@text:style-name)"/>
@@ -164,7 +164,7 @@
 	<xsl:function name="style:family">
 		<xsl:param name="element" as="element()"/>
 		<xsl:sequence select="if ($element[self::text:p or self::text:h]) then 'paragraph' else
-		                      if ($element/self::text:span) then 'text' else ''"/>
+		                      if ($element[self::text:span or self::text:a]) then 'text' else ''"/>
 	</xsl:function>
 	
 </xsl:stylesheet>
