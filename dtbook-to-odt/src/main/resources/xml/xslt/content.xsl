@@ -94,7 +94,7 @@
 	
 	<xsl:template match="dtb:list" mode="office:text text:section table:table-cell text:list-item">
 		<xsl:element name="text:list">
-			<xsl:attribute name="text:style-name" select="style:name(concat('dtb:list_', @type))"/>
+			<xsl:attribute name="text:style-name" select="style:name(concat('dtb:list_', (@type, 'ul')[1]))"/>
 			<xsl:apply-templates mode="text:list"/>
 		</xsl:element>
 	</xsl:template>
@@ -229,7 +229,7 @@
 		<xsl:choose>
 			<xsl:when test="exists($note)">
 				<xsl:element name="text:note">
-					<xsl:attribute name="text:note-class" select="$note/@class"/>
+					<xsl:attribute name="text:note-class" select="($note/@class, 'footnote')[.=('footnote','endnote')][1]"/>
 					<xsl:attribute name="text:id" select="$note/@id"/>
 					<!-- LO takes care of updating this -->
 					<xsl:element name="text:note-citation">1</xsl:element>
@@ -250,7 +250,8 @@
 	</xsl:template>
 	
 	<xsl:template match="dtb:note" mode="text:note-body" priority="1">
-		<xsl:variable name="style_name" select="style:name(concat('dtb:note_', @class))"/>
+		<xsl:variable name="note_class" select="(@class, 'footnote')[.=('footnote','endnote')][1]"/>
+		<xsl:variable name="style_name" select="style:name(concat('dtb:note_', $note_class))"/>
 		<xsl:choose>
 			<xsl:when test="dtb:p">
 				<xsl:apply-templates mode="#current">
