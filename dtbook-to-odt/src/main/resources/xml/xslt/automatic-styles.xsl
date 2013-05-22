@@ -38,7 +38,7 @@
 		<xsl:call-template name="automatic-styles">
 			<xsl:with-param name="elements" as="element()*">
 				<xsl:for-each-group select="//*[self::text:p or self::text:h or self::text:span][@xml:lang]" group-by="@xml:lang">
-					<xsl:for-each-group select="current-group()" group-by="@text:style-name">
+					<xsl:for-each-group select="current-group()" group-by="string(@text:style-name)">
 						<xsl:for-each-group select="current-group()" group-by="style:family(.)">
 							<xsl:sequence select="current-group()[1]"/>
 						</xsl:for-each-group>
@@ -77,7 +77,7 @@
 					<xsl:apply-templates select="@*[not(name(.)='xml:lang')]"/>
 					<xsl:attribute name="text:style-name"
 					               select="$automatic-styles[@style:family=$family and
-					                                         @style:parent-style-name=$parent-style-name and
+					                                         string(@style:parent-style-name)=$parent-style-name and
 					                                         child::style:text-properties[@fo:language=$language and @fo:country=$country]]
 					                         /@style:name"/>
 					<xsl:apply-templates select="node()"/>
@@ -105,7 +105,9 @@
 							</xsl:call-template>
 						</xsl:attribute>
 						<xsl:attribute name="style:family" select="$family"/>
-						<xsl:attribute name="style:parent-style-name" select="$element/@text:style-name"/>
+						<xsl:if test="$element/@text:style-name">
+							<xsl:attribute name="style:parent-style-name" select="$element/@text:style-name"/>
+						</xsl:if>
 						<xsl:if test="$element/@xml:lang">
 							<xsl:element name="style:text-properties">
 								<xsl:attribute name="fo:language" select="fo:language($element/@xml:lang)"/>

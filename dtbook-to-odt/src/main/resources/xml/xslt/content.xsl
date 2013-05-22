@@ -379,7 +379,17 @@
 	
 	<xsl:template match="dtb:span|dtb:sent|dtb:abbr|dtb:a|dtb:acronym|dtb:cite|dtb:author|dtb:title"
 	              mode="text:p text:h text:span">
-		<xsl:apply-templates mode="#current"/>
+		<xsl:param name="lang" as="xs:string" tunnel="yes"/>
+		<xsl:param name="paragraph-lang" as="xs:string" tunnel="yes"/>
+		<xsl:param name="span-lang" as="xs:string?" tunnel="yes"/>
+		<xsl:choose>
+			<xsl:when test="$lang!=($span-lang,$paragraph-lang)[1]">
+				<xsl:call-template name="text:span"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates mode="#current"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template match="dtb:em|dtb:strong|dtb:sub|dtb:sup" mode="text:p text:h text:span">
@@ -474,7 +484,9 @@
 			<xsl:if test="$lang!=($span-lang,$paragraph-lang)[1]">
 				<xsl:attribute name="xml:lang" select="$lang"/>
 			</xsl:if>
-			<xsl:attribute name="text:style-name" select="$text:style-name"/>
+			<xsl:if test="$text:style-name">
+				<xsl:attribute name="text:style-name" select="$text:style-name"/>
+			</xsl:if>
 			<xsl:apply-templates mode="text:span">
 				<xsl:with-param name="span-lang" tunnel="yes" select="$lang"/>
 			</xsl:apply-templates>
