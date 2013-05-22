@@ -24,7 +24,9 @@
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
 		exclude-result-prefixes="#all">
-		
+	
+	<xsl:include href="utilities.xsl"/>
+	
 	<!-- ======== -->
 	<!-- TEMPLATE -->
 	<!-- ======== -->
@@ -251,35 +253,5 @@
 			</xsl:element>
 		</xsl:if>
 	</xsl:template>
-	
-	<!-- ========= -->
-	<!-- UTILITIES -->
-	<!-- ========= -->
-	
-	<xsl:function name="style:display-name">
-		<xsl:param name="style-name" as="xs:string"/>
-		<xsl:sequence select="replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(
-		                      $style-name, '_20_', ' '),
-		                                   '_23_', '#'),
-		                                   '_2f_', '/'),
-		                                   '_3a_', ':'),
-		                                   '_3d_', '='),
-		                                   '_3e_', '>'),
-		                                   '_5b_', '['),
-		                                   '_5d_', ']'),
-		                                   '_5f_', '_'),
-		                                   '_7c_', '|')"/>
-	</xsl:function>
-	
-	<xsl:function name="fo:language">
-		<xsl:param name="lang" as="xs:string"/>
-		<xsl:sequence select="lower-case(replace($lang, '^([^-_]+).*', '$1'))"/>
-	</xsl:function>
-	
-	<xsl:function name="fo:country">
-		<xsl:param name="lang" as="xs:string"/>
-		<xsl:variable name="country" select="upper-case(substring-after(translate($lang, '-', '_'), '_'))"/>
-		<xsl:sequence select="if ($country!='') then $country else 'none'"/>
-	</xsl:function>
 	
 </xsl:stylesheet>

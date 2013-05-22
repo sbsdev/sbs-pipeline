@@ -25,6 +25,8 @@
 		xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
 		exclude-result-prefixes="#all">
 	
+	<xsl:include href="utilities.xsl"/>
+	
 	<!-- Generate automatic-styles for paragraphs and spans with a @xml:lang attribute
 	     Other automatic-styles are taken care of by LibreOffice:
 		 * table styles are generated
@@ -147,24 +149,5 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
-	<!-- ====================================================== -->
-	
-	<xsl:function name="fo:language">
-		<xsl:param name="lang" as="xs:string"/>
-		<xsl:sequence select="lower-case(replace($lang, '^([^-_]+).*', '$1'))"/>
-	</xsl:function>
-	
-	<xsl:function name="fo:country">
-		<xsl:param name="lang" as="xs:string"/>
-		<xsl:variable name="country" select="upper-case(substring-after(translate($lang, '-', '_'), '_'))"/>
-		<xsl:sequence select="if ($country!='') then $country else 'none'"/>
-	</xsl:function>
-	
-	<xsl:function name="style:family">
-		<xsl:param name="element" as="element()"/>
-		<xsl:sequence select="if ($element[self::text:p or self::text:h]) then 'paragraph' else
-		                      if ($element[self::text:span or self::text:a]) then 'text' else ''"/>
-	</xsl:function>
 	
 </xsl:stylesheet>

@@ -29,6 +29,7 @@
 		exclude-result-prefixes="#all">
 	
 	<xsl:include href="http://www.daisy.org/pipeline/modules/file-utils/xslt/uri-functions.xsl"/>
+	<xsl:include href="utilities.xsl"/>
 	
 	<!-- ======== -->
 	<!-- TEMPLATE -->
@@ -613,53 +614,5 @@
 			<xsl:sequence select="dtb:node-trace(.)"/>
 		</xsl:message>
 	</xsl:template>
-	
-	<!-- ====================================================== -->
-	
-	<xsl:function name="dtb:style-name">
-		<xsl:param name="element" as="element()"/>
-		<xsl:sequence select="style:name(concat('dtb:', local-name($element)))"/>
-	</xsl:function>
-	
-	<xsl:function name="style:name">
-		<xsl:param name="style-name" as="xs:string"/>
-		<xsl:sequence select="replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(
-		                      $style-name, '_', '_5f_'),
-		                                   ' ', '_20_'),
-		                                   '#', '_23_'),
-		                                   '/', '_2f_'),
-		                                   ':', '_3a_'),
-		                                   '=', '_3d_'),
-		                                   '>', '_3e_'),
-		                                   '\[', '_5b_'),
-		                                   '\]', '_5d_'),
-		                                   '\|', '_7c_')"/>
-	</xsl:function>
-		
-	<xsl:function name="style:display-name">
-		<xsl:param name="style-name" as="xs:string"/>
-		<xsl:sequence select="replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(
-		                      $style-name, '_20_', ' '),
-		                                   '_23_', '#'),
-		                                   '_2f_', '/'),
-		                                   '_3a_', ':'),
-		                                   '_3d_', '='),
-		                                   '_3e_', '>'),
-		                                   '_5b_', '['),
-		                                   '_5d_', ']'),
-		                                   '_5f_', '_'),
-		                                   '_7c_', '|')"/>
-	</xsl:function>
-	
-	<xsl:function name="dtb:node-trace">
-		<xsl:param name="node" as="node()"/>
-		<xsl:sequence select="string-join(('',
-		                        $node/ancestor::*/name(),
-		                        if ($node/self::element()) then name($node)
-		                          else if ($node/self::attribute()) then concat('@', name($node))
-		                          else if ($node/self::text()) then 'text()'
-		                          else '?'
-		                      ), '/')"/>
-	</xsl:function>
 	
 </xsl:stylesheet>
