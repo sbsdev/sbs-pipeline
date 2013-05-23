@@ -56,7 +56,7 @@
 	
 	<xsl:template match="dtb:dtbook" mode="office:text">
 		<xsl:apply-templates mode="#current">
-			<xsl:with-param name="paragraph_style" select="'Text_20_body'" tunnel="yes"/>
+			<xsl:with-param name="paragraph_style" select="style:name('dtb:p')" tunnel="yes"/>
 		</xsl:apply-templates>
 	</xsl:template>
 	
