@@ -284,9 +284,12 @@
 	<!-- ==================== -->
 	
 	<xsl:template match="dtb:sidebar" mode="office:text text:section">
+		<xsl:param name="sidebar_announcement" as="node()*" tunnel="yes"/>
+		<xsl:param name="sidebar_deannouncement" as="node()*" tunnel="yes"/>
 		<xsl:call-template name="text:section">
 			<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
 			<xsl:with-param name="number" select="count(preceding::dtb:sidebar) + count(ancestor::dtb:sidebar) + 1"/>
+			<xsl:with-param name="apply-templates" select="($sidebar_announcement, *|text(), $sidebar_deannouncement)"/>
 		</xsl:call-template>
 	</xsl:template>
 	
@@ -564,10 +567,19 @@
 	<xsl:template name="text:section">
 		<xsl:param name="text:style-name" as="xs:string"/>
 		<xsl:param name="number" as="xs:double"/>
+		<xsl:param name="apply-templates" as="node()*" select="*|text()"/>
+		<xsl:param name="sequence" as="node()*"/>
 		<xsl:element name="text:section">
 			<xsl:attribute name="text:name" select="concat(style:display-name($text:style-name), '#', $number)"/>
 			<xsl:attribute name="text:style-name" select="$text:style-name"/>
-			<xsl:apply-templates mode="text:section"/>
+			<xsl:choose>
+				<xsl:when test="exists($sequence)">
+					<xsl:sequence select="$sequence"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="$apply-templates" mode="text:section"/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:element>
 	</xsl:template>
 	
