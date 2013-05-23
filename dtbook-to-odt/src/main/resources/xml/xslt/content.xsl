@@ -23,7 +23,6 @@
 		xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
-		xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
 		xmlns:pf="http://www.daisy.org/ns/pipeline/functions"
 		xmlns:d="http://www.daisy.org/ns/pipeline/data"
 		exclude-result-prefixes="#all">
@@ -428,21 +427,6 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<!-- ============= -->
-	<!-- BRAILLE STUFF -->
-	<!-- ============= -->
-	
-	<xsl:template match="brl:homograph|brl:place|brl:name|brl:v-form" mode="text:p text:h">
-		<xsl:apply-templates mode="#current"/>
-	</xsl:template>
-	
-	<xsl:template match="brl:running-line|brl:toc-line|brl:volume|brl:when-braille" mode="#all">
-		<xsl:call-template name="skip"/>
-	</xsl:template>
-	
-	<xsl:template match="brl:select|brl:otherwise" mode="#all">
-		<xsl:apply-templates mode="#current"/>
-	</xsl:template>
 	
 	<!-- ======== -->
 	<!-- LANGUAGE -->

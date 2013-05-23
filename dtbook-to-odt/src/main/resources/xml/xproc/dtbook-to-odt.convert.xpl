@@ -126,7 +126,7 @@
             <p:pipe step="fileset.images" port="result"/>
         </p:input>
         <p:input port="stylesheet">
-            <p:document href="../xslt/content.xsl"/>
+            <p:document href="../xslt/content-sbs.xsl"/>
         </p:input>
         <p:input port="parameters">
             <p:empty/>
