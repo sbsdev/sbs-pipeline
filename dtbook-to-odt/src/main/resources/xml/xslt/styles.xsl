@@ -184,16 +184,10 @@
 	
 	<xsl:template name="missing-graphic-styles">
 		<xsl:variable name="graphic_styles" select="style:style[@style:family='graphic']/@style:name"/>
-		<xsl:if test="not('Graphics'=$graphic_styles)">
-			<xsl:call-template name="graphic-style">
-				<xsl:with-param name="style:name" select="'Graphics'"/>
-			</xsl:call-template>
-		</xsl:if>
 		<xsl:for-each select="distinct-values(collection()[2]//draw:frame/@draw:style-name)">
-			<xsl:if test="not(.=('Graphics', $graphic_styles))">
+			<xsl:if test="not(.=$graphic_styles)">
 				<xsl:call-template name="graphic-style">
 					<xsl:with-param name="style:name" select="."/>
-					<xsl:with-param name="style:parent-style-name" select="'Graphics'"/>
 				</xsl:call-template>
 			</xsl:if>
 		</xsl:for-each>
@@ -209,10 +203,6 @@
 			<xsl:if test="exists($style:parent-style-name)">
 				<xsl:attribute name="style:parent-style-name" select="$style:parent-style-name"/>
 			</xsl:if>
-			<xsl:element name="style:graphic-properties">
-				<xsl:attribute name="style:vertical-pos" select="'top'"/>
-				<xsl:attribute name="style:vertical-rel" select="'baseline'"/>
-			</xsl:element>
 		</xsl:element>
 	</xsl:template>
 	
