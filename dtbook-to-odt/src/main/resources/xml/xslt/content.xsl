@@ -100,24 +100,11 @@
 	</xsl:template>
 	
 	<xsl:template match="dtb:li" mode="text:list">
-		<xsl:variable name="style_name" select="dtb:style-name(.)"/>
 		<xsl:element name="text:list-item">
-			<xsl:for-each-group select="*|text()" group-by="boolean(self::dtb:p or self::dtb:list)">
-				<xsl:choose>
-					<xsl:when test="current-grouping-key()">
-						<xsl:apply-templates select="current-group()" mode="text:list-item">
-							<xsl:with-param name="paragraph_style" select="$style_name" tunnel="yes"/>
-						</xsl:apply-templates>
-					</xsl:when>
-					<xsl:when test="normalize-space(string-join(current-group()/string(.), ''))=''"/>
-					<xsl:otherwise>
-						<xsl:call-template name="text:p">
-							<xsl:with-param name="text:style-name" select="$style_name"/>
-							<xsl:with-param name="apply-templates" select="current-group()"/>
-						</xsl:call-template>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:for-each-group>
+			<xsl:apply-templates select="$group-inline-elements" mode="text:list-item">
+				<xsl:with-param name="select" select="*|text()"/>
+				<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
+			</xsl:apply-templates>
 		</xsl:element>
 	</xsl:template>
 	
@@ -189,34 +176,18 @@
 	<xsl:template match="dtb:td|dtb:th" mode="table:table-row">
 		<xsl:element name="table:table-cell">
 			<xsl:attribute name="office:value-type" select="'string'"/>
-			<xsl:choose>
-				<xsl:when test="dtb:p|dtb:imggroup|dtb:list">
-					<xsl:apply-templates mode="table:table-cell">
-						<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
-					</xsl:apply-templates>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:call-template name="text:p">
-						<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
-					</xsl:call-template>
-				</xsl:otherwise>
-			</xsl:choose>
+			<xsl:apply-templates select="$group-inline-elements" mode="table:table-cell">
+				<xsl:with-param name="select" select="*|text()"/>
+				<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
+			</xsl:apply-templates>
 		</xsl:element>
 	</xsl:template>
 	
 	<xsl:template match="dtb:table/dtb:caption" mode="office:text text:section">
-		<xsl:choose>
-			<xsl:when test="dtb:p">
-				<xsl:apply-templates mode="#current">
-					<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
-				</xsl:apply-templates>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:call-template name="text:p">
-					<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
-				</xsl:call-template>
-			</xsl:otherwise>
-		</xsl:choose>
+		<xsl:apply-templates select="$group-inline-elements" mode="#current">
+			<xsl:with-param name="select" select="*|text()"/>
+			<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
+		</xsl:apply-templates>
 	</xsl:template>
 	
 	<!-- ===== -->
@@ -251,19 +222,10 @@
 	
 	<xsl:template match="dtb:note" mode="text:note-body" priority="1">
 		<xsl:variable name="note_class" select="(@class, 'footnote')[.=('footnote','endnote')][1]"/>
-		<xsl:variable name="style_name" select="style:name(concat('dtb:note_', $note_class))"/>
-		<xsl:choose>
-			<xsl:when test="dtb:p">
-				<xsl:apply-templates mode="#current">
-					<xsl:with-param name="paragraph_style" select="$style_name" tunnel="yes"/>
-				</xsl:apply-templates>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:call-template name="text:p">
-					<xsl:with-param name="text:style-name" select="$style_name"/>
-				</xsl:call-template>
-			</xsl:otherwise>
-		</xsl:choose>
+		<xsl:apply-templates select="$group-inline-elements" mode="#current">
+			<xsl:with-param name="select" select="*|text()"/>
+			<xsl:with-param name="paragraph_style" select="style:name(concat('dtb:note_', $note_class))" tunnel="yes"/>
+		</xsl:apply-templates>
 	</xsl:template>
 	
 	<xsl:template match="dtb:note" mode="#all">
@@ -347,18 +309,10 @@
 	</xsl:template>
 	
 	<xsl:template match="dtb:imggroup/dtb:caption" mode="office:text text:section table:table-cell">
-		<xsl:choose>
-			<xsl:when test="dtb:p">
-				<xsl:apply-templates mode="#current">
-					<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
-				</xsl:apply-templates>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:call-template name="text:p">
-					<xsl:with-param name="text:style-name" select="dtb:style-name(.)"/>
-				</xsl:call-template>
-			</xsl:otherwise>
-		</xsl:choose>
+		<xsl:apply-templates select="$group-inline-elements" mode="#current">
+			<xsl:with-param name="select" select="*|text()"/>
+			<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
+		</xsl:apply-templates>
 	</xsl:template>
 	
 	<!-- ==== -->
@@ -432,7 +386,7 @@
 	<!-- LANGUAGE -->
 	<!-- ======== -->
 	
-	<xsl:template match="*" mode="#all" priority="10">
+	<xsl:template match="dtb:*" mode="#all" priority="10">
 		<xsl:next-match>
 			<xsl:with-param name="lang" select="string(ancestor-or-self::*[@xml:lang][1]/@xml:lang)" tunnel="yes"/>
 		</xsl:next-match>
@@ -469,6 +423,34 @@
 	<!-- ========= -->
 	<!-- UTILITIES -->
 	<!-- ========= -->
+	
+	<xsl:variable name="group-inline-elements">
+		<group-inline-elements/>
+	</xsl:variable>
+	
+	<xsl:template match="group-inline-elements" mode="#all">
+		<xsl:param name="select" as="node()*"/>
+		<xsl:param name="paragraph_style" as="xs:string?" tunnel="yes"/>
+		<xsl:for-each-group select="$select" group-by="boolean(self::dtb:p or
+		                                                       self::dtb:list or
+		                                                       self::dtb:imggroup or
+		                                                       self::dtb:blockquote)">
+			<xsl:choose>
+				<xsl:when test="current-grouping-key()">
+					<xsl:apply-templates select="current-group()" mode="#current"/>
+				</xsl:when>
+				<xsl:when test="normalize-space(string-join(current-group()/string(.), ''))=''"/>
+				<xsl:otherwise>
+					<xsl:call-template name="text:p">
+						<xsl:with-param name="text:style-name" select="$paragraph_style"/>
+						<xsl:with-param name="apply-templates" select="current-group()"/>
+					</xsl:call-template>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:for-each-group>
+	</xsl:template>
+	
+	<!-- ====================================================== -->
 	
 	<xsl:template name="text:span">
 		<xsl:param name="lang" as="xs:string" tunnel="yes"/>
