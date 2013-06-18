@@ -32,6 +32,27 @@
 	<!-- SIDEBAR -->
 	<!-- ======= -->
 	
+	<!-- ======== -->
+	<!-- HEADINGS -->
+	<!-- ======== -->
+	
+	<xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6" mode="office:text text:list-item text:section">
+		<xsl:call-template name="text:empty-p"/>
+		<xsl:next-match/>
+		<xsl:call-template name="text:empty-p"/>
+	</xsl:template>
+	
+	
+	<!-- ===== -->
+	<!-- LISTS -->
+	<!-- ===== -->
+	
+	<xsl:template match="dtb:list" mode="office:text text:section table:table-cell">
+		<xsl:call-template name="text:empty-p"/>
+		<xsl:next-match/>
+		<xsl:call-template name="text:empty-p"/>
+	</xsl:template>
+	
 	<!-- ===== -->
 	<!-- NOTES -->
 	<!-- ===== -->
@@ -134,6 +155,9 @@
 		</xsl:next-match>
 	</xsl:template>
 	
+	<!-- ==================== -->
+	<!-- OTHER BLOCK ELEMENTS -->
+	<!-- ==================== -->
 	
 	<xsl:template match="dtb:sidebar" mode="office:text text:section">
 		<xsl:next-match>
@@ -144,6 +168,12 @@
 				<dtb:p class="deannouncement" xml:lang="en">[End of sidebar]</dtb:p>
 			</xsl:with-param>
 		</xsl:next-match>
+	</xsl:template>
+	
+	<xsl:template match="dtb:blockquote|dtb:epigraph|dtb:poem" mode="office:text text:section">
+		<xsl:call-template name="text:empty-p"/>
+		<xsl:next-match/>
+		<xsl:call-template name="text:empty-p"/>
 	</xsl:template>
 	
 	<!-- ============= -->
