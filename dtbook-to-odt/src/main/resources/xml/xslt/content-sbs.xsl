@@ -203,6 +203,17 @@
 	
 	<xsl:template match="brl:select|brl:otherwise" mode="#all">
 		<xsl:apply-templates mode="#current"/>
+	<!-- ========= -->
+	<!-- UTILITIES -->
+	<!-- ========= -->
+	
+	<xsl:template name="text:empty-p">
+		<xsl:call-template name="text:p">
+			<xsl:with-param name="paragraph_style" select="style:name('dtb:p_emptyline')" tunnel="yes"/>
+			<xsl:with-param name="sequence">
+				<xsl:text/>
+			</xsl:with-param>
+		</xsl:call-template>
 	</xsl:template>
 	
 </xsl:stylesheet>
