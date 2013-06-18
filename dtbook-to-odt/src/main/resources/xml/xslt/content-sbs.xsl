@@ -108,6 +108,20 @@
 	</xsl:template>
 	
 	
+	<!-- ====== -->
+	<!-- IMAGES -->
+	<!-- ====== -->
+	
+	<xsl:template match="dtb:imggroup/dtb:caption" mode="office:text text:section table:table-cell">
+		<xsl:call-template name="text:empty-p"/>
+		<xsl:next-match>
+			<xsl:with-param name="caption_suffix" tunnel="yes">
+				<xsl:text>:</xsl:text>
+			</xsl:with-param>
+		</xsl:next-match>
+	</xsl:template>
+	
+	
 	<!-- ============== -->
 	<!-- PAGE NUMBERING -->
 	<!-- ============== -->
