@@ -277,7 +277,8 @@
 	<!-- ====== -->
 	
 	<xsl:template match="dtb:imggroup" mode="office:text text:section table:table-cell">
-		<xsl:apply-templates mode="#current"/>
+		<xsl:apply-templates select="dtb:caption" mode="#current"/>
+		<xsl:apply-templates select="*[not(self::dtb:caption)]" mode="#current"/>
 	</xsl:template>
 	
 	<xsl:template match="dtb:img" mode="office:text text:section table:table-cell">
@@ -314,8 +315,10 @@
 	</xsl:template>
 	
 	<xsl:template match="dtb:imggroup/dtb:caption" mode="office:text text:section table:table-cell">
-			<xsl:with-param name="select" select="*|text()"/>
+		<xsl:param name="caption_prefix" as="node()*" tunnel="yes"/>
+		<xsl:param name="caption_suffix" as="node()*" tunnel="yes"/>
 		<xsl:apply-templates select="$group-inline-nodes" mode="#current">
+			<xsl:with-param name="select" select="($caption_prefix, *|text(), $caption_suffix)"/>
 			<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 		</xsl:apply-templates>
 	</xsl:template>
