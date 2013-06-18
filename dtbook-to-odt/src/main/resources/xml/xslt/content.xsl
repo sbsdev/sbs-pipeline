@@ -264,6 +264,14 @@
 		</xsl:call-template>
 	</xsl:template>
 	
+	<xsl:template match="dtb:linegroup" mode="office:text text:section">
+		<xsl:apply-templates mode="#current"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:line" mode="office:text text:section">
+		<xsl:call-template name="text:p"/>
+	</xsl:template>
+	
 	<!-- ====== -->
 	<!-- IMAGES -->
 	<!-- ====== -->
