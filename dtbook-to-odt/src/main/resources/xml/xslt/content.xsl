@@ -251,7 +251,7 @@
 		</xsl:call-template>
 	</xsl:template>
 	
-	<xsl:template match="dtb:blockquote" mode="office:text text:section">
+	<xsl:template match="dtb:blockquote|dtb:epigraph|dtb:poem" mode="office:text text:section">
 		<xsl:apply-templates mode="#current">
 			<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 		</xsl:apply-templates>
