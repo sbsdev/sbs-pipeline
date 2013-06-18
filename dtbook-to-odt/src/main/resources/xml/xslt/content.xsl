@@ -377,7 +377,7 @@
 	
 	<xsl:template match="dtb:*" mode="#all" priority="10">
 		<xsl:next-match>
-			<xsl:with-param name="lang" select="string(ancestor-or-self::*[@xml:lang][1]/@xml:lang)" tunnel="yes"/>
+			<xsl:with-param name="lang" select="dtb:lang(.)" tunnel="yes"/>
 		</xsl:next-match>
 	</xsl:template>
 	
