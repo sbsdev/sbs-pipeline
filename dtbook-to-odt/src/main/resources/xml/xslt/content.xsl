@@ -101,7 +101,7 @@
 	
 	<xsl:template match="dtb:li" mode="text:list">
 		<xsl:element name="text:list-item">
-			<xsl:apply-templates select="$group-inline-elements" mode="text:list-item">
+			<xsl:apply-templates select="$group-inline-nodes" mode="text:list-item">
 				<xsl:with-param name="select" select="*|text()"/>
 				<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 			</xsl:apply-templates>
@@ -176,7 +176,7 @@
 	<xsl:template match="dtb:td|dtb:th" mode="table:table-row">
 		<xsl:element name="table:table-cell">
 			<xsl:attribute name="office:value-type" select="'string'"/>
-			<xsl:apply-templates select="$group-inline-elements" mode="table:table-cell">
+			<xsl:apply-templates select="$group-inline-nodes" mode="table:table-cell">
 				<xsl:with-param name="select" select="*|text()"/>
 				<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 			</xsl:apply-templates>
@@ -184,7 +184,7 @@
 	</xsl:template>
 	
 	<xsl:template match="dtb:table/dtb:caption" mode="office:text text:section">
-		<xsl:apply-templates select="$group-inline-elements" mode="#current">
+		<xsl:apply-templates select="$group-inline-nodes" mode="#current">
 			<xsl:with-param name="select" select="*|text()"/>
 			<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 		</xsl:apply-templates>
@@ -222,7 +222,7 @@
 	
 	<xsl:template match="dtb:note" mode="text:note-body" priority="1">
 		<xsl:variable name="note_class" select="(@class, 'footnote')[.=('footnote','endnote')][1]"/>
-		<xsl:apply-templates select="$group-inline-elements" mode="#current">
+		<xsl:apply-templates select="$group-inline-nodes" mode="#current">
 			<xsl:with-param name="select" select="*|text()"/>
 			<xsl:with-param name="paragraph_style" select="style:name(concat('dtb:note_', $note_class))" tunnel="yes"/>
 		</xsl:apply-templates>
@@ -309,8 +309,8 @@
 	</xsl:template>
 	
 	<xsl:template match="dtb:imggroup/dtb:caption" mode="office:text text:section table:table-cell">
-		<xsl:apply-templates select="$group-inline-elements" mode="#current">
 			<xsl:with-param name="select" select="*|text()"/>
+		<xsl:apply-templates select="$group-inline-nodes" mode="#current">
 			<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 		</xsl:apply-templates>
 	</xsl:template>
@@ -424,17 +424,13 @@
 	<!-- UTILITIES -->
 	<!-- ========= -->
 	
-	<xsl:variable name="group-inline-elements">
-		<group-inline-elements/>
+	<xsl:variable name="group-inline-nodes">
+		<group-inline-nodes/>
 	</xsl:variable>
 	
-	<xsl:template match="group-inline-elements" mode="#all">
+	<xsl:template match="group-inline-nodes" mode="#all">
 		<xsl:param name="select" as="node()*"/>
-		<xsl:param name="paragraph_style" as="xs:string?" tunnel="yes"/>
-		<xsl:for-each-group select="$select" group-by="boolean(self::dtb:p or
-		                                                       self::dtb:list or
-		                                                       self::dtb:imggroup or
-		                                                       self::dtb:blockquote)">
+		<xsl:for-each-group select="$select" group-adjacent="boolean(descendant-or-self::*[dtb:is-block-element(.)])">
 			<xsl:choose>
 				<xsl:when test="current-grouping-key()">
 					<xsl:apply-templates select="current-group()" mode="#current"/>
@@ -448,6 +444,15 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:for-each-group>
+	</xsl:template>
+	
+	<xsl:function name="dtb:is-block-element" as="xs:boolean">
+		<xsl:param name="node" as="node()"/>
+		<xsl:apply-templates select="$node" mode="is-block-element"/>
+	</xsl:function>
+	
+	<xsl:template match="dtb:p|dtb:list|dtb:imggroup|dtb:blockquote" as="xs:boolean" mode="is-block-element" priority="12">
+		<xsl:sequence select="true()"/>
 	</xsl:template>
 	
 	<!-- ====================================================== -->
