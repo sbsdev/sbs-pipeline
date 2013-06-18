@@ -160,25 +160,38 @@
 	
 	<xsl:template match="dtb:table" mode="office:text text:section">
 		<xsl:apply-templates select="dtb:caption" mode="#current"/>
+		<xsl:variable name="dtb:tr" as="element()*">
+			<xsl:call-template name="dtb:insert-covered-table-cells">
+				<xsl:with-param name="table_cells" select="dtb:tr/(dtb:td|dtb:th)"/>
+			</xsl:call-template>
+		</xsl:variable>
 		<xsl:element name="table:table">
 			<xsl:attribute name="table:name" select="concat('dtb:table#', count(preceding::dtb:table) + 1)"/>
 			<xsl:element name="table:table-column">
 				<xsl:attribute name="table:number-columns-repeated" select="max(.//dtb:tr/count(dtb:td|dtb:th))"/>
 			</xsl:element>
-			<xsl:apply-templates mode="table:table" select="dtb:thead"/>
-			<xsl:apply-templates mode="table:table" select="*[not(self::dtb:thead or self::dtb:tfoot or self::dtb:caption)]|text()"/>
-			<xsl:apply-templates mode="table:table" select="dtb:tfoot"/>
+			<xsl:apply-templates mode="table:table" select="(dtb:thead, $dtb:tr, dtb:tbody, dtb:tfoot)"/>
 		</xsl:element>
 	</xsl:template>
 	
 	<xsl:template match="dtb:thead" mode="table:table">
+		<xsl:variable name="dtb:tr" as="element()*">
+			<xsl:call-template name="dtb:insert-covered-table-cells">
+				<xsl:with-param name="table_cells" select="dtb:tr/(dtb:td|dtb:th)"/>
+			</xsl:call-template>
+		</xsl:variable>
 		<xsl:element name="table:table-header-rows">
-			<xsl:apply-templates mode="table:table-header-rows"/>
+			<xsl:apply-templates mode="table:table-header-rows" select="$dtb:tr"/>
 		</xsl:element>
 	</xsl:template>
 	
 	<xsl:template match="dtb:tbody|dtb:tfoot" mode="table:table">
-		<xsl:apply-templates mode="#current"/>
+		<xsl:variable name="dtb:tr" as="element()*">
+			<xsl:call-template name="dtb:insert-covered-table-cells">
+				<xsl:with-param name="table_cells" select="dtb:tr/(dtb:td|dtb:th)"/>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:apply-templates mode="#current" select="$dtb:tr"/>
 	</xsl:template>
 	
 	<xsl:template match="dtb:tr" mode="table:table table:table-header-rows">
@@ -188,13 +201,25 @@
 	</xsl:template>
 	
 	<xsl:template match="dtb:td|dtb:th" mode="table:table-row">
+		<xsl:variable name="colspan" as="xs:integer" select="@colspan"/>
+		<xsl:variable name="rowspan" as="xs:integer" select="@rowspan"/>
 		<xsl:element name="table:table-cell">
 			<xsl:attribute name="office:value-type" select="'string'"/>
+			<xsl:if test="$colspan &gt; 1">
+				<xsl:attribute name="table:number-columns-spanned" select="$colspan"/>
+			</xsl:if>
+			<xsl:if test="$rowspan &gt; 1">
+				<xsl:attribute name="table:number-rows-spanned" select="$rowspan"/>
+			</xsl:if>
 			<xsl:apply-templates select="$group-inline-nodes" mode="table:table-cell">
 				<xsl:with-param name="select" select="*|text()"/>
 				<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 			</xsl:apply-templates>
 		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="dtb:covered-table-cell" mode="table:table-row">
+		<xsl:element name="table:covered-table-cell"/>
 	</xsl:template>
 	
 	<xsl:template match="dtb:table/dtb:caption" mode="office:text text:section">
@@ -203,6 +228,62 @@
 			<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 		</xsl:apply-templates>
 	</xsl:template>
+	
+	<xsl:template name="dtb:insert-covered-table-cells" as="element()*">
+		<xsl:param name="table_cells" as="element()*"/>
+		<xsl:param name="covered_cells" as="element()*"/>
+		<xsl:param name="current_row" as="element()*"/>
+		<xsl:param name="row_count" as="xs:integer" select="0"/>
+		<xsl:variable name="cell_count" select="count($current_row)"/>
+		<xsl:choose>
+			<xsl:when test="$covered_cells[@row=($row_count+1) and @col=($cell_count+1)]">
+				<xsl:call-template name="dtb:insert-covered-table-cells">
+					<xsl:with-param name="table_cells" select="$table_cells"/>
+					<xsl:with-param name="current_row" select="($current_row, $covered_cells[@row=($row_count+1) and @col=($cell_count+1)])"/>
+					<xsl:with-param name="row_count" select="$row_count"/>
+					<xsl:with-param name="covered_cells" select="$covered_cells[not(@row=($row_count+1) and @col=($cell_count+1))]"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:when test="$table_cells[1][count(parent::*/preceding-sibling::dtb:tr)=$row_count]">
+				<xsl:variable name="new_covered_cells" as="element()*">
+					<xsl:variable name="colspan" as="xs:integer" select="$table_cells[1]/@colspan"/>
+					<xsl:variable name="rowspan" as="xs:integer" select="$table_cells[1]/@rowspan"/>
+					<xsl:if test="$colspan + $rowspan &gt; 2">
+						<xsl:sequence select="for $i in 1 to $rowspan return
+						                      for $j in 1 to $colspan return
+						                        if (not($i=1 and $j=1)) then dtb:covered-table-cell($row_count + $i, $cell_count + $j) else ()"/>
+					</xsl:if>
+				</xsl:variable>
+				<xsl:call-template name="dtb:insert-covered-table-cells">
+					<xsl:with-param name="table_cells" select="$table_cells[position() &gt; 1]"/>
+					<xsl:with-param name="current_row" select="($current_row, $table_cells[1])"/>
+					<xsl:with-param name="row_count" select="$row_count"/>
+					<xsl:with-param name="covered_cells" select="($covered_cells, $new_covered_cells)"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:if test="exists($current_row)">
+					<xsl:element name="dtb:tr">
+						<xsl:sequence select="$current_row"/>
+					</xsl:element>
+					<xsl:if test="exists($table_cells)">
+						<xsl:call-template name="dtb:insert-covered-table-cells">
+							<xsl:with-param name="table_cells" select="$table_cells"/>
+							<xsl:with-param name="current_row" select="()"/>
+							<xsl:with-param name="row_count" select="$row_count + 1"/>
+							<xsl:with-param name="covered_cells" select="$covered_cells"/>
+						</xsl:call-template>
+					</xsl:if>
+				</xsl:if>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:function name="dtb:covered-table-cell">
+		<xsl:param name="row"/>
+		<xsl:param name="col"/>
+		<dtb:covered-table-cell row="{$row}" col="{$col}"/>
+	</xsl:function>
 	
 	<!-- ===== -->
 	<!-- NOTES -->
