@@ -32,6 +32,82 @@
 	<!-- SIDEBAR -->
 	<!-- ======= -->
 	
+	<!-- ===== -->
+	<!-- NOTES -->
+	<!-- ===== -->
+	
+	<xsl:template match="dtb:noteref" mode="text:p text:h text:span">
+		<xsl:variable name="id" select="translate(@idref,'#','')"/>
+		<xsl:variable name="asterisk" as="text()?">
+			<xsl:if test="not(starts-with(normalize-space(string(.)), '*'))">
+				<xsl:text>*</xsl:text>
+			</xsl:if>
+		</xsl:variable>
+		<xsl:call-template name="text:span">
+			<xsl:with-param name="lang" select="dtb:lang(.)" tunnel="yes"/>
+			<xsl:with-param name="text_style" select="dtb:style-name(.)" tunnel="yes"/>
+			<xsl:with-param name="apply-templates" select="($asterisk, *|text())"/>
+		</xsl:call-template>
+		<xsl:text> </xsl:text>
+		<xsl:apply-templates select="dtb:find-note($id)" mode="#current">
+			<xsl:with-param name="skip_notes" select="false()" tunnel="yes"/>
+		</xsl:apply-templates>
+	</xsl:template>
+	
+	<xsl:template match="dtb:annoref" mode="text:p text:h text:span">
+		<xsl:variable name="id" select="translate(@idref,'#','')"/>
+		<xsl:variable name="asterisk" as="text()">
+			<xsl:text>*</xsl:text>
+		</xsl:variable>
+		<xsl:call-template name="text:span">
+			<xsl:with-param name="lang" select="dtb:lang(.)" tunnel="yes"/>
+			<xsl:with-param name="text_style" select="dtb:style-name(.)" tunnel="yes"/>
+			<xsl:with-param name="apply-templates" select="(*|text(), $asterisk)"/>
+		</xsl:call-template>
+		<xsl:text> </xsl:text>
+		<xsl:apply-templates select="dtb:find-annotation($id)" mode="#current">
+			<xsl:with-param name="skip_notes" select="false()" tunnel="yes"/>
+		</xsl:apply-templates>
+	</xsl:template>
+	
+	<xsl:template match="dtb:note|dtb:annotation" mode="text:p text:h text:span">
+		<xsl:param name="skip_notes" as="xs:boolean" select="true()" tunnel="yes"/>
+		<xsl:choose>
+			<xsl:when test="not($skip_notes)">
+				<xsl:variable name="open_bracket" as="text()">
+					<xsl:text>(</xsl:text>
+				</xsl:variable>
+				<xsl:variable name="asterisk" as="text()?">
+					<xsl:if test="not(starts-with(normalize-space(string(.)), '*'))">
+						<xsl:text>*</xsl:text>
+					</xsl:if>
+				</xsl:variable>
+				<xsl:variable name="close_bracket" as="text()">
+					<xsl:text>)</xsl:text>
+				</xsl:variable>
+				<xsl:call-template name="text:span">
+					<xsl:with-param name="lang" select="dtb:lang(.)" tunnel="yes"/>
+					<xsl:with-param name="text_style" select="dtb:style-name(.)" tunnel="yes"/>
+					<xsl:with-param name="skip_notes" select="true()" tunnel="yes"/>
+					<xsl:with-param name="apply-templates" select="($open_bracket, $asterisk, *|text(), $close_bracket)"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:next-match/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	
+	<xsl:template match="dtb:annotation/dtb:p" as="xs:boolean" mode="is-block-element">
+		<xsl:sequence select="false()"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:annotation/dtb:p" mode="text:p text:h text:span">
+		<xsl:apply-templates mode="#current"/>
+	</xsl:template>
+	
+	
 	<!-- ============== -->
 	<!-- PAGE NUMBERING -->
 	<!-- ============== -->
