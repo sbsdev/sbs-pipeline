@@ -469,6 +469,22 @@
 	<!-- ================= -->
 	<!-- TABLE OF CONTENTS -->
 	<!-- ================= -->
+	<xsl:template match="math:math" mode="text:p text:h text:span">
+		<xsl:variable name="asciimath" select="string(math:semantics/math:annotation[@encoding='ASCIIMath'])"/>
+		<xsl:variable name="count" as="xs:integer" select="count(preceding::math:math) + 1"/>
+		<xsl:element name="draw:frame">
+			<xsl:attribute name="draw:name" select="concat('math:math#', $count)"/>
+			<xsl:attribute name="draw:style-name" select="dtb:style-name(.)"/>
+			<xsl:attribute name="text:anchor-type" select="'as-char'"/>
+			<xsl:attribute name="draw:z-index" select="'0'"/>
+			<xsl:sequence select="."/>
+			<xsl:if test="$asciimath!=''">
+				<xsl:element name="svg:title">
+					<xsl:sequence select="$asciimath"/>
+				</xsl:element>
+			</xsl:if>
+		</xsl:element>
+	</xsl:template>
 	
 	<!-- ============== -->
 	<!-- PAGE NUMBERING -->
@@ -618,6 +634,10 @@
 		<xsl:param name="node" as="node()"/>
 		<xsl:apply-templates select="$node" mode="is-block-element"/>
 	</xsl:function>
+	
+	<xsl:template match="dtb:*|math:*" as="xs:boolean" mode="is-block-element" priority="11">
+		<xsl:sequence select="false()"/>
+	</xsl:template>
 	
 	<xsl:template match="dtb:p|dtb:list|dtb:imggroup|dtb:blockquote" as="xs:boolean" mode="is-block-element" priority="12">
 		<xsl:sequence select="true()"/>
