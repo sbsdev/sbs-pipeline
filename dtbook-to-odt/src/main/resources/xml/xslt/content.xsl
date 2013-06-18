@@ -345,9 +345,15 @@
 	</xsl:template>
 	
 	<xsl:template match="dtb:em|dtb:strong|dtb:sub|dtb:sup|dtb:cite|dtb:q|dtb:author|dtb:title|
-	                     dtb:acronym|dtb:abbr|dtb:kbd|dtb:linenum"
+	                     dtb:acronym|dtb:abbr|dtb:kbd|dtb:code|dtb:samp|dtb:linenum"
 	              mode="text:p text:h text:span">
 		<xsl:call-template name="text:span">
+			<xsl:with-param name="text_style" select="dtb:style-name(.)" tunnel="yes"/>
+		</xsl:call-template>
+	</xsl:template>
+	
+	<xsl:template match="dtb:code|dtb:samp" mode="office:text text:section text:list-item table:table-cell text:note-body">
+		<xsl:call-template name="text:p">
 			<xsl:with-param name="text_style" select="dtb:style-name(.)" tunnel="yes"/>
 		</xsl:call-template>
 	</xsl:template>
