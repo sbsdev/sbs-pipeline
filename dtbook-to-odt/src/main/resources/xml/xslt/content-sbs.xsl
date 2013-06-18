@@ -176,6 +176,21 @@
 		<xsl:call-template name="text:empty-p"/>
 	</xsl:template>
 	
+	<!-- ====================== -->
+	<!-- INLINE ELEMENTS & TEXT -->
+	<!-- ====================== -->
+	
+	<xsl:template match="dtb:linenum" mode="text:p text:h text:span">
+		<xsl:variable name="prefix" as="text()">
+			<xsl:text>Z</xsl:text>
+		</xsl:variable>
+		<xsl:call-template name="text:span">
+			<xsl:with-param name="lang" select="dtb:lang(.)" tunnel="yes"/>
+			<xsl:with-param name="text_style" select="dtb:style-name(.)" tunnel="yes"/>
+			<xsl:with-param name="apply-templates" select="($prefix, *|text())"/>
+		</xsl:call-template>
+	</xsl:template>
+	
 	<!-- ============= -->
 	<!-- BRAILLE STUFF -->
 	<!-- ============= -->
