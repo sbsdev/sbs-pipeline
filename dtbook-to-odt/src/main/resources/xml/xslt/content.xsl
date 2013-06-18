@@ -415,12 +415,12 @@
 	<!-- IMAGES -->
 	<!-- ====== -->
 	
-	<xsl:template match="dtb:imggroup" mode="office:text text:section table:table-cell">
+	<xsl:template match="dtb:imggroup" mode="office:text text:section table:table-cell text:list-item">
 		<xsl:apply-templates select="dtb:caption" mode="#current"/>
 		<xsl:apply-templates select="*[not(self::dtb:caption)]" mode="#current"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:img" mode="office:text text:section table:table-cell">
+	<xsl:template match="dtb:img" mode="office:text text:section table:table-cell text:list-item">
 		<xsl:variable name="src" select="resolve-uri(@src, base-uri(.))"/>
 		<xsl:variable name="image_dimensions" as="xs:integer*" select="pf:image-dimensions($src)"/>
 		<xsl:variable name="image_dpi" select="96"/>
@@ -453,7 +453,7 @@
 		</xsl:call-template>
 	</xsl:template>
 	
-	<xsl:template match="dtb:imggroup/dtb:caption" mode="office:text text:section table:table-cell">
+	<xsl:template match="dtb:imggroup/dtb:caption" mode="office:text text:section table:table-cell text:list-item">
 		<xsl:param name="caption_prefix" as="node()*" tunnel="yes"/>
 		<xsl:param name="caption_suffix" as="node()*" tunnel="yes"/>
 		<xsl:apply-templates select="$group-inline-nodes" mode="#current">
