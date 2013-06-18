@@ -215,7 +215,6 @@
 					<xsl:sequence select="$id"/>
 					<xsl:text> not found.</xsl:text>
 				</xsl:message>
-				<xsl:call-template name="skip"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -396,9 +395,7 @@
 	<!-- EVERYTHING ELSE -->
 	<!-- =============== -->
 	
-	<xsl:template match="dtb:head" mode="#all">
-		<xsl:call-template name="skip"/>
-	</xsl:template>
+	<xsl:template match="dtb:head" mode="#all"/>
 	
 	<xsl:template match="*" mode="office:text text:section text:list-item table:table-cell">
 		<xsl:element name="text:p">
@@ -572,13 +569,6 @@
 	</xsl:template>
 	
 	<!-- ====================================================== -->
-	
-	<xsl:template name="skip">
-		<xsl:message>
-			<xsl:text>Skipping </xsl:text>
-			<xsl:sequence select="dtb:node-trace(.)"/>
-		</xsl:message>
-	</xsl:template>
 	
 	<xsl:template name="FIXME">
 		<xsl:message>

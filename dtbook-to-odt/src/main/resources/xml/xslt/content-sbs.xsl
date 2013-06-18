@@ -51,9 +51,7 @@
 		<xsl:apply-templates mode="#current"/>
 	</xsl:template>
 	
-	<xsl:template match="brl:running-line|brl:toc-line|brl:volume|brl:when-braille" mode="#all">
-		<xsl:call-template name="skip"/>
-	</xsl:template>
+	<xsl:template match="brl:running-line|brl:toc-line|brl:volume|brl:when-braille" mode="#all"/>
 	
 	<xsl:template match="brl:select|brl:otherwise" mode="#all">
 		<xsl:apply-templates mode="#current"/>
