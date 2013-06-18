@@ -196,13 +196,19 @@
 	<!-- ============= -->
 	
 	<xsl:template match="brl:homograph|brl:place|brl:name|brl:v-form" mode="text:p text:h">
-		<xsl:apply-templates mode="#current"/>
+		<xsl:apply-templates mode="#current">
+			<xsl:with-param name="lang" select="dtb:lang(.)" tunnel="yes"/>
+		</xsl:apply-templates>
 	</xsl:template>
 	
 	<xsl:template match="brl:running-line|brl:toc-line|brl:volume|brl:when-braille" mode="#all"/>
 	
 	<xsl:template match="brl:select|brl:otherwise" mode="#all">
-		<xsl:apply-templates mode="#current"/>
+		<xsl:apply-templates mode="#current">
+			<xsl:with-param name="lang" select="dtb:lang(.)" tunnel="yes"/>
+		</xsl:apply-templates>
+	</xsl:template>
+	
 	<!-- ========= -->
 	<!-- UTILITIES -->
 	<!-- ========= -->
