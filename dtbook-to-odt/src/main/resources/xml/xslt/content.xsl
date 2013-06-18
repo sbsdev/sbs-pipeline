@@ -283,7 +283,7 @@
 	<xsl:template match="dtb:img" mode="office:text text:section table:table-cell">
 		<xsl:variable name="src" select="resolve-uri(@src, base-uri(.))"/>
 		<xsl:variable name="image_dimensions" as="xs:integer*" select="pf:image-dimensions($src)"/>
-		<xsl:variable name="image_resolution" select="300"/>
+		<xsl:variable name="image_dpi" select="96"/>
 		<xsl:call-template name="text:p">
 			<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 			<xsl:with-param name="sequence">
@@ -292,9 +292,8 @@
 					<xsl:attribute name="draw:style-name" select="dtb:style-name(.)"/>
 					<xsl:attribute name="text:anchor-type" select="'as-char'"/>
 					<xsl:attribute name="draw:z-index" select="'0'"/>
-					<xsl:attribute name="svg:width" select="format-number($image_dimensions[1] div $image_resolution, '0.0000in')"/>
-					<xsl:attribute name="svg:height" select="format-number($image_dimensions[2] div $image_resolution, '0.0000in')"/>
-					<xsl:attribute name="svg:y" select="'0in'"/>
+					<xsl:attribute name="svg:width" select="format-number($image_dimensions[1] div $image_dpi, '0.0000in')"/>
+					<xsl:attribute name="svg:height" select="format-number($image_dimensions[2] div $image_dpi, '0.0000in')"/>
 					<xsl:element name="draw:image">
 						<xsl:attribute name="xlink:href"
 						               select="pf:relativize-uri(
