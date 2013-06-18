@@ -143,6 +143,26 @@
 	</xsl:template>
 	
 	
+	<!-- ========= -->
+	<!-- EXERCISES -->
+	<!-- ========= -->
+	
+	<xsl:template match="dtb:span[@class=('answer','answer-1','box')]" mode="text:p text:span">
+		<xsl:call-template name="text:span">
+			<xsl:with-param name="lang" select="'none'" tunnel="yes"/>
+			<xsl:with-param name="sequence">
+				<xsl:text>_..</xsl:text>
+			</xsl:with-param>
+		</xsl:call-template>
+	</xsl:template>
+	
+	<xsl:template match="dtb:span[@class=('exercisenumber','exercisepart')]" mode="text:p">
+		<xsl:next-match>
+			<xsl:with-param name="text_style" select="style:name(concat('dtb:span_', @class))" tunnel="yes"/>
+		</xsl:next-match>
+	</xsl:template>
+	
+	
 	<!-- ============== -->
 	<!-- PAGE NUMBERING -->
 	<!-- ============== -->
