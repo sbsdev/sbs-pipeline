@@ -289,50 +289,92 @@
 	<!-- NOTES -->
 	<!-- ===== -->
 	
-	<xsl:template match="dtb:noteref" mode="text:p text:h text:span">
+	<xsl:template match="dtb:noteref|dtb:annoref" mode="text:p text:h text:span">
 		<xsl:variable name="id" select="translate(@idref,'#','')"/>
-		<xsl:variable name="note" select="//dtb:note[@id=$id]"/>
+		<xsl:variable name="note" select="if (self::dtb:noteref) then dtb:find-note($id)
+		                                  else dtb:find-annotation($id)"/>
+		<xsl:if test="self::dtb:annoref">
+			<xsl:apply-templates mode="#current"/>
+		</xsl:if>
+		<xsl:element name="text:note">
+			<xsl:attribute name="text:note-class" select="($note/@class, 'footnote')[.=('footnote','endnote')][1]"/>
+			<xsl:attribute name="text:id" select="$note/@id"/>
+			<!-- LO takes care of updating this -->
+			<xsl:element name="text:note-citation"></xsl:element>
+			<xsl:element name="text:note-body">
+				<xsl:apply-templates select="$note" mode="text:note-body">
+					<xsl:with-param name="skip_notes" select="false()" tunnel="yes"/>
+				</xsl:apply-templates>
+			</xsl:element>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="dtb:note|dtb:annotation" mode="text:note-body" priority="1">
+		<xsl:param name="skip_notes" as="xs:boolean" select="true()" tunnel="yes"/>
 		<xsl:choose>
-			<xsl:when test="exists($note)">
-				<xsl:element name="text:note">
-					<xsl:attribute name="text:note-class" select="($note/@class, 'footnote')[.=('footnote','endnote')][1]"/>
-					<xsl:attribute name="text:id" select="$note/@id"/>
-					<!-- LO takes care of updating this -->
-					<xsl:element name="text:note-citation">1</xsl:element>
-					<xsl:element name="text:note-body">
-						<xsl:apply-templates select="$note" mode="text:note-body"/>
-					</xsl:element>
-				</xsl:element>
+			<xsl:when test="not($skip_notes)">
+				<xsl:apply-templates select="$group-inline-nodes" mode="#current">
+					<xsl:with-param name="select" select="*|text()"/>
+					<xsl:with-param name="paragraph_style"
+					                select="if (self::dtb:note)
+					                        then style:name(concat('dtb:note_', (@class, 'footnote')[.=('footnote','endnote')][1]))
+					                        else dtb:style-name(.)"
+					                tunnel="yes"/>
+					<xsl:with-param name="skip_notes" select="true()" tunnel="yes"/>
+				</xsl:apply-templates>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:message>
-					<xsl:text>WARNING! dtb:note with id #</xsl:text>
-					<xsl:sequence select="$id"/>
-					<xsl:text> not found.</xsl:text>
-				</xsl:message>
+				<xsl:next-match/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="dtb:note" mode="text:note-body" priority="1">
-		<xsl:variable name="note_class" select="(@class, 'footnote')[.=('footnote','endnote')][1]"/>
-		<xsl:apply-templates select="$group-inline-nodes" mode="#current">
-			<xsl:with-param name="select" select="*|text()"/>
-			<xsl:with-param name="paragraph_style" select="style:name(concat('dtb:note_', $note_class))" tunnel="yes"/>
-		</xsl:apply-templates>
-	</xsl:template>
-	
-	<xsl:template match="dtb:note" mode="#all">
+	<xsl:template match="dtb:note|dtb:annotation" mode="#all">
+		<xsl:param name="skip_notes" as="xs:boolean" select="true()" tunnel="yes"/>
 		<xsl:variable name="id" select="string(@id)"/>
-		<xsl:variable name="noterefs" select="//dtb:noteref[@idref=concat('#',$id)]"/>
-		<xsl:if test="not(exists($noterefs))">
-			<xsl:message>
-				<xsl:text>WARNING! dtb:note with id #</xsl:text>
+		<xsl:variable name="refs" select="if (self::dtb:note)
+		                                  then //dtb:noteref[@idref=concat('#',$id)]
+		                                  else //dtb:annoref[@idref=concat('#',$id)]"/>
+		<xsl:if test="not(exists($refs)) or not($skip_notes)">
+			<xsl:message terminate="yes">
+				<xsl:text>ERROR! </xsl:text>
+				<xsl:sequence select="name(.)"/>
+				<xsl:text> with id #</xsl:text>
 				<xsl:sequence select="$id"/>
 				<xsl:text> is never referenced.</xsl:text>
 			</xsl:message>
 		</xsl:if>
 	</xsl:template>
+	
+	<xsl:variable name="dtb:notes" as="element()*" select="collection()[2]//dtb:note"/>
+	
+	<xsl:function name="dtb:find-note" as="element()">
+		<xsl:param name="id" as="xs:string"/>
+		<xsl:variable name="note" select="$dtb:notes[@id=$id]"/>
+		<xsl:if test="not(exists($note))">
+			<xsl:message terminate="yes">
+				<xsl:text>ERROR! dtb:note with id #</xsl:text>
+				<xsl:sequence select="$id"/>
+				<xsl:text> could not be found.</xsl:text>
+			</xsl:message>
+		</xsl:if>
+		<xsl:sequence select="$note"/>
+	</xsl:function>
+	
+	<xsl:variable name="dtb:annotations" as="element()*" select="collection()[2]//dtb:annotation"/>
+	
+	<xsl:function name="dtb:find-annotation" as="element()">
+		<xsl:param name="id" as="xs:string"/>
+		<xsl:variable name="annotation" select="$dtb:annotations[@id=$id]"/>
+		<xsl:if test="not(exists($annotation))">
+			<xsl:message terminate="yes">
+				<xsl:text>ERROR! dtb:annotation with id #</xsl:text>
+				<xsl:sequence select="$id"/>
+				<xsl:text> could not be found.</xsl:text>
+			</xsl:message>
+		</xsl:if>
+		<xsl:sequence select="$annotation"/>
+	</xsl:function>
 	
 	<!-- ==================== -->
 	<!-- OTHER BLOCK ELEMENTS -->
