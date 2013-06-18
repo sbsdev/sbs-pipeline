@@ -32,6 +32,19 @@
 	<!-- SIDEBAR -->
 	<!-- ======= -->
 	
+	<!-- ============== -->
+	<!-- PAGE NUMBERING -->
+	<!-- ============== -->
+	
+	<xsl:template match="dtb:pagenum" mode="office:text text:section">
+		<xsl:next-match>
+			<xsl:with-param name="pagenum_prefix" tunnel="yes">
+				<dtb:span xml:lang="de">\\Seite </dtb:span>
+			</xsl:with-param>
+		</xsl:next-match>
+	</xsl:template>
+	
+	
 	<xsl:template match="dtb:sidebar" mode="office:text text:section">
 		<xsl:next-match>
 			<xsl:with-param name="sidebar_announcement" tunnel="yes">

@@ -68,7 +68,11 @@
 	<!-- HEADINGS -->
 	<!-- ======== -->
 	
-	<xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6" mode="office:text text:list-item text:section">
+	<xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6" mode="office:text text:section" priority="1">
+		<xsl:call-template name="insert-pagenum-after"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6" mode="office:text text:section text:list-item">
 		<xsl:call-template name="text:h">
 			<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 			<xsl:with-param name="text:outline-level" select="number(substring(local-name(.),2,1))"/>
@@ -79,6 +83,10 @@
 	<!-- PARAGRAPHS -->
 	<!-- ========== -->
 	
+	<xsl:template match="dtb:p[.//dtb:pagenum]" mode="office:text text:section" priority="1">
+		<xsl:call-template name="insert-pagenum-after"/>
+	</xsl:template>
+		
 	<xsl:template match="dtb:p" mode="office:text text:section text:list-item table:table-cell text:note-body">
 		<xsl:param name="paragraph_style" as="xs:string?" tunnel="yes"/>
 		<xsl:call-template name="text:p">
@@ -89,6 +97,10 @@
 	<!-- ===== -->
 	<!-- LISTS -->
 	<!-- ===== -->
+	
+	<xsl:template match="dtb:list" mode="office:text text:section" priority="1">
+		<xsl:call-template name="insert-pagenum-after"/>
+	</xsl:template>
 	
 	<xsl:template match="dtb:list" mode="office:text text:section table:table-cell text:list-item">
 		<xsl:element name="text:list">
@@ -141,6 +153,10 @@
 	<!-- ====== -->
 	<!-- TABLES -->
 	<!-- ====== -->
+	
+	<xsl:template match="dtb:table" mode="office:text text:section" priority="1">
+		<xsl:call-template name="insert-pagenum-after"/>
+	</xsl:template>
 	
 	<xsl:template match="dtb:table" mode="office:text text:section">
 		<xsl:apply-templates select="dtb:caption" mode="#current"/>
@@ -335,7 +351,32 @@
 	<!-- PAGE NUMBERING -->
 	<!-- ============== -->
 	
+	<xsl:template match="dtb:pagenum" mode="office:text text:section" priority="1">
+		<xsl:param name="pagenum_done" as="xs:boolean" select="false()" tunnel="yes"/>
+		<xsl:param name="pagenum_prefix" as="node()*" tunnel="yes"/>
+		<xsl:if test="not($pagenum_done)">
+			<xsl:call-template name="text:p">
+				<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
+				<xsl:with-param name="apply-templates" select="($pagenum_prefix, *|text())"/>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:template match="dtb:pagenum" mode="#all">
+		<xsl:param name="pagenum_done" as="xs:boolean" select="false()" tunnel="yes"/>
+		<xsl:if test="not($pagenum_done)">
+			<xsl:call-template name="TERMINATE"/>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="insert-pagenum-after">
+		<xsl:param name="pagenum_done" as="xs:boolean" select="false()" tunnel="yes"/>
+		<xsl:next-match>
+			<xsl:with-param name="pagenum_done" select="true()" tunnel="yes"/>
+		</xsl:next-match>
+		<xsl:if test="not($pagenum_done)">
+			<xsl:apply-templates mode="#current" select=".//dtb:pagenum"/>
+		</xsl:if>
 	</xsl:template>
 	
 	<!-- ====================== -->
