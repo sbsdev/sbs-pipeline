@@ -340,12 +340,13 @@
 	<!-- INLINE ELEMENTS & TEXT -->
 	<!-- ====================== -->
 	
-	<xsl:template match="dtb:span|dtb:sent|dtb:abbr|dtb:acronym|dtb:cite|dtb:author|dtb:title"
-	              mode="text:p text:h text:span">
+	<xsl:template match="dtb:span|dtb:sent" mode="text:p text:h text:span">
 		<xsl:call-template name="text:span"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:em|dtb:strong|dtb:sub|dtb:sup" mode="text:p text:h text:span">
+	<xsl:template match="dtb:em|dtb:strong|dtb:sub|dtb:sup|dtb:cite|dtb:q|dtb:author|dtb:title|
+	                     dtb:acronym|dtb:abbr|dtb:kbd|dtb:linenum"
+	              mode="text:p text:h text:span">
 		<xsl:call-template name="text:span">
 			<xsl:with-param name="text_style" select="dtb:style-name(.)" tunnel="yes"/>
 		</xsl:call-template>
