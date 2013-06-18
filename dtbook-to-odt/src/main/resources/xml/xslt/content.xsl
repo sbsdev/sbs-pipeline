@@ -257,7 +257,8 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
-	<xsl:template match="dtb:doctitle|dtb:docauthor" mode="office:text text:section">
+	<xsl:template match="dtb:doctitle|dtb:docauthor|dtb:byline|dtb:bridgehead|dtb:hd|dtb:covertitle"
+	              mode="office:text text:section">
 		<xsl:call-template name="text:p">
 			<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 		</xsl:call-template>
