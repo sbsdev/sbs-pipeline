@@ -56,53 +56,72 @@
     <px:tempdir name="temp-dir">
         <p:with-option name="href" select="$output-dir"/>
     </px:tempdir>
-    <p:sink/>
-    
-    <!-- =========== -->
-    <!-- LOAD DTBOOK -->
-    <!-- =========== -->
-    
-    <px:dtbook-load name="dtbook">
-        <p:input port="source">
-            <p:pipe step="dtbook-to-odt" port="source"/>
-        </p:input>
-    </px:dtbook-load>
-    
-    <!-- ===================== -->
-    <!-- CONVERT DTBOOK TO ODT -->
-    <!-- ===================== -->
-    
-    <sbs:dtbook-to-odt.convert name="odt">
-        <p:input port="fileset.in">
-            <p:pipe step="dtbook" port="fileset.out"/>
-        </p:input>
-        <p:input port="in-memory.in">
-            <p:pipe step="dtbook" port="in-memory.out"/>
-        </p:input>
-        <p:with-option name="temp-dir" select="string(/c:result)">
+    <p:group>
+        
+        <p:variable name="temp-dir" select="string(/c:result)">
             <p:pipe step="temp-dir" port="result"/>
-        </p:with-option>
-        <p:with-option name="template" select="if ($template!='') then $template else resolve-uri('../../templates/default.ott')">
-            <p:inline>
-                <irrelevant/>
-            </p:inline>
-        </p:with-option>
-    </sbs:dtbook-to-odt.convert>
-    
-    <!-- ========= -->
-    <!-- STORE ODT -->
-    <!-- ========= -->
-    
-    <odt:store>
-        <p:input port="fileset.in">
-            <p:pipe step="odt" port="fileset.out"/>
-        </p:input>
-        <p:input port="in-memory.in">
-            <p:pipe step="odt" port="in-memory.out"/>
-        </p:input>
-        <p:with-option name="href" select="concat($output-dir, '/', replace(p:base-uri(/),'^.*/([^/]*)\.[^/\.]*$','$1'), '.odt')">
-            <p:pipe step="dtbook-to-odt" port="source"/>
-        </p:with-option>
-    </odt:store>
+        </p:variable>
+        
+        <!-- =========== -->
+        <!-- LOAD DTBOOK -->
+        <!-- =========== -->
+        
+        <px:dtbook-load name="dtbook">
+            <p:input port="source">
+                <p:pipe step="dtbook-to-odt" port="source"/>
+            </p:input>
+        </px:dtbook-load>
+        
+        <!-- ===================== -->
+        <!-- CONVERT DTBOOK TO ODT -->
+        <!-- ===================== -->
+        
+        <sbs:dtbook-to-odt.convert name="odt">
+            <p:input port="fileset.in">
+                <p:pipe step="dtbook" port="fileset.out"/>
+            </p:input>
+            <p:input port="in-memory.in">
+                <p:pipe step="dtbook" port="in-memory.out"/>
+            </p:input>
+            <p:with-option name="temp-dir" select="$temp-dir">
+                <p:pipe step="temp-dir" port="result"/>
+            </p:with-option>
+            <p:with-option name="template" select="if ($template!='') then $template else resolve-uri('../../templates/default.ott')">
+                <p:inline>
+                    <irrelevant/>
+                </p:inline>
+            </p:with-option>
+        </sbs:dtbook-to-odt.convert>
+        
+        <!-- ========= -->
+        <!-- STORE ODT -->
+        <!-- ========= -->
+        
+        <odt:store name="store">
+            <p:input port="fileset.in">
+                <p:pipe step="odt" port="fileset.out"/>
+            </p:input>
+            <p:input port="in-memory.in">
+                <p:pipe step="odt" port="in-memory.out"/>
+            </p:input>
+            <p:with-option name="href" select="concat($temp-dir, '/', replace(p:base-uri(/),'^.*/([^/]*)\.[^/\.]*$','$1'), '_temp.odt')">
+                <p:pipe step="dtbook-to-odt" port="source"/>
+            </p:with-option>
+        </odt:store>
+        
+        <!-- ======= -->
+        <!-- FIX ODT -->
+        <!-- ======= -->
+        
+        <odt:save-as>
+            <p:with-option name="href" select="string(/c:result)">
+                <p:pipe step="store" port="result"/>
+            </p:with-option>
+            <p:with-option name="target" select="concat($output-dir, '/', replace(p:base-uri(/),'^.*/([^/]*)\.[^/\.]*$','$1'), '.odt')">
+                <p:pipe step="dtbook-to-odt" port="source"/>
+            </p:with-option>
+        </odt:save-as>
+        
+    </p:group>
     
 </p:declare-step>

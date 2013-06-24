@@ -15,6 +15,11 @@
     exclude-inline-prefixes="#all"
     type="sbs:dtbook-to-odt.convert" name="convert" version="1.0">
     
+    <!-- WARNING! This converter doesn't produce valid OpenDocument Text as such.
+       It relies on LibreOffice to do some fixing. Opening the ODT file in MS Word
+       directly might fail. One way of dealing with this is to add an `odt:save-as`
+       post-step, opening the ODT file in LibreOffice and saving it again as ODT.
+    -->
     <p:input port="fileset.in" primary="true"/>
     <p:input port="in-memory.in" sequence="false"/>
     
