@@ -41,8 +41,11 @@
 	
 	<xsl:template match="/office:document-meta/office:meta" mode="template">
 		<xsl:copy>
+			<xsl:apply-templates mode="template"/>
 			<xsl:call-template name="dtb:creator"/>
 			<xsl:call-template name="dtb:date"/>
+			<xsl:call-template name="dtb:title"/>
+			<xsl:call-template name="dtb:subject"/>
 			<xsl:call-template name="generator"/>
 		</xsl:copy>
 	</xsl:template>
@@ -53,22 +56,49 @@
 	
 	<xsl:template name="dtb:creator">
 		<xsl:variable name="creator" select="dtb:meta('dc:creator')"/>
-		<xsl:element name="dc:creator">
-			<xsl:sequence select="$creator"/>
-		</xsl:element>
-		<xsl:element name="meta:initial-creator">
-			<xsl:sequence select="$creator"/>
-		</xsl:element>
+		<xsl:if test="not(dc:creator)">
+			<xsl:element name="dc:creator">
+				<xsl:sequence select="$creator"/>
+			</xsl:element>
+		</xsl:if>
+		<xsl:if test="not(meta:initial-creator)">
+			<xsl:element name="meta:initial-creator">
+				<xsl:sequence select="$creator"/>
+			</xsl:element>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template name="dtb:date">
 		<xsl:variable name="date" select="dtb:meta('dc:date')"/>
-		<xsl:element name="dc:date">
-			<xsl:sequence select="$date"/>
-		</xsl:element>
-		<xsl:element name="meta:creation-date">
-			<xsl:sequence select="$date"/>
-		</xsl:element>
+		<xsl:if test="not(dc:date)">
+			<xsl:element name="dc:date">
+				<xsl:sequence select="$date"/>
+			</xsl:element>
+		</xsl:if>
+		<xsl:if test="not(meta:creation-date)">
+			<xsl:element name="meta:creation-date">
+				<xsl:sequence select="$date"/>
+			</xsl:element>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="dtb:title">
+		<xsl:variable name="title" select="dtb:meta('dc:title')"/>
+		<!--<xsl:variable name="title" select="string(collection()[2]/dtb:dtbook//dtb:doctitle[1])"/>-->
+		<xsl:if test="not(dc:title)">
+			<xsl:element name="dc:title">
+				<xsl:sequence select="$title"/>
+			</xsl:element>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="dtb:subject">
+		<xsl:variable name="subject" select="dtb:meta('dc:subject')"/>
+		<xsl:if test="not(dc:subject) and $subject!=''">
+			<xsl:element name="dc:subject">
+				<xsl:sequence select="$subject"/>
+			</xsl:element>
+		</xsl:if>
 	</xsl:template>
 	
 	<!-- ============== -->
@@ -76,9 +106,11 @@
 	<!-- ============== -->
 	
 	<xsl:template name="generator">
-		<xsl:element name="meta:generator">
-			<xsl:text>ch.sbs.pipeline.modules/dtbook-to-odt/1.0.0-SNAPSHOT</xsl:text>
-		</xsl:element>
+		<xsl:if test="not(meta:generator)">
+			<xsl:element name="meta:generator">
+				<xsl:text>ch.sbs.pipeline.modules/dtbook-to-odt/1.0.0-SNAPSHOT</xsl:text>
+			</xsl:element>
+		</xsl:if>
 	</xsl:template>
 	
 	<!-- ========= -->
