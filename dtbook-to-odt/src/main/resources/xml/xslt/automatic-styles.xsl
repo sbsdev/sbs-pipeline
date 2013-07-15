@@ -27,9 +27,10 @@
 	
 	<xsl:include href="utilities.xsl"/>
 	
-	<!-- Generate automatic-styles for paragraphs and spans with a @xml:lang attribute
-	     Other automatic-styles are taken care of by LibreOffice:
-		 * table styles are generated
+	<!-- Generate automatic-styles for:
+	     * paragraphs and spans with a @xml:lang attribute
+	     * tables
+	     Other automatic-styles are taken care of by LibreOffice or MS Word:
 		 * for paragraphs inside a list, automatic styles are generated that inherit from the specified style
 		 * for image frames, automatic styles are generated that inherit from the specified style
 		 * section styles are renamed Sect1, Sect2, etc.
@@ -65,6 +66,7 @@
 		<xsl:copy>
 			<xsl:apply-templates/>
 			<xsl:sequence select="$automatic-styles"/>
+			<xsl:call-template name="automatic-table-styles"/>
 		</xsl:copy>
 	</xsl:template>
 	
@@ -89,6 +91,22 @@
 				<xsl:next-match/>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="table:table">
+		<xsl:copy>
+			<xsl:apply-templates select="@*"/>
+			<xsl:attribute name="table:style-name" select="style:name(@table:name)"/>
+			<xsl:apply-templates select="node()"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="table:table-column">
+		<xsl:copy>
+			<xsl:apply-templates select="@*"/>
+			<xsl:attribute name="table:style-name" select="concat(style:name(parent::table:table/@table:name), '.A')"/>
+			<xsl:apply-templates select="node()"/>
+		</xsl:copy>
 	</xsl:template>
 	
 	<xsl:template name="automatic-styles" as="element()*">
@@ -125,6 +143,21 @@
 				<xsl:with-param name="existing-styles" select="($existing-styles, $style)"/>
 			</xsl:call-template>
 		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="automatic-table-styles">
+		<xsl:for-each select="//table:table">
+			<xsl:element name="style:style">
+				<xsl:attribute name="style:name" select="style:name(@table:name)"/>
+				<xsl:attribute name="style:display-name" select="@table:name"/>
+				<xsl:attribute name="style:family" select="'table'"/>
+			</xsl:element>
+			<xsl:element name="style:style">
+				<xsl:attribute name="style:name" select="concat(style:name(@table:name), '.A')"/>
+				<xsl:attribute name="style:display-name" select="concat(@table:name, '.A')"/>
+				<xsl:attribute name="style:family" select="'table-column'"/>
+			</xsl:element>
+		</xsl:for-each>
 	</xsl:template>
 	
 	<!-- ========= -->
