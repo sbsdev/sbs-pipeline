@@ -104,24 +104,10 @@
             <p:input port="in-memory.in">
                 <p:pipe step="odt" port="in-memory.out"/>
             </p:input>
-            <p:with-option name="href" select="concat($temp-dir, '/', replace(p:base-uri(/),'^.*/([^/]*)\.[^/\.]*$','$1'), '_temp.odt')">
+            <p:with-option name="href" select="concat($output-dir, '/', replace(p:base-uri(/),'^.*/([^/]*)\.[^/\.]*$','$1'), '.odt')">
                 <p:pipe step="dtbook-to-odt" port="source"/>
             </p:with-option>
         </odt:store>
-        
-        <!-- ======= -->
-        <!-- FIX ODT -->
-        <!-- ======= -->
-        
-        <odt:save-as>
-            <p:with-option name="href" select="string(/c:result)">
-                <p:pipe step="store" port="result"/>
-            </p:with-option>
-            <p:with-option name="target" select="concat($output-dir, '/', replace(p:base-uri(/),'^.*/([^/]*)\.[^/\.]*$','$1'), '.odt')">
-                <p:pipe step="dtbook-to-odt" port="source"/>
-            </p:with-option>
-        </odt:save-as>
-        
     </p:group>
     
 </p:declare-step>
