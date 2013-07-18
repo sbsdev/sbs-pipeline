@@ -421,7 +421,7 @@
 	</xsl:template>
 	
 	<xsl:template match="dtb:img" mode="office:text text:section table:table-cell text:list-item">
-		<xsl:variable name="src" select="resolve-uri(@src, base-uri(.))"/>
+		<xsl:variable name="src" select="resolve-uri(@src, base-uri(collection()[2]/dtb:dtbook))"/>
 		<xsl:variable name="image_dimensions" as="xs:integer*" select="pf:image-dimensions($src)"/>
 		<xsl:variable name="image_dpi" select="96"/>
 		<xsl:call-template name="text:p">
@@ -435,10 +435,7 @@
 					<xsl:attribute name="svg:width" select="format-number($image_dimensions[1] div $image_dpi, '0.0000in')"/>
 					<xsl:attribute name="svg:height" select="format-number($image_dimensions[2] div $image_dpi, '0.0000in')"/>
 					<xsl:element name="draw:image">
-						<xsl:attribute name="xlink:href"
-						               select="pf:relativize-uri(
-						                       collection()[3]//d:file[resolve-uri(@original-href,base-uri(.))=$src]/resolve-uri(@href,base-uri(.)),
-						                       collection()[1]/*/base-uri(.))"/>
+						<xsl:attribute name="xlink:href" select="$src"/>
 						<xsl:attribute name="xlink:type" select="'simple'"/>
 						<xsl:attribute name="xlink:show" select="'embed'"/>
 						<xsl:attribute name="xlink:actuate" select="'onLoad'"/>
@@ -477,7 +474,9 @@
 			<xsl:attribute name="draw:style-name" select="dtb:style-name(.)"/>
 			<xsl:attribute name="text:anchor-type" select="'as-char'"/>
 			<xsl:attribute name="draw:z-index" select="'0'"/>
-			<xsl:sequence select="."/>
+			<xsl:element name="draw:object">
+				<xsl:sequence select="."/>
+			</xsl:element>
 			<xsl:if test="$asciimath!=''">
 				<xsl:element name="svg:title">
 					<xsl:sequence select="$asciimath"/>
