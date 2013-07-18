@@ -544,6 +544,16 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:template match="dtb:pagenum" mode="text:p text:h text:span" priority="1">
+		<xsl:param name="pagenum_done" as="xs:boolean" select="false()" tunnel="yes"/>
+		<xsl:if test="not($pagenum_done)">
+			<xsl:element name="text:span">
+				<xsl:attribute name="text:style-name" select="'ERROR'"/>
+				<xsl:call-template name="FIXME"/>
+			</xsl:element>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:template match="dtb:pagenum" mode="#all">
 		<xsl:param name="pagenum_done" as="xs:boolean" select="false()" tunnel="yes"/>
 		<xsl:if test="not($pagenum_done)">
