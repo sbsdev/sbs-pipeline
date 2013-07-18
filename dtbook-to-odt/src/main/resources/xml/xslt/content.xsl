@@ -30,6 +30,12 @@
 	<xsl:include href="http://www.daisy.org/pipeline/modules/file-utils/xslt/uri-functions.xsl"/>
 	<xsl:include href="utilities.xsl"/>
 	
+	<!-- ======= -->
+	<!-- OPTIONS -->
+	<!-- ======= -->
+	
+	<xsl:param name="image_dpi" select="300"/>
+	
 	<!-- ======== -->
 	<!-- TEMPLATE -->
 	<!-- ======== -->
@@ -423,7 +429,6 @@
 	<xsl:template match="dtb:img" mode="office:text text:section table:table-cell text:list-item">
 		<xsl:variable name="src" select="resolve-uri(@src, base-uri(collection()[2]/dtb:dtbook))"/>
 		<xsl:variable name="image_dimensions" as="xs:integer*" select="pf:image-dimensions($src)"/>
-		<xsl:variable name="image_dpi" select="96"/>
 		<xsl:call-template name="text:p">
 			<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 			<xsl:with-param name="sequence">
