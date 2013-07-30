@@ -66,14 +66,16 @@
 		</xsl:if>
 	</xsl:template>
 	
+	<xsl:variable name="all-styles" select="(collection()[1]//office:styles |
+	                                         collection()[1]//office:automatic-styles |
+	                                         collection()[2]//office:automatic-styles)"/>
+	
 	<!-- ================ -->
 	<!-- PARAGRAPH STYLES -->
 	<!-- ================ -->
 	
-	<!-- TODO: what about automatic-styles already present, both in styles.xml and content.xml? -->
-	
 	<xsl:template name="missing-paragraph-styles">
-		<xsl:variable name="paragraph_styles" select="style:style[@style:family='paragraph']/@style:name"/>
+		<xsl:variable name="paragraph_styles" select="$all-styles/style:style[@style:family='paragraph']/@style:name"/>
 		<xsl:if test="not('Standard'=$paragraph_styles)">
 			<xsl:call-template name="paragraph-style">
 				<xsl:with-param name="style:name" select="'Standard'"/>
@@ -108,13 +110,13 @@
 	<!-- =========== -->
 	
 	<xsl:template name="missing-text-styles">
-		<xsl:variable name="text_styles" select="style:style[@style:family='text']/@style:name"/>
 		<xsl:if test="not('Numbering_20_Symbols'=$text_styles)">
 			<xsl:call-template name="text-style">
 				<xsl:with-param name="style:name" select="'Numbering_20_Symbols'"/>
 			</xsl:call-template>
 		</xsl:if>
 			<xsl:if test="not(.=('Numbering_20_Symbols', $text_styles))">
+		<xsl:variable name="text_styles" select="$all-styles/style:style[@style:family='text']/@style:name"/>
 		<xsl:for-each select="distinct-values(collection()[2]//*[self::text:span or self::text:a]/@text:style-name)">
 				<xsl:call-template name="text-style">
 					<xsl:with-param name="style:name" select="."/>
@@ -137,7 +139,7 @@
 	<!-- =========== -->
 	
 	<xsl:template name="missing-list-styles">
-		<xsl:variable name="list_styles" select="text:list-style/@style:name"/>
+		<xsl:variable name="list_styles" select="$all-styles/text:list-style/@style:name"/>
 		<xsl:for-each select="distinct-values(collection()[2]//text:list/@text:style-name)">
 			<xsl:if test="not(.=$list_styles)">
 				<xsl:element name="text:list-style">
@@ -183,7 +185,7 @@
 	<!-- ============== -->
 	
 	<xsl:template name="missing-graphic-styles">
-		<xsl:variable name="graphic_styles" select="style:style[@style:family='graphic']/@style:name"/>
+		<xsl:variable name="graphic_styles" select="$all-styles/style:style[@style:family='graphic']/@style:name"/>
 		<xsl:for-each select="distinct-values(collection()[2]//draw:frame/@draw:style-name)">
 			<xsl:if test="not(.=$graphic_styles)">
 				<xsl:call-template name="graphic-style">
@@ -211,7 +213,7 @@
 	<!-- ============ -->
 	
 	<xsl:template name="error-styles">
-		<xsl:if test="not(style:style[@style:family='paragraph' and @style:name='ERROR']) and collection()[2]//text:p[@text:style-name='ERROR']">
+		<xsl:if test="not($all-styles/style:style[@style:family='paragraph' and @style:name='ERROR']) and collection()[2]//text:p[@text:style-name='ERROR']">
 			<xsl:element name="style:style">
 				<xsl:attribute name="style:name" select="'ERROR'"/>
 				<xsl:attribute name="style:display-name" select="'ERROR'"/>
@@ -230,7 +232,7 @@
 				</xsl:element>
 			</xsl:element>
 		</xsl:if>
-		<xsl:if test="not(style:style[@style:family='text' and @style:name='ERROR']) and collection()[2]//text:span[@text:style-name='ERROR']">
+		<xsl:if test="not($all-styles/style:style[@style:family='text' and @style:name='ERROR']) and collection()[2]//text:span[@text:style-name='ERROR']">
 			<xsl:element name="style:style">
 				<xsl:attribute name="style:name" select="'ERROR'"/>
 				<xsl:attribute name="style:display-name" select="'ERROR'"/>
