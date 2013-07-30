@@ -25,6 +25,7 @@
 		xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
 		xmlns:pf="http://www.daisy.org/ns/pipeline/functions"
 		xmlns:d="http://www.daisy.org/ns/pipeline/data"
+		xmlns:f="functions"
 		exclude-result-prefixes="#all">
 	
 	<xsl:include href="http://www.daisy.org/pipeline/modules/file-utils/xslt/uri-functions.xsl"/>
@@ -354,7 +355,7 @@
 		</xsl:element>
 	</xsl:template>
 	
-	<xsl:template match="dtb:note|dtb:annotation" mode="text:note-body" priority="1">
+	<xsl:template match="dtb:note|dtb:annotation" mode="text:note-body">
 		<xsl:param name="skip_notes" as="xs:boolean" select="true()" tunnel="yes"/>
 		<xsl:choose>
 			<xsl:when test="not($skip_notes)">
@@ -374,7 +375,7 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="dtb:note|dtb:annotation" mode="#all">
+	<xsl:template match="dtb:note|dtb:annotation" mode="#all" priority="-1.2">
 		<xsl:param name="skip_notes" as="xs:boolean" select="true()" tunnel="yes"/>
 		<xsl:variable name="id" select="string(@id)"/>
 		<xsl:variable name="refs" select="if (self::dtb:note)
@@ -533,7 +534,7 @@
 	<!-- PAGE NUMBERING -->
 	<!-- ============== -->
 	
-	<xsl:template match="dtb:pagenum" mode="office:text text:section" priority="1">
+	<xsl:template match="dtb:pagenum" mode="office:text text:section">
 		<xsl:param name="pagenum_done" as="xs:boolean" select="false()" tunnel="yes"/>
 		<xsl:param name="pagenum_prefix" as="node()*" tunnel="yes"/>
 		<xsl:if test="not($pagenum_done)">
@@ -544,7 +545,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="dtb:pagenum" mode="text:p text:h text:span" priority="1">
+	<xsl:template match="dtb:pagenum" mode="text:p text:h text:span">
 		<xsl:param name="pagenum_done" as="xs:boolean" select="false()" tunnel="yes"/>
 		<xsl:if test="not($pagenum_done)">
 			<xsl:element name="text:span">
@@ -554,7 +555,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="dtb:pagenum" mode="#all">
+	<xsl:template match="dtb:pagenum" mode="#all" priority="-1.2">
 		<xsl:param name="pagenum_done" as="xs:boolean" select="false()" tunnel="yes"/>
 		<xsl:if test="not($pagenum_done)">
 			<xsl:call-template name="TERMINATE"/>
@@ -608,7 +609,7 @@
 		<xsl:sequence select="."/>
 	</xsl:template>
 	
-	<xsl:template match="text()" mode="#all" priority="-1">
+	<xsl:template match="text()" mode="#all" priority="-1.4">
 		<xsl:choose>
 			<xsl:when test="normalize-space(.)=''">
 				<xsl:sequence select="."/>
@@ -626,9 +627,13 @@
 	
 	<xsl:variable name="document_lang" select="string(/dtb:dtbook/@xml:lang)"/>
 	
-	<xsl:template match="dtb:*" mode="#all" priority="10">
+	<xsl:template match="dtb:*"
+	              mode="office:text
+	                    text:h text:list text:list-item text:note-body text:p text:section text:span
+	                    table:table table:table-cell table:table-header-rows table:table-row"
+	              priority="1.1">
 		<xsl:next-match>
-			<xsl:with-param name="lang" select="dtb:lang(.)" tunnel="yes"/>
+			<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
 		</xsl:next-match>
 	</xsl:template>
 	
@@ -638,25 +643,25 @@
 	
 	<xsl:template match="dtb:head" mode="#all"/>
 	
-	<xsl:template match="*" mode="office:text text:section text:list-item table:table-cell">
+	<xsl:template match="*" mode="office:text text:section text:list-item table:table-cell text:note-body" priority="-1.3">
 		<xsl:element name="text:p">
 			<xsl:attribute name="text:style-name" select="'ERROR'"/>
 			<xsl:call-template name="FIXME"/>
 		</xsl:element>
 	</xsl:template>
 	
-	<xsl:template match="*" mode="text:p text:h text:span text:a">
+	<xsl:template match="*" mode="text:p text:h text:span text:a" priority="-1.3">
 		<xsl:element name="text:span">
 			<xsl:attribute name="text:style-name" select="'ERROR'"/>
 			<xsl:call-template name="FIXME"/>
 		</xsl:element>
 	</xsl:template>
 	
-	<xsl:template match="*" mode="#all" priority="-1">
+	<xsl:template match="*" mode="#all" priority="-1.4">
 		<xsl:call-template name="TERMINATE"/>
 	</xsl:template>
 	
-	<xsl:template match="@*" mode="#all" priority="-1"/>
+	<xsl:template match="@*" mode="#all" priority="-1.4"/>
 	
 	<!-- ========= -->
 	<!-- UTILITIES -->
@@ -668,7 +673,7 @@
 	
 	<xsl:template match="group-inline-nodes" mode="#all">
 		<xsl:param name="select" as="node()*"/>
-		<xsl:for-each-group select="$select" group-adjacent="boolean(descendant-or-self::*[dtb:is-block-element(.)])">
+		<xsl:for-each-group select="$select" group-adjacent="boolean(descendant-or-self::*[f:is-block-element(.)])">
 			<xsl:choose>
 				<xsl:when test="current-grouping-key()">
 					<xsl:apply-templates select="current-group()" mode="#current"/>
@@ -683,16 +688,16 @@
 		</xsl:for-each-group>
 	</xsl:template>
 	
-	<xsl:function name="dtb:is-block-element" as="xs:boolean">
+	<xsl:function name="f:is-block-element" as="xs:boolean">
 		<xsl:param name="node" as="node()"/>
 		<xsl:apply-templates select="$node" mode="is-block-element"/>
 	</xsl:function>
 	
-	<xsl:template match="dtb:*|math:*" as="xs:boolean" mode="is-block-element" priority="11">
+	<xsl:template match="dtb:*|math:*" as="xs:boolean" mode="is-block-element" priority="-1.1">
 		<xsl:sequence select="false()"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:p|dtb:list|dtb:imggroup|dtb:blockquote" as="xs:boolean" mode="is-block-element" priority="12">
+	<xsl:template match="dtb:p|dtb:list|dtb:table|dtb:imggroup|dtb:blockquote" as="xs:boolean" mode="is-block-element">
 		<xsl:sequence select="true()"/>
 	</xsl:template>
 	
@@ -859,18 +864,18 @@
 	<xsl:template name="FIXME">
 		<xsl:message>
 			<xsl:text>FIXME!! </xsl:text>
-			<xsl:sequence select="dtb:node-trace(.)"/>
+			<xsl:sequence select="f:node-trace(.)"/>
 		</xsl:message>
 		<xsl:call-template name="office:annotation">
-			<xsl:with-param name="text" select="dtb:node-trace(.)"/>
+			<xsl:with-param name="text" select="f:node-trace(.)"/>
 		</xsl:call-template>
 		<xsl:text>FIXME!!</xsl:text>
 	</xsl:template>
 	
 	<xsl:template name="TERMINATE">
 		<xsl:message terminate="yes">
-			<xsl:text>FIXME!! </xsl:text>
-			<xsl:sequence select="dtb:node-trace(.)"/>
+			<xsl:text>ERROR!! </xsl:text>
+			<xsl:sequence select="f:node-trace(.)"/>
 		</xsl:message>
 	</xsl:template>
 	

@@ -22,6 +22,7 @@
 		xmlns:config="urn:oasis:names:tc:opendocument:xmlns:config:1.0"
 		xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
 		xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
+		xmlns:f="functions"
 		exclude-result-prefixes="#all">
 	
 	<xsl:function name="style:name">
@@ -71,7 +72,7 @@
 		<xsl:sequence select="if ($country!='') then $country else 'none'"/>
 	</xsl:function>
 	
-	<xsl:function name="dtb:lang" as="xs:string">
+	<xsl:function name="f:lang" as="xs:string">
 		<xsl:param name="node" as="node()"/>
 		<xsl:sequence select="string($node/ancestor-or-self::*[@xml:lang][1]/@xml:lang)"/>
 	</xsl:function>
@@ -81,7 +82,7 @@
 		<xsl:sequence select="style:name(concat('dtb:', local-name($element)))"/>
 	</xsl:function>
 	
-	<xsl:function name="dtb:node-trace">
+	<xsl:function name="f:node-trace">
 		<xsl:param name="node" as="node()"/>
 		<xsl:sequence select="string-join(('',
 		                        $node/ancestor::*/name(),

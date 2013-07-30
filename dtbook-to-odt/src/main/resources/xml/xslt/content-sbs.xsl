@@ -24,6 +24,7 @@
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
 		xmlns:brl="http://www.daisy.org/z3986/2009/braille/"
+		xmlns:f="functions"
 		exclude-result-prefixes="#all">
 	
 	<xsl:import href="content.xsl"/>
@@ -65,8 +66,8 @@
 			</xsl:if>
 		</xsl:variable>
 		<xsl:call-template name="text:span">
-			<xsl:with-param name="lang" select="dtb:lang(.)" tunnel="yes"/>
 			<xsl:with-param name="text_style" select="dtb:style-name(.)" tunnel="yes"/>
+			<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
 			<xsl:with-param name="apply-templates" select="($asterisk, *|text())"/>
 		</xsl:call-template>
 		<xsl:text> </xsl:text>
@@ -81,8 +82,8 @@
 			<xsl:text>*</xsl:text>
 		</xsl:variable>
 		<xsl:call-template name="text:span">
-			<xsl:with-param name="lang" select="dtb:lang(.)" tunnel="yes"/>
 			<xsl:with-param name="text_style" select="dtb:style-name(.)" tunnel="yes"/>
+			<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
 			<xsl:with-param name="apply-templates" select="(*|text(), $asterisk)"/>
 		</xsl:call-template>
 		<xsl:text> </xsl:text>
@@ -107,8 +108,8 @@
 					<xsl:text>)</xsl:text>
 				</xsl:variable>
 				<xsl:call-template name="text:span">
-					<xsl:with-param name="lang" select="dtb:lang(.)" tunnel="yes"/>
 					<xsl:with-param name="text_style" select="dtb:style-name(.)" tunnel="yes"/>
+					<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
 					<xsl:with-param name="skip_notes" select="true()" tunnel="yes"/>
 					<xsl:with-param name="apply-templates" select="($open_bracket, $asterisk, *|text(), $close_bracket)"/>
 				</xsl:call-template>
@@ -205,8 +206,8 @@
 			<xsl:text>Z</xsl:text>
 		</xsl:variable>
 		<xsl:call-template name="text:span">
-			<xsl:with-param name="lang" select="dtb:lang(.)" tunnel="yes"/>
 			<xsl:with-param name="text_style" select="dtb:style-name(.)" tunnel="yes"/>
+			<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
 			<xsl:with-param name="apply-templates" select="($prefix, *|text())"/>
 		</xsl:call-template>
 	</xsl:template>
@@ -217,7 +218,7 @@
 	
 	<xsl:template match="brl:homograph|brl:place|brl:name|brl:v-form" mode="text:p text:h">
 		<xsl:apply-templates mode="#current">
-			<xsl:with-param name="lang" select="dtb:lang(.)" tunnel="yes"/>
+			<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
 		</xsl:apply-templates>
 	</xsl:template>
 	
@@ -225,7 +226,7 @@
 	
 	<xsl:template match="brl:select|brl:otherwise" mode="#all">
 		<xsl:apply-templates mode="#current">
-			<xsl:with-param name="lang" select="dtb:lang(.)" tunnel="yes"/>
+			<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
 		</xsl:apply-templates>
 	</xsl:template>
 	
