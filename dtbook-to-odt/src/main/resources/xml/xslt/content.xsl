@@ -149,10 +149,9 @@
 	</xsl:template>
 	
 	<xsl:template match="dtb:list" mode="office:text text:section table:table-cell text:list-item">
-		<xsl:element name="text:list">
-			<xsl:attribute name="text:style-name" select="style:name(concat('dtb:list_', (@type, 'ul')[1]))"/>
-			<xsl:apply-templates mode="text:list"/>
-		</xsl:element>
+		<xsl:call-template name="text:list">
+			<xsl:with-param name="list_style" select="style:name(concat('dtb:list_', (@type, 'ul')[1]))" tunnel="yes"/>
+		</xsl:call-template>
 	</xsl:template>
 	
 	<xsl:template match="dtb:li" mode="text:list">
@@ -169,10 +168,9 @@
 	</xsl:template>
 	
 	<xsl:template match="dtb:dl" mode="office:text text:section">
-		<xsl:element name="text:list">
-			<xsl:attribute name="text:style-name" select="dtb:style-name(.)"/>
-			<xsl:apply-templates mode="text:list"/>
-		</xsl:element>
+		<xsl:call-template name="text:list">
+			<xsl:with-param name="list_style" select="dtb:style-name(.)" tunnel="yes"/>
+		</xsl:call-template>
 	</xsl:template>
 	
 	<xsl:template match="dtb:dt[following-sibling::*[1]/self::dtb:dd]" mode="text:list"/>
@@ -839,6 +837,14 @@
 					<xsl:apply-templates select="$apply-templates" mode="text:section"/>
 				</xsl:otherwise>
 			</xsl:choose>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template name="text:list">
+		<xsl:param name="list_style" as="xs:string?" tunnel="yes"/>
+		<xsl:element name="text:list">
+			<xsl:attribute name="text:style-name" select="($list_style, style:name('List1'))[1]"/>
+			<xsl:apply-templates mode="text:list"/>
 		</xsl:element>
 	</xsl:template>
 	
