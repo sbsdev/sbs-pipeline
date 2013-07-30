@@ -742,18 +742,16 @@
 		<xsl:param name="text_style" as="xs:string?" tunnel="yes"/>
 		<xsl:param name="xlink:href" as="xs:string"/>
 		<xsl:element name="text:a">
-			<xsl:if test="$lang!=($text_lang,$paragraph_lang)[1]">
-				<xsl:attribute name="xml:lang" select="$lang"/>
-			</xsl:if>
-			<xsl:if test="$text_style">
-				<xsl:attribute name="text:style-name" select="$text_style"/>
-			</xsl:if>
 			<xsl:attribute name="xlink:href" select="$xlink:href"/>
 			<xsl:attribute name="xlink:type" select="'simple'"/>
-			<xsl:apply-templates mode="text:a">
-				<xsl:with-param name="text_lang" select="$lang" tunnel="yes"/>
-				<xsl:with-param name="text_style" select="()" tunnel="yes"/>
-			</xsl:apply-templates>
+			<xsl:choose>
+				<xsl:when test="$lang!=($text_lang,$paragraph_lang)[1] or $text_style">
+					<xsl:call-template name="text:span"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates mode="text:a"/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:element>
 	</xsl:template>
 	
