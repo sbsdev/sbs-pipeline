@@ -66,8 +66,8 @@
 			</xsl:if>
 		</xsl:variable>
 		<xsl:call-template name="text:span">
-			<xsl:with-param name="text_style" select="dtb:style-name(.)" tunnel="yes"/>
 			<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
+			<xsl:with-param name="text_style" select="f:text-style(.)" tunnel="yes"/>
 			<xsl:with-param name="apply-templates" select="($asterisk, *|text())"/>
 		</xsl:call-template>
 		<xsl:text> </xsl:text>
@@ -82,8 +82,8 @@
 			<xsl:text>*</xsl:text>
 		</xsl:variable>
 		<xsl:call-template name="text:span">
-			<xsl:with-param name="text_style" select="dtb:style-name(.)" tunnel="yes"/>
 			<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
+			<xsl:with-param name="text_style" select="f:text-style(.)" tunnel="yes"/>
 			<xsl:with-param name="apply-templates" select="(*|text(), $asterisk)"/>
 		</xsl:call-template>
 		<xsl:text> </xsl:text>
@@ -108,8 +108,8 @@
 					<xsl:text>)</xsl:text>
 				</xsl:variable>
 				<xsl:call-template name="text:span">
-					<xsl:with-param name="text_style" select="dtb:style-name(.)" tunnel="yes"/>
 					<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
+					<xsl:with-param name="text_style" select="f:text-style(.)" tunnel="yes"/>
 					<xsl:with-param name="skip_notes" select="true()" tunnel="yes"/>
 					<xsl:with-param name="apply-templates" select="($open_bracket, $asterisk, *|text(), $close_bracket)"/>
 				</xsl:call-template>
@@ -157,10 +157,8 @@
 		</xsl:call-template>
 	</xsl:template>
 	
-	<xsl:template match="dtb:span[@class=('exercisenumber','exercisepart')]" mode="text:p">
-		<xsl:next-match>
-			<xsl:with-param name="text_style" select="style:name(concat('dtb:span_', @class))" tunnel="yes"/>
-		</xsl:next-match>
+	<xsl:template match="dtb:span[@class=('exercisenumber','exercisepart')]" mode="text-style">
+		<xsl:sequence select="style:name(concat('dtb:span_', @class))"/>
 	</xsl:template>
 	
 	
@@ -206,8 +204,8 @@
 			<xsl:text>Z</xsl:text>
 		</xsl:variable>
 		<xsl:call-template name="text:span">
-			<xsl:with-param name="text_style" select="dtb:style-name(.)" tunnel="yes"/>
 			<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
+			<xsl:with-param name="text_style" select="f:text-style(.)" tunnel="yes"/>
 			<xsl:with-param name="apply-templates" select="($prefix, *|text())"/>
 		</xsl:call-template>
 	</xsl:template>

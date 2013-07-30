@@ -114,13 +114,16 @@
 	<!-- HEADINGS -->
 	<!-- ======== -->
 	
+	<xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6" mode="paragraph-style">
+		<xsl:sequence select="dtb:style-name(.)"/>
+	</xsl:template>
+	
 	<xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6" mode="office:text text:section" priority="1">
 		<xsl:call-template name="insert-pagenum-after"/>
 	</xsl:template>
 	
 	<xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6" mode="office:text text:section text:list-item">
 		<xsl:call-template name="text:h">
-			<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 			<xsl:with-param name="text:outline-level" select="number(substring(local-name(.),2,1))"/>
 		</xsl:call-template>
 	</xsl:template>
@@ -129,36 +132,51 @@
 	<!-- PARAGRAPHS -->
 	<!-- ========== -->
 	
+	<xsl:template match="dtb:p" mode="paragraph-style">
+		<xsl:param name="paragraph_style" as="xs:string?" tunnel="yes"/>
+		<xsl:sequence select="($paragraph_style, dtb:style-name(.))[1]"/>
+	</xsl:template>
+	
 	<xsl:template match="dtb:p[.//dtb:pagenum]" mode="office:text text:section" priority="1">
 		<xsl:call-template name="insert-pagenum-after"/>
 	</xsl:template>
 		
 	<xsl:template match="dtb:p" mode="office:text text:section text:list-item table:table-cell text:note-body">
-		<xsl:param name="paragraph_style" as="xs:string?" tunnel="yes"/>
-		<xsl:call-template name="text:p">
-			<xsl:with-param name="paragraph_style" select="($paragraph_style, dtb:style-name(.))[1]" tunnel="yes"/>
-		</xsl:call-template>
+		<xsl:call-template name="text:p"/>
 	</xsl:template>
 	
 	<!-- ===== -->
 	<!-- LISTS -->
 	<!-- ===== -->
 	
+	<xsl:template match="dtb:list" mode="list-style">
+		<xsl:sequence select="style:name(concat('dtb:list_', (@type, 'ul')[1]))"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:dl" mode="list-style">
+		<xsl:sequence select="dtb:style-name(.)"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:li|dtb:dd" mode="paragraph-style">
+		<xsl:sequence select="dtb:style-name(.)"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:dt" mode="text-style">
+		<xsl:sequence select="dtb:style-name(.)"/>
+	</xsl:template>
+	
 	<xsl:template match="dtb:list" mode="office:text text:section" priority="1">
 		<xsl:call-template name="insert-pagenum-after"/>
 	</xsl:template>
 	
 	<xsl:template match="dtb:list" mode="office:text text:section table:table-cell text:list-item">
-		<xsl:call-template name="text:list">
-			<xsl:with-param name="list_style" select="style:name(concat('dtb:list_', (@type, 'ul')[1]))" tunnel="yes"/>
-		</xsl:call-template>
+		<xsl:call-template name="text:list"/>
 	</xsl:template>
 	
 	<xsl:template match="dtb:li" mode="text:list">
 		<xsl:element name="text:list-item">
 			<xsl:apply-templates select="$group-inline-nodes" mode="text:list-item">
 				<xsl:with-param name="select" select="*|text()"/>
-				<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 			</xsl:apply-templates>
 		</xsl:element>
 	</xsl:template>
@@ -168,9 +186,7 @@
 	</xsl:template>
 	
 	<xsl:template match="dtb:dl" mode="office:text text:section">
-		<xsl:call-template name="text:list">
-			<xsl:with-param name="list_style" select="dtb:style-name(.)" tunnel="yes"/>
-		</xsl:call-template>
+		<xsl:element name="text:list"/>
 	</xsl:template>
 	
 	<xsl:template match="dtb:dt[following-sibling::*[1]/self::dtb:dd]" mode="text:list"/>
@@ -182,21 +198,22 @@
 		</xsl:variable>
 		<xsl:element name="text:list-item">
 			<xsl:call-template name="text:p">
-				<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 				<xsl:with-param name="apply-templates" select="($dt, $colon, *|text())"/>
 			</xsl:call-template>
 		</xsl:element>
 	</xsl:template>
 	
 	<xsl:template match="dtb:dt" mode="text:p">
-		<xsl:call-template name="text:span">
-			<xsl:with-param name="text_style" select="dtb:style-name(.)" tunnel="yes"/>
-		</xsl:call-template>
+		<xsl:call-template name="text:span"/>
 	</xsl:template>
 	
 	<!-- ====== -->
 	<!-- TABLES -->
 	<!-- ====== -->
+	
+	<xsl:template match="dtb:td|dtb:th|dtb:table/dtb:caption" mode="paragraph-style">
+		<xsl:sequence select="dtb:style-name(.)"/>
+	</xsl:template>
 	
 	<xsl:template match="dtb:table" mode="office:text text:section" priority="1">
 		<xsl:call-template name="insert-pagenum-after"/>
@@ -257,7 +274,6 @@
 			</xsl:if>
 			<xsl:apply-templates select="$group-inline-nodes" mode="table:table-cell">
 				<xsl:with-param name="select" select="*|text()"/>
-				<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 			</xsl:apply-templates>
 		</xsl:element>
 	</xsl:template>
@@ -269,7 +285,6 @@
 	<xsl:template match="dtb:table/dtb:caption" mode="office:text text:section">
 		<xsl:apply-templates select="$group-inline-nodes" mode="#current">
 			<xsl:with-param name="select" select="*|text()"/>
-			<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 		</xsl:apply-templates>
 	</xsl:template>
 	
@@ -333,6 +348,14 @@
 	<!-- NOTES -->
 	<!-- ===== -->
 	
+	<xsl:template match="dtb:note" mode="paragraph-style">
+		<xsl:sequence select="style:name(concat('dtb:note_', (@class, 'footnote')[.=('footnote','endnote')][1]))"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:annotation" mode="paragraph-style">
+		<xsl:sequence select="dtb:style-name(.)"/>
+	</xsl:template>
+	
 	<xsl:template match="dtb:noteref|dtb:annoref" mode="text:p text:h text:span">
 		<xsl:variable name="id" select="translate(@idref,'#','')"/>
 		<xsl:variable name="note" select="if (self::dtb:noteref) then dtb:find-note($id)
@@ -359,11 +382,6 @@
 			<xsl:when test="not($skip_notes)">
 				<xsl:apply-templates select="$group-inline-nodes" mode="#current">
 					<xsl:with-param name="select" select="*|text()"/>
-					<xsl:with-param name="paragraph_style"
-					                select="if (self::dtb:note)
-					                        then style:name(concat('dtb:note_', (@class, 'footnote')[.=('footnote','endnote')][1]))
-					                        else dtb:style-name(.)"
-					                tunnel="yes"/>
 					<xsl:with-param name="skip_notes" select="true()" tunnel="yes"/>
 				</xsl:apply-templates>
 			</xsl:when>
@@ -424,6 +442,12 @@
 	<!-- OTHER BLOCK ELEMENTS -->
 	<!-- ==================== -->
 	
+	<xsl:template match="dtb:blockquote|dtb:epigraph|dtb:poem|
+	                     dtb:doctitle|dtb:docauthor|dtb:byline|dtb:bridgehead|dtb:hd|dtb:covertitle"
+	              mode="paragraph-style">
+		<xsl:sequence select="dtb:style-name(.)"/>
+	</xsl:template>
+	
 	<xsl:template match="dtb:sidebar" mode="office:text text:section">
 		<xsl:param name="sidebar_announcement" as="node()*" tunnel="yes"/>
 		<xsl:param name="sidebar_deannouncement" as="node()*" tunnel="yes"/>
@@ -435,16 +459,13 @@
 	</xsl:template>
 	
 	<xsl:template match="dtb:blockquote|dtb:epigraph|dtb:poem" mode="office:text text:section">
-		<xsl:apply-templates mode="#current">
-			<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
-		</xsl:apply-templates>
+		<xsl:apply-templates mode="#current"/>
+	</xsl:template>
 	</xsl:template>
 	
 	<xsl:template match="dtb:doctitle|dtb:docauthor|dtb:byline|dtb:bridgehead|dtb:hd|dtb:covertitle"
 	              mode="office:text text:section">
-		<xsl:call-template name="text:p">
-			<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
-		</xsl:call-template>
+		<xsl:call-template name="text:p"/>
 	</xsl:template>
 	
 	<xsl:template match="dtb:linegroup" mode="office:text text:section">
@@ -459,6 +480,10 @@
 	<!-- IMAGES -->
 	<!-- ====== -->
 	
+	<xsl:template match="dtb:img|dtb:imggroup/dtb:caption" mode="paragraph-style">
+		<xsl:sequence select="dtb:style-name(.)"/>
+	</xsl:template>
+	
 	<xsl:template match="dtb:imggroup" mode="office:text text:section table:table-cell text:list-item">
 		<xsl:apply-templates select="dtb:caption" mode="#current"/>
 		<xsl:apply-templates select="*[not(self::dtb:caption)]" mode="#current"/>
@@ -468,7 +493,6 @@
 		<xsl:variable name="src" select="resolve-uri(@src, base-uri(collection()[2]/dtb:dtbook))"/>
 		<xsl:variable name="image_dimensions" as="xs:integer*" select="pf:image-dimensions($src)"/>
 		<xsl:call-template name="text:p">
-			<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 			<xsl:with-param name="sequence">
 				<xsl:element name="draw:frame">
 					<xsl:attribute name="draw:name" select="concat('dtb:img#', count(preceding::dtb:img) + 1)"/>
@@ -498,7 +522,6 @@
 		<xsl:param name="caption_suffix" as="node()*" tunnel="yes"/>
 		<xsl:apply-templates select="$group-inline-nodes" mode="#current">
 			<xsl:with-param name="select" select="($caption_prefix, *|text(), $caption_suffix)"/>
-			<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 		</xsl:apply-templates>
 	</xsl:template>
 	
@@ -532,12 +555,15 @@
 	<!-- PAGE NUMBERING -->
 	<!-- ============== -->
 	
+	<xsl:template match="dtb:pagenum" mode="paragraph-style">
+		<xsl:sequence select="dtb:style-name(.)"/>
+	</xsl:template>
+	
 	<xsl:template match="dtb:pagenum" mode="office:text text:section">
 		<xsl:param name="pagenum_done" as="xs:boolean" select="false()" tunnel="yes"/>
 		<xsl:param name="pagenum_prefix" as="node()*" tunnel="yes"/>
 		<xsl:if test="not($pagenum_done)">
 			<xsl:call-template name="text:p">
-				<xsl:with-param name="paragraph_style" select="dtb:style-name(.)" tunnel="yes"/>
 				<xsl:with-param name="apply-templates" select="($pagenum_prefix, *|text())"/>
 			</xsl:call-template>
 		</xsl:if>
@@ -574,6 +600,12 @@
 	<!-- INLINE ELEMENTS & TEXT -->
 	<!-- ====================== -->
 	
+	<xsl:template match="dtb:em|dtb:strong|dtb:sub|dtb:sup|dtb:cite|dtb:q|dtb:author|dtb:title|
+	                     dtb:acronym|dtb:abbr|dtb:kbd|dtb:code|dtb:samp|dtb:linenum|dtb:a"
+	              mode="text-style">
+		<xsl:sequence select="dtb:style-name(.)"/>
+	</xsl:template>
+	
 	<xsl:template match="dtb:span|dtb:sent" mode="text:p text:h text:span">
 		<xsl:call-template name="text:span"/>
 	</xsl:template>
@@ -581,20 +613,15 @@
 	<xsl:template match="dtb:em|dtb:strong|dtb:sub|dtb:sup|dtb:cite|dtb:q|dtb:author|dtb:title|
 	                     dtb:acronym|dtb:abbr|dtb:kbd|dtb:code|dtb:samp|dtb:linenum"
 	              mode="text:p text:h text:span">
-		<xsl:call-template name="text:span">
-			<xsl:with-param name="text_style" select="dtb:style-name(.)" tunnel="yes"/>
-		</xsl:call-template>
+		<xsl:call-template name="text:span"/>
 	</xsl:template>
 	
 	<xsl:template match="dtb:code|dtb:samp" mode="office:text text:section text:list-item table:table-cell text:note-body">
-		<xsl:call-template name="text:p">
-			<xsl:with-param name="text_style" select="dtb:style-name(.)" tunnel="yes"/>
-		</xsl:call-template>
+		<xsl:call-template name="text:p"/>
 	</xsl:template>
 	
 	<xsl:template match="dtb:a[@external='true']" mode="text:p text:h text:span">
 		<xsl:call-template name="text:a">
-			<xsl:with-param name="text_style" select="dtb:style-name(.)" tunnel="yes"/>
 			<xsl:with-param name="xlink:href" select="@href"/>
 		</xsl:call-template>
 	</xsl:template>
@@ -633,6 +660,64 @@
 		<xsl:next-match>
 			<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
 		</xsl:next-match>
+	</xsl:template>
+	
+	<!-- ===== -->
+	<!-- STYLE -->
+	<!-- ===== -->
+	
+	<xsl:function name="f:text-style" as="xs:string?">
+		<xsl:param name="node" as="node()"/>
+		<xsl:apply-templates select="$node" mode="text-style"/>
+	</xsl:function>
+	
+	<xsl:function name="f:paragraph-style" as="xs:string?">
+		<xsl:param name="node" as="node()"/>
+		<xsl:apply-templates select="$node" mode="paragraph-style"/>
+	</xsl:function>
+	
+	<xsl:function name="f:list-style" as="xs:string?">
+		<xsl:param name="node" as="node()"/>
+		<xsl:apply-templates select="$node" mode="list-style"/>
+	</xsl:function>
+	
+	<xsl:template name="inherit-text-style">
+		<xsl:param name="text_style" as="xs:string?" tunnel="yes"/>
+		<xsl:sequence select="$text_style"/>
+	</xsl:template>
+	
+	<xsl:template name="inherit-paragraph-style">
+		<xsl:param name="paragraph_style" as="xs:string?" tunnel="yes"/>
+		<xsl:sequence select="$paragraph_style"/>
+	</xsl:template>
+	
+	<xsl:template name="inherit-list-style">
+		<xsl:param name="list_style" as="xs:string?" tunnel="yes"/>
+		<xsl:sequence select="$list_style"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:*"
+	              mode="office:text
+	                    text:h text:list text:list-item text:note-body text:p text:section text:span
+	                    table:table table:table-cell table:table-header-rows table:table-row"
+	              priority="1.2">
+		<xsl:next-match>
+			<xsl:with-param name="text_style" select="f:text-style(.)" tunnel="yes"/>
+			<xsl:with-param name="paragraph_style" select="f:paragraph-style(.)" tunnel="yes"/>
+			<xsl:with-param name="list_style" select="f:list-style(.)" tunnel="yes"/>
+		</xsl:next-match>
+	</xsl:template>
+	
+	<xsl:template match="dtb:*" as="xs:string?" mode="text-style" priority="-1.1">
+		<xsl:call-template name="inherit-text-style"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:*" as="xs:string?" mode="paragraph-style" priority="-1.1">
+		<xsl:call-template name="inherit-paragraph-style"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:*" as="xs:string?" mode="list-style" priority="-1.1">
+		<xsl:call-template name="inherit-list-style"/>
 	</xsl:template>
 	
 	<!-- =============== -->
