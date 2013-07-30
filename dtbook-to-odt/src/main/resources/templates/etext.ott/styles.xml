@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document-styles xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0" xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0" xmlns:number="urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0" xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0" xmlns:chart="urn:oasis:names:tc:opendocument:xmlns:chart:1.0" xmlns:dr3d="urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0" xmlns:math="http://www.w3.org/1998/Math/MathML" xmlns:form="urn:oasis:names:tc:opendocument:xmlns:form:1.0" xmlns:script="urn:oasis:names:tc:opendocument:xmlns:script:1.0" xmlns:ooo="http://openoffice.org/2004/office" xmlns:ooow="http://openoffice.org/2004/writer" xmlns:oooc="http://openoffice.org/2004/calc" xmlns:dom="http://www.w3.org/2001/xml-events" xmlns:rpt="http://openoffice.org/2005/report" xmlns:of="urn:oasis:names:tc:opendocument:xmlns:of:1.2" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:grddl="http://www.w3.org/2003/g/data-view#" xmlns:tableooo="http://openoffice.org/2009/table" xmlns:css3t="http://www.w3.org/TR/css3-text/" office:version="1.2">
+  
+  <!-- ====================== -->
+  <!-- Font face declarations -->
+  <!-- ====================== -->
+  
+  <office:font-face-decls>
+    <style:font-face style:name="Times New Roman" svg:font-family="Times New Roman" style:font-family-generic="roman" style:font-pitch="variable" svg:panose-1="2 2 6 3 5 4 5 2 3 4"/>
+    <style:font-face style:name="Verdana" svg:font-family="Verdana" style:font-family-generic="swiss" style:font-pitch="variable" svg:panose-1="2 11 6 4 3 5 4 4 2 4"/>
+    <style:font-face style:name="Arial Unicode MS" svg:font-family="Arial Unicode MS" style:font-family-generic="swiss" style:font-pitch="variable" svg:panose-1="2 11 6 4 2 2 2 2 2 4"/>
+    <style:font-face style:name="Courier New" svg:font-family="Courier New" style:font-family-generic="modern" style:font-pitch="fixed" svg:panose-1="2 7 3 9 2 2 5 2 4 4"/>
+    <style:font-face style:name="Wingdings" style:font-charset="x-symbol" svg:font-family="Wingdings" style:font-family-generic="system" style:font-pitch="variable" svg:panose-1="5 0 0 0 0 0 0 0 0 0"/>
+    <style:font-face style:name="Symbol" style:font-charset="x-symbol" svg:font-family="Symbol" style:font-family-generic="roman" style:font-pitch="variable" svg:panose-1="5 5 1 2 1 7 6 2 5 7"/>
+    <style:font-face style:name="Cambria" svg:font-family="Cambria" style:font-family-generic="roman" style:font-pitch="variable" svg:panose-1="2 4 5 3 5 4 6 3 2 4"/>
+    <style:font-face style:name="Calibri" svg:font-family="Calibri" style:font-family-generic="swiss" style:font-pitch="variable" svg:panose-1="2 15 5 2 2 2 4 3 2 4"/>
+  </office:font-face-decls>
+  
+  <office:styles>
+    
+    <!-- ================ -->
+    <!-- Paragraph styles -->
+    <!-- ================ -->
+    
+    <style:default-style style:family="paragraph">
+      <style:paragraph-properties fo:keep-with-next="auto" fo:keep-together="auto" fo:widows="2" fo:orphans="2" fo:break-before="auto" text:number-lines="true" fo:border="none" fo:padding="0in" style:shadow="none" style:line-break="strict" style:punctuation-wrap="hanging" style:text-autospace="ideograph-alpha" style:snap-to-layout-grid="true" fo:text-align="start" style:writing-mode="lr-tb" fo:line-height="100%" fo:background-color="transparent" style:tab-stop-distance="0.4916in"/>
+      <style:text-properties style:font-name="Times New Roman" style:font-name-asian="Times New Roman" style:font-name-complex="Times New Roman" fo:font-weight="normal" style:font-weight-asian="normal" style:font-weight-complex="normal" fo:font-style="normal" style:font-style-asian="normal" style:font-style-complex="normal" fo:text-transform="none" fo:font-variant="normal" style:text-line-through-type="none" style:text-outline="false" style:font-relief="none" style:use-window-font-color="true" fo:letter-spacing="normal" style:text-scale="100%" style:letter-kerning="false" style:text-position="0% 100%" fo:font-size="10pt" style:font-size-asian="10pt" style:font-size-complex="10pt" fo:background-color="transparent" style:text-underline-type="none" style:text-underline-color="font-color" style:text-emphasize="none" fo:language="de" fo:country="CH" style:language-asian="de" style:country-asian="CH" style:language-complex="ar" style:country-complex="SA" style:text-combine="none" fo:hyphenate="true"/>
+    </style:default-style>
+    
+    <style:style style:name="Standard" style:display-name="Standard" style:family="paragraph">
+      <style:text-properties style:font-name="Verdana" fo:font-size="12pt" style:font-size-asian="12pt" style:font-size-complex="12pt" fo:hyphenate="false"/>
+    </style:style>
+    
+    <style:style style:name="Überschrift_20_1" style:display-name="Überschrift 1" style:family="paragraph" style:parent-style-name="Standard" style:next-style-name="Standard" style:default-outline-level="1">
+      <style:paragraph-properties fo:keep-with-next="always" fo:margin-top="0.1666in" fo:margin-bottom="0.0416in"/>
+      <style:text-properties fo:font-weight="bold" style:font-weight-asian="bold" style:font-weight-complex="bold" style:letter-kerning="true" fo:font-size="20pt" style:font-size-asian="20pt" style:font-size-complex="20pt" fo:hyphenate="false"/>
+    </style:style>
+    <style:style style:name="Überschrift_20_2" style:display-name="Überschrift 2" style:family="paragraph" style:parent-style-name="Standard" style:next-style-name="Standard" style:default-outline-level="2">
+      <style:paragraph-properties fo:keep-with-next="always" fo:margin-top="0.1666in" fo:margin-bottom="0.0416in"/>
+      <style:text-properties fo:font-weight="bold" style:font-weight-asian="bold" style:font-weight-complex="bold" fo:font-size="18pt" style:font-size-asian="18pt" style:font-size-complex="18pt" fo:hyphenate="false"/>
+    </style:style>
+    <style:style style:name="Überschrift_20_3" style:display-name="Überschrift 3" style:family="paragraph" style:parent-style-name="Standard" style:next-style-name="Standard" style:default-outline-level="3">
+      <style:paragraph-properties fo:keep-with-next="always" fo:margin-top="0.1666in" fo:margin-bottom="0.0416in"/>
+      <style:text-properties fo:font-weight="bold" style:font-weight-asian="bold" style:font-weight-complex="bold" fo:font-size="16pt" style:font-size-asian="16pt" style:font-size-complex="16pt" fo:hyphenate="false"/>
+    </style:style>
+    <style:style style:name="Überschrift_20_4" style:display-name="Überschrift 4" style:family="paragraph" style:parent-style-name="Standard" style:next-style-name="Standard" style:default-outline-level="4">
+      <style:paragraph-properties fo:keep-with-next="always" fo:margin-top="0.1666in" fo:margin-bottom="0.0416in"/>
+      <style:text-properties fo:font-weight="bold" style:font-weight-asian="bold" style:font-weight-complex="bold" fo:font-size="14pt" style:font-size-asian="14pt" style:font-size-complex="14pt" fo:hyphenate="false"/>
+    </style:style>
+    <style:style style:name="Überschrift_20_5" style:display-name="Überschrift 5" style:family="paragraph" style:parent-style-name="Standard" style:next-style-name="Standard" style:default-outline-level="5">
+      <style:paragraph-properties fo:margin-top="0.1666in" fo:margin-bottom="0.0416in"/>
+      <style:text-properties fo:font-weight="bold" style:font-weight-asian="bold" style:font-weight-complex="bold" fo:font-size="13pt" style:font-size-asian="13pt" style:font-size-complex="13pt" fo:hyphenate="false"/>
+    </style:style>
+    <style:style style:name="Überschrift_20_6" style:display-name="Überschrift 6" style:family="paragraph" style:parent-style-name="Standard" style:next-style-name="Standard" style:default-outline-level="6">
+      <style:paragraph-properties fo:margin-top="0.1666in" fo:margin-bottom="0.0416in"/>
+      <style:text-properties fo:font-weight="bold" style:font-weight-asian="bold" style:font-weight-complex="bold" fo:hyphenate="false"/>
+    </style:style>
+    
+    <style:style style:name="Liste1" style:display-name="Liste1" style:family="paragraph" style:parent-style-name="Liste2" style:list-style-name="LFO3">
+      <style:text-properties style:font-name-complex="Arial Unicode MS" fo:color="#000000" style:language-asian="en" style:country-asian="US" fo:hyphenate="false"/>
+    </style:style>
+    <style:style style:name="Liste2" style:display-name="Liste2" style:family="paragraph" style:parent-style-name="Standard" style:list-style-name="LFO1">
+      <style:text-properties fo:hyphenate="false"/>
+    </style:style>
+    <style:style style:name="Liste3" style:display-name="Liste3" style:family="paragraph" style:parent-style-name="Standard" style:auto-update="true" style:list-style-name="LFO2">
+      <style:text-properties fo:hyphenate="false"/>
+    </style:style>
+    
+    <!-- =========== -->
+    <!-- Text styles -->
+    <!-- =========== -->
+    
+    <style:style style:name="Absatz-Standardschriftart" style:display-name="Absatz-Standardschriftart" style:family="text"/>
+    
+    <style:style style:name="Hyperlink" style:display-name="Hyperlink" style:family="text">
+      <style:text-properties fo:color="#0000FF" style:text-underline-type="single" style:text-underline-style="solid" style:text-underline-width="auto" style:text-underline-mode="continuous"/>
+    </style:style>
+    <style:style style:name="BesuchterHyperlink" style:display-name="BesuchterHyperlink" style:family="text">
+      <style:text-properties fo:color="#800080" style:text-underline-type="single" style:text-underline-style="solid" style:text-underline-width="auto" style:text-underline-mode="continuous"/>
+    </style:style>
+    
+    <!-- =================== -->
+    <!-- Notes configuration -->
+    <!-- =================== -->
+    
+    <text:notes-configuration text:note-class="footnote" text:start-value="0" style:num-format="1" text:start-numbering-at="document" text:footnotes-position="page"/>
+    <text:notes-configuration text:note-class="endnote" text:start-value="0" style:num-format="i" text:start-numbering-at="document" text:footnotes-position="document"/>
+    
+    <!-- ================= -->
+    <!-- Outline numbering -->
+    <!-- ================= -->
+    
+    <text:outline-style>
+      <text:outline-level-style text:level="1" style:num-format=""/>
+      <text:outline-level-style text:level="2" style:num-format=""/>
+      <text:outline-level-style text:level="3" style:num-format=""/>
+      <text:outline-level-style text:level="4" style:num-format=""/>
+      <text:outline-level-style text:level="5" style:num-format=""/>
+      <text:outline-level-style text:level="6" style:num-format=""/>
+    </text:outline-style>
+    
+    <!-- =========== -->
+    <!-- Page layout -->
+    <!-- =========== -->
+    
+    <style:default-page-layout>
+      <style:page-layout-properties style:layout-grid-standard-mode="true"/>
+    </style:default-page-layout>
+    
+    <!-- =========== -->
+    <!-- List styles -->
+    <!-- =========== -->
+    
+    <style:style style:name="WW_CharLFO1LVL1" style:family="text">
+      <style:text-properties style:font-name="Verdana" fo:font-weight="normal" style:font-weight-asian="normal" fo:font-style="normal" style:font-style-asian="normal" fo:font-size="12pt" style:font-size-asian="12pt" style:font-size-complex="12pt"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO1LVL2" style:family="text">
+      <style:text-properties style:font-name="Courier New" style:font-name-complex="Courier New"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO1LVL3" style:family="text">
+      <style:text-properties style:font-name="Wingdings"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO1LVL4" style:family="text">
+      <style:text-properties style:font-name="Symbol"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO1LVL5" style:family="text">
+      <style:text-properties style:font-name="Courier New" style:font-name-complex="Courier New"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO1LVL6" style:family="text">
+      <style:text-properties style:font-name="Wingdings"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO1LVL7" style:family="text">
+      <style:text-properties style:font-name="Symbol"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO1LVL8" style:family="text">
+      <style:text-properties style:font-name="Courier New" style:font-name-complex="Courier New"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO1LVL9" style:family="text">
+      <style:text-properties style:font-name="Wingdings"/>
+    </style:style>
+    <text:list-style style:name="LFO1">
+      <text:list-level-style-bullet text:level="1" text:style-name="WW_CharLFO1LVL1" text:bullet-char="-">
+        <style:list-level-properties text:space-before="0.1972in" text:min-label-width="0.1965in"/>
+        <style:text-properties style:font-name="Verdana"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="2" text:style-name="WW_CharLFO1LVL2" text:bullet-char="o">
+        <style:list-level-properties text:space-before="0.75in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Courier New"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="3" text:style-name="WW_CharLFO1LVL3" text:bullet-char="">
+        <style:list-level-properties text:space-before="1.25in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Wingdings"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="4" text:style-name="WW_CharLFO1LVL4" text:bullet-char="">
+        <style:list-level-properties text:space-before="1.75in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Symbol"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="5" text:style-name="WW_CharLFO1LVL5" text:bullet-char="o">
+        <style:list-level-properties text:space-before="2.25in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Courier New"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="6" text:style-name="WW_CharLFO1LVL6" text:bullet-char="">
+        <style:list-level-properties text:space-before="2.75in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Wingdings"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="7" text:style-name="WW_CharLFO1LVL7" text:bullet-char="">
+        <style:list-level-properties text:space-before="3.25in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Symbol"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="8" text:style-name="WW_CharLFO1LVL8" text:bullet-char="o">
+        <style:list-level-properties text:space-before="3.75in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Courier New"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="9" text:style-name="WW_CharLFO1LVL9" text:bullet-char="">
+        <style:list-level-properties text:space-before="4.25in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Wingdings"/>
+      </text:list-level-style-bullet>
+    </text:list-style>
+    <style:style style:name="WW_CharLFO2LVL1" style:family="text">
+      <style:text-properties style:font-name="Verdana"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO2LVL2" style:family="text">
+      <style:text-properties style:font-name="Courier New" style:font-name-complex="Courier New"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO2LVL3" style:family="text">
+      <style:text-properties style:font-name="Wingdings"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO2LVL4" style:family="text">
+      <style:text-properties style:font-name="Symbol"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO2LVL5" style:family="text">
+      <style:text-properties style:font-name="Courier New" style:font-name-complex="Courier New"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO2LVL6" style:family="text">
+      <style:text-properties style:font-name="Wingdings"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO2LVL7" style:family="text">
+      <style:text-properties style:font-name="Symbol"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO2LVL8" style:family="text">
+      <style:text-properties style:font-name="Courier New" style:font-name-complex="Courier New"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO2LVL9" style:family="text">
+      <style:text-properties style:font-name="Wingdings"/>
+    </style:style>
+    <text:list-style style:name="LFO2">
+      <text:list-level-style-bullet text:level="1" text:style-name="WW_CharLFO2LVL1" text:bullet-char="-">
+        <style:list-level-properties text:space-before="0.3937in" text:min-label-width="0.1972in"/>
+        <style:text-properties style:font-name="Verdana"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="2" text:style-name="WW_CharLFO2LVL2" text:bullet-char="o">
+        <style:list-level-properties text:space-before="0.75in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Courier New"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="3" text:style-name="WW_CharLFO2LVL3" text:bullet-char="">
+        <style:list-level-properties text:space-before="1.25in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Wingdings"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="4" text:style-name="WW_CharLFO2LVL4" text:bullet-char="">
+        <style:list-level-properties text:space-before="1.75in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Symbol"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="5" text:style-name="WW_CharLFO2LVL5" text:bullet-char="o">
+        <style:list-level-properties text:space-before="2.25in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Courier New"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="6" text:style-name="WW_CharLFO2LVL6" text:bullet-char="">
+        <style:list-level-properties text:space-before="2.75in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Wingdings"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="7" text:style-name="WW_CharLFO2LVL7" text:bullet-char="">
+        <style:list-level-properties text:space-before="3.25in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Symbol"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="8" text:style-name="WW_CharLFO2LVL8" text:bullet-char="o">
+        <style:list-level-properties text:space-before="3.75in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Courier New"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="9" text:style-name="WW_CharLFO2LVL9" text:bullet-char="">
+        <style:list-level-properties text:space-before="4.25in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Wingdings"/>
+      </text:list-level-style-bullet>
+    </text:list-style>
+    <style:style style:name="WW_CharLFO3LVL1" style:family="text">
+      <style:text-properties style:font-name="Verdana" style:font-name-complex="Verdana" fo:letter-spacing="normal" fo:font-size="12pt" style:font-size-asian="12pt" style:font-size-complex="12pt"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO3LVL2" style:family="text">
+      <style:text-properties style:font-name="Courier New" style:font-name-complex="Courier New"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO3LVL3" style:family="text">
+      <style:text-properties style:font-name="Wingdings" style:font-name-complex="Wingdings"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO3LVL4" style:family="text">
+      <style:text-properties style:font-name="Symbol" style:font-name-complex="Symbol"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO3LVL5" style:family="text">
+      <style:text-properties style:font-name="Courier New" style:font-name-complex="Courier New"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO3LVL6" style:family="text">
+      <style:text-properties style:font-name="Wingdings" style:font-name-complex="Wingdings"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO3LVL7" style:family="text">
+      <style:text-properties style:font-name="Symbol" style:font-name-complex="Symbol"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO3LVL8" style:family="text">
+      <style:text-properties style:font-name="Courier New" style:font-name-complex="Courier New"/>
+    </style:style>
+    <style:style style:name="WW_CharLFO3LVL9" style:family="text">
+      <style:text-properties style:font-name="Wingdings" style:font-name-complex="Wingdings"/>
+    </style:style>
+    <text:list-style style:name="LFO3">
+      <text:list-level-style-bullet text:level="1" text:style-name="WW_CharLFO3LVL1" text:bullet-char="-">
+        <style:list-level-properties text:space-before="0in" text:min-label-width="0.1972in"/>
+        <style:text-properties style:font-name="Verdana"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="2" text:style-name="WW_CharLFO3LVL2" text:bullet-char="o">
+        <style:list-level-properties text:space-before="0.75in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Courier New"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="3" text:style-name="WW_CharLFO3LVL3" text:bullet-char="">
+        <style:list-level-properties text:space-before="1.25in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Wingdings"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="4" text:style-name="WW_CharLFO3LVL4" text:bullet-char="">
+        <style:list-level-properties text:space-before="1.75in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Symbol"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="5" text:style-name="WW_CharLFO3LVL5" text:bullet-char="o">
+        <style:list-level-properties text:space-before="2.25in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Courier New"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="6" text:style-name="WW_CharLFO3LVL6" text:bullet-char="">
+        <style:list-level-properties text:space-before="2.75in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Wingdings"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="7" text:style-name="WW_CharLFO3LVL7" text:bullet-char="">
+        <style:list-level-properties text:space-before="3.25in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Symbol"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="8" text:style-name="WW_CharLFO3LVL8" text:bullet-char="o">
+        <style:list-level-properties text:space-before="3.75in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Courier New"/>
+      </text:list-level-style-bullet>
+      <text:list-level-style-bullet text:level="9" text:style-name="WW_CharLFO3LVL9" text:bullet-char="">
+        <style:list-level-properties text:space-before="4.25in" text:min-label-width="0.25in"/>
+        <style:text-properties style:font-name="Wingdings"/>
+      </text:list-level-style-bullet>
+    </text:list-style>
+    
+    <!-- ============ -->
+    <!-- Table styles -->
+    <!-- ============ -->
+    
+    <style:default-style style:family="table">
+      <style:table-properties fo:margin-left="0in" table:border-model="collapsing" style:writing-mode="lr-tb" table:align="left"/>
+    </style:default-style>
+    <style:default-style style:family="table-column">
+      <style:table-column-properties style:use-optimal-column-width="true"/>
+    </style:default-style>
+    <style:default-style style:family="table-row">
+      <style:table-row-properties style:min-row-height="0in" style:use-optimal-row-height="true" fo:keep-together="auto"/>
+    </style:default-style>
+    <style:default-style style:family="table-cell">
+      <style:table-cell-properties fo:background-color="transparent" style:glyph-orientation-vertical="auto" style:vertical-align="top" fo:wrap-option="wrap"/>
+    </style:default-style>
+    
+    <!-- ============== -->
+    <!-- Graphic styles -->
+    <!-- ============== -->
+    
+    <style:default-style style:family="graphic"/>
+    
+    <style:style style:name="dtb_3a_img" style:display-name="dtb:img" style:family="graphic">
+      <style:graphic-properties svg:x="0in" svg:y="0in" style:vertical-pos="bottom" style:vertical-rel="line" fo:margin-top="0in" fo:margin-bottom="0in" fo:wrap-option="no-wrap"/>
+    </style:style>
+    
+    <!-- ============================================= -->
+    
+  </office:styles>
+  <office:automatic-styles>
+    <style:page-layout style:name="PL0">
+      <style:page-layout-properties fo:page-width="8.268in" fo:page-height="11.693in" style:print-orientation="portrait" fo:margin-top="0.984in" fo:margin-left="0.984in" fo:margin-bottom="0.7875in" fo:margin-right="0.984in" style:num-format="1" style:writing-mode="lr-tb">
+        <style:footnote-sep style:width="0.007in" style:rel-width="33%" style:color="#000000" style:line-style="solid" style:adjustment="left"/>
+      </style:page-layout-properties>
+    </style:page-layout>
+  </office:automatic-styles>
+  <office:master-styles>
+    <style:master-page style:name="MP0" style:page-layout-name="PL0"/>
+  </office:master-styles>
+</office:document-styles>

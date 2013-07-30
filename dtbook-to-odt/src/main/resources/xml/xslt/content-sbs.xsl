@@ -157,9 +157,6 @@
 		</xsl:call-template>
 	</xsl:template>
 	
-	<xsl:template match="dtb:span[@class=('exercisenumber','exercisepart')]" mode="text-style">
-		<xsl:sequence select="style:name(concat('dtb:span_', @class))"/>
-	</xsl:template>
 	
 	
 	<!-- ============== -->
@@ -228,13 +225,48 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
+	<!-- ===== -->
+	<!-- STYLE -->
+	<!-- ===== -->
+	
+	<xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6" mode="paragraph-style">
+		<xsl:sequence select="concat('Überschrift_20_', substring(local-name(.),2,1))"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:list|dtb:dl" mode="list-style">
+		<xsl:sequence select="'LFO3'"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:list|dtb:dl" mode="paragraph-style">
+		<xsl:sequence select="'Liste1'"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:a[@external='true']" mode="text-style">
+		<xsl:sequence select="'Hyperlink'"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:sub|dtb:sup" mode="text-style">
+		<xsl:sequence select="dtb:style-name(.)"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:*" as="xs:string?" mode="text-style" priority="-1.1">
+		<xsl:call-template name="inherit-text-style"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:*" as="xs:string?" mode="paragraph-style" priority="-1.1">
+		<xsl:call-template name="inherit-paragraph-style"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:*" as="xs:string?" mode="list-style" priority="-1.1">
+		<xsl:call-template name="inherit-list-style"/>
+	</xsl:template>
+	
 	<!-- ========= -->
 	<!-- UTILITIES -->
 	<!-- ========= -->
 	
 	<xsl:template name="text:empty-p">
 		<xsl:call-template name="text:p">
-			<xsl:with-param name="paragraph_style" select="style:name('dtb:p_emptyline')" tunnel="yes"/>
 			<xsl:with-param name="sequence">
 				<xsl:text/>
 			</xsl:with-param>

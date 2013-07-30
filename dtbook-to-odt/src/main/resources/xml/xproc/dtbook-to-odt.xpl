@@ -86,7 +86,7 @@
             <p:with-option name="temp-dir" select="$temp-dir">
                 <p:pipe step="temp-dir" port="result"/>
             </p:with-option>
-            <p:with-option name="template" select="if ($template!='') then $template else resolve-uri('../../templates/default.ott')">
+            <p:with-option name="template" select="if ($template!='') then $template else resolve-uri('../../templates/etext.ott')">
                 <p:inline>
                     <irrelevant/>
                 </p:inline>
