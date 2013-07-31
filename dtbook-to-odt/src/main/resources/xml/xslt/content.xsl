@@ -673,21 +673,6 @@
 	<!-- STYLE -->
 	<!-- ===== -->
 	
-	<xsl:function name="f:text-style" as="xs:string?">
-		<xsl:param name="node" as="node()"/>
-		<xsl:apply-templates select="$node" mode="text-style"/>
-	</xsl:function>
-	
-	<xsl:function name="f:paragraph-style" as="xs:string?">
-		<xsl:param name="node" as="node()"/>
-		<xsl:apply-templates select="$node" mode="paragraph-style"/>
-	</xsl:function>
-	
-	<xsl:function name="f:list-style" as="xs:string?">
-		<xsl:param name="node" as="node()"/>
-		<xsl:apply-templates select="$node" mode="list-style"/>
-	</xsl:function>
-	
 	<xsl:template name="inherit-text-style">
 		<xsl:param name="text_style" as="xs:string?" tunnel="yes"/>
 		<xsl:sequence select="$text_style"/>
@@ -709,9 +694,15 @@
 	                    table:table table:table-cell table:table-header-rows table:table-row"
 	              priority="1.2">
 		<xsl:next-match>
-			<xsl:with-param name="text_style" select="f:text-style(.)" tunnel="yes"/>
-			<xsl:with-param name="paragraph_style" select="f:paragraph-style(.)" tunnel="yes"/>
-			<xsl:with-param name="list_style" select="f:list-style(.)" tunnel="yes"/>
+			<xsl:with-param name="text_style" as="xs:string?" tunnel="yes">
+				<xsl:apply-templates select="." mode="text-style"/>
+			</xsl:with-param>
+			<xsl:with-param name="paragraph_style" as="xs:string?" tunnel="yes">
+				<xsl:apply-templates select="." mode="paragraph-style"/>
+			</xsl:with-param>
+			<xsl:with-param name="list_style" as="xs:string?" tunnel="yes">
+				<xsl:apply-templates select="." mode="list-style"/>
+			</xsl:with-param>
 		</xsl:next-match>
 	</xsl:template>
 	

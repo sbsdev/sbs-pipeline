@@ -67,7 +67,9 @@
 		</xsl:variable>
 		<xsl:call-template name="text:span">
 			<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
-			<xsl:with-param name="text_style" select="f:text-style(.)" tunnel="yes"/>
+			<xsl:with-param name="text_style" as="xs:string?" tunnel="yes">
+				<xsl:apply-templates select="." mode="text-style"/>
+			</xsl:with-param>
 			<xsl:with-param name="apply-templates" select="($asterisk, *|text())"/>
 		</xsl:call-template>
 		<xsl:text> </xsl:text>
@@ -83,7 +85,9 @@
 		</xsl:variable>
 		<xsl:call-template name="text:span">
 			<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
-			<xsl:with-param name="text_style" select="f:text-style(.)" tunnel="yes"/>
+			<xsl:with-param name="text_style" as="xs:string?" tunnel="yes">
+				<xsl:apply-templates select="." mode="text-style"/>
+			</xsl:with-param>
 			<xsl:with-param name="apply-templates" select="(*|text(), $asterisk)"/>
 		</xsl:call-template>
 		<xsl:text> </xsl:text>
@@ -109,7 +113,9 @@
 				</xsl:variable>
 				<xsl:call-template name="text:span">
 					<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
-					<xsl:with-param name="text_style" select="f:text-style(.)" tunnel="yes"/>
+					<xsl:with-param name="text_style" as="xs:string?" tunnel="yes">
+						<xsl:apply-templates select="." mode="text-style"/>
+					</xsl:with-param>
 					<xsl:with-param name="skip_notes" select="true()" tunnel="yes"/>
 					<xsl:with-param name="apply-templates" select="($open_bracket, $asterisk, *|text(), $close_bracket)"/>
 				</xsl:call-template>
@@ -202,7 +208,9 @@
 		</xsl:variable>
 		<xsl:call-template name="text:span">
 			<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
-			<xsl:with-param name="text_style" select="f:text-style(.)" tunnel="yes"/>
+			<xsl:with-param name="text_style" as="xs:string?" tunnel="yes">
+				<xsl:apply-templates select="." mode="text-style"/>
+			</xsl:with-param>
 			<xsl:with-param name="apply-templates" select="($prefix, *|text())"/>
 		</xsl:call-template>
 	</xsl:template>
