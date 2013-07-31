@@ -601,12 +601,12 @@
 	<!-- ====================== -->
 	
 	<xsl:template match="dtb:em|dtb:strong|dtb:sub|dtb:sup|dtb:cite|dtb:q|dtb:author|dtb:title|
-	                     dtb:acronym|dtb:abbr|dtb:kbd|dtb:code|dtb:samp|dtb:linenum|dtb:a"
+	                     dtb:acronym|dtb:abbr|dtb:kbd|dtb:code|dtb:samp|dtb:linenum|dtb:a[@href]"
 	              mode="text-style">
 		<xsl:sequence select="dtb:style-name(.)"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:span|dtb:sent" mode="text:p text:h text:span">
+	<xsl:template match="dtb:span|dtb:sent|dtb:a" mode="text:p text:h text:span">
 		<xsl:call-template name="text:span"/>
 	</xsl:template>
 	
@@ -620,7 +620,14 @@
 		<xsl:call-template name="text:p"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:a[@external='true']" mode="text:p text:h text:span">
+	<xsl:template match="dtb:a[@id]" mode="text:p text:h text:span" priority="1">
+		<xsl:element name="text:bookmark">
+			<xsl:attribute name="text:name" select="@id"/>
+		</xsl:element>
+		<xsl:next-match/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:a[@href]" mode="text:p text:h text:span" priority="0.9">
 		<xsl:call-template name="text:a">
 			<xsl:with-param name="xlink:href" select="@href"/>
 		</xsl:call-template>

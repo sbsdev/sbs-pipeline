@@ -241,7 +241,7 @@
 		<xsl:sequence select="'Liste1'"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:a[@external='true']" mode="text-style">
+	<xsl:template match="dtb:a[@href]" mode="text-style">
 		<xsl:sequence select="'Hyperlink'"/>
 	</xsl:template>
 	
