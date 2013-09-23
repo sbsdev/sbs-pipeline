@@ -149,6 +149,17 @@
 		</xsl:next-match>
 	</xsl:template>
 	
+	<!-- ======== -->
+	<!-- PRODNOTE -->
+	<!-- ======== -->
+	
+	<xsl:template match="dtb:prodnote" mode="office:text text:section">
+		<xsl:next-match>
+			<xsl:with-param name="prodnote_announcement" tunnel="yes">
+				<dtb:p class="announcement" xml:lang="de">[Anmerkung e-text]</dtb:p>
+			</xsl:with-param>
+		</xsl:next-match>
+	</xsl:template>
 	
 	<!-- ========= -->
 	<!-- EXERCISES -->

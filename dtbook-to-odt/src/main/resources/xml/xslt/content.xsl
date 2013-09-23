@@ -454,7 +454,7 @@
 	<!-- OTHER BLOCK ELEMENTS -->
 	<!-- ==================== -->
 	
-	<xsl:template match="dtb:blockquote|dtb:epigraph|dtb:poem|
+	<xsl:template match="dtb:blockquote|dtb:epigraph|dtb:poem|dtb:prodnote|
 	                     dtb:doctitle|dtb:docauthor|dtb:byline|dtb:bridgehead|dtb:hd|dtb:covertitle"
 	              mode="paragraph-style">
 		<xsl:sequence select="dtb:style-name(.)"/>
@@ -473,6 +473,12 @@
 	<xsl:template match="dtb:blockquote|dtb:epigraph|dtb:poem" mode="office:text text:section">
 		<xsl:apply-templates mode="#current"/>
 	</xsl:template>
+	
+	<xsl:template match="dtb:prodnote" mode="office:text text:section">
+		<xsl:param name="prodnote_announcement" as="node()*" tunnel="yes"/>
+		<xsl:apply-templates select="$group-inline-nodes" mode="#current">
+			<xsl:with-param name="select" select="($prodnote_announcement, *|text())"/>
+		</xsl:apply-templates>
 	</xsl:template>
 	
 	<xsl:template match="dtb:doctitle|dtb:docauthor|dtb:byline|dtb:bridgehead|dtb:hd|dtb:covertitle"
