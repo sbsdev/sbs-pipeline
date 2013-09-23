@@ -6,10 +6,10 @@
   <modelVersion>4.0.0</modelVersion>
   
   <parent>
-    <groupId>org.daisy.pipeline.modules</groupId>
-    <artifactId>modules-parent</artifactId>
+    <groupId>ch.sbs.pipeline.modules</groupId>
+    <artifactId>sbs-modules-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <relativePath/>
+    <relativePath>../</relativePath>
   </parent>
   
   <groupId>ch.sbs.pipeline.modules</groupId>
