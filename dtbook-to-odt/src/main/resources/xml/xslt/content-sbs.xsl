@@ -276,7 +276,18 @@
 		<xsl:sequence select="'Hyperlink'"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:sub|dtb:sup" mode="text-style">
+	<xsl:template match="dtb:span[@class=('exercisenumber','exercisepart')]" mode="text-style">
+		<xsl:sequence select="style:name(concat('dtb:span_', @class))"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:prodnote|dtb:th|dtb:caption|dtb:pagenum" mode="paragraph-style">
+		<xsl:sequence select="dtb:style-name(.)"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:sub|dtb:sup|dtb:strong|dtb:em|dtb:dt|dtb:note|dtb:annotation|
+	                     dtb:cite|dtb:q|dtb:author|dtb:title|dtb:acronym|dtb:abbr|dtb:kbd|
+	                     dtb:code|dtb:samp|dtb:linenum"
+	              mode="text-style">
 		<xsl:sequence select="dtb:style-name(.)"/>
 	</xsl:template>
 	
