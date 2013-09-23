@@ -407,8 +407,8 @@
 		<xsl:param name="skip_notes" as="xs:boolean" select="true()" tunnel="yes"/>
 		<xsl:variable name="id" select="string(@id)"/>
 		<xsl:variable name="refs" select="if (self::dtb:note)
-		                                  then //dtb:noteref[@idref=concat('#',$id)]
-		                                  else //dtb:annoref[@idref=concat('#',$id)]"/>
+		                                  then collection()[2]//dtb:noteref[@idref=concat('#',$id)]
+		                                  else collection()[2]//dtb:annoref[@idref=concat('#',$id)]"/>
 		<xsl:if test="not(exists($refs)) or not($skip_notes)">
 			<xsl:message terminate="yes">
 				<xsl:text>ERROR! </xsl:text>
