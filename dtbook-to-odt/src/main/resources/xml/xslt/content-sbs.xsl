@@ -176,7 +176,17 @@
 		</xsl:call-template>
 	</xsl:template>
 	
+	<!-- ==== -->
+	<!-- MATH -->
+	<!-- ==== -->
 	
+	<xsl:template match="math:math" mode="text:p text:h text:span">
+		<xsl:next-match/>
+		<xsl:call-template name="text:span">
+			<xsl:with-param name="text_style" select="style:name('dtb:span_asciimath')" tunnel="yes"/>
+			<xsl:with-param name="sequence" select="math:semantics/math:annotation[@encoding='ASCIIMath']/text()"/>
+		</xsl:call-template>
+	</xsl:template>
 	
 	<!-- ============== -->
 	<!-- PAGE NUMBERING -->
