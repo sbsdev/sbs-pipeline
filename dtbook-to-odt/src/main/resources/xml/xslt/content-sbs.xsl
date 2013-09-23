@@ -32,6 +32,8 @@
 	<!-- ======= -->
 	<!-- SIDEBAR -->
 	<!-- ======= -->
+	<xsl:param name="image_dpi" select="600"/>
+	
 	
 	<!-- ======== -->
 	<!-- HEADINGS -->
