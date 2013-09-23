@@ -171,7 +171,7 @@
 		<xsl:sequence select="dtb:style-name(.)"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:list" mode="office:text text:section" priority="1">
+	<xsl:template match="dtb:list|dtb:dl" mode="office:text text:section" priority="1">
 		<xsl:call-template name="insert-pagenum-after"/>
 	</xsl:template>
 	
@@ -192,19 +192,25 @@
 	</xsl:template>
 	
 	<xsl:template match="dtb:dl" mode="office:text text:section">
-		<xsl:element name="text:list"/>
+		<xsl:call-template name="text:list"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:dt[following-sibling::*[1]/self::dtb:dd]" mode="text:list"/>
+	<xsl:template match="dtb:dt" mode="text:list">
+		<xsl:if test="not(following-sibling::*[1]/self::dtb:dd)">
+			<xsl:element name="text:list-item">
+				<xsl:call-template name="text:p"/>
+			</xsl:element>
+		</xsl:if>
+	</xsl:template>
 	
-	<xsl:template match="dtb:dd[preceding-sibling::*[1]/self::dtb:dt]" mode="text:list">
-		<xsl:variable name="dt" select="preceding-sibling::*[1]"/>
+	<xsl:template match="dtb:dd" mode="text:list">
+		<xsl:variable name="dt" select="preceding-sibling::*[1]/self::dtb:dt"/>
 		<xsl:variable name="colon">
 			<xsl:text>: </xsl:text>
 		</xsl:variable>
 		<xsl:element name="text:list-item">
 			<xsl:call-template name="text:p">
-				<xsl:with-param name="apply-templates" select="($dt, $colon, *|text())"/>
+				<xsl:with-param name="apply-templates" select="if ($dt) then ($dt, $colon, *|text()) else (*|text())"/>
 			</xsl:call-template>
 		</xsl:element>
 	</xsl:template>
@@ -658,7 +664,6 @@
 		</xsl:choose>
 	</xsl:template>
 	
-	
 	<!-- ======== -->
 	<!-- LANGUAGE -->
 	<!-- ======== -->
@@ -784,7 +789,9 @@
 		<xsl:sequence select="false()"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:p|dtb:list|dtb:table|dtb:imggroup|dtb:blockquote" as="xs:boolean" mode="is-block-element">
+	<xsl:template match="dtb:p|dtb:list|dtb:dl|dtb:table|dtb:imggroup|dtb:blockquote"
+	              as="xs:boolean"
+	              mode="is-block-element">
 		<xsl:sequence select="true()"/>
 	</xsl:template>
 	
