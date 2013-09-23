@@ -11,11 +11,14 @@
 		<style:font-face style:name="Calibri" svg:font-family="Calibri" style:font-family-generic="swiss" style:font-pitch="variable" svg:panose-1="2 15 5 2 2 2 4 3 2 4"/>
 	</office:font-face-decls>
 	<office:automatic-styles>
-		<style:style style:name="dtb_3a_sub" style:parent-style-name="Absatz-Standardschriftart" style:family="text">
+		<style:style style:name="dtb_3a_sub" style:family="text">
 			<style:text-properties style:text-position="sub 66.6%"/>
 		</style:style>
-		<style:style style:name="dtb_3a_sup" style:parent-style-name="Absatz-Standardschriftart" style:family="text">
+		<style:style style:name="dtb_3a_sup" style:family="text">
 			<style:text-properties style:text-position="super 66.6%"/>
+		</style:style>
+		<style:style style:name="dtb_3a_strong" style:family="text">
+			<style:text-properties fo:font-weight="bold" style:font-weight-asian="bold"/>
 		</style:style>
 	</office:automatic-styles>
 	<office:body>
