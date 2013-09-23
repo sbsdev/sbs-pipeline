@@ -145,14 +145,9 @@
 	<!-- =========== -->
 	
 	<xsl:template name="missing-text-styles">
-		<xsl:if test="not('Numbering_20_Symbols'=$text_styles)">
-			<xsl:call-template name="text-style">
-				<xsl:with-param name="style:name" select="'Numbering_20_Symbols'"/>
-			</xsl:call-template>
-		</xsl:if>
-			<xsl:if test="not(.=('Numbering_20_Symbols', $text_styles))">
 		<xsl:variable name="text_styles" select="$all-styles/style:style[@style:family='text']/@style:name"/>
 		<xsl:for-each select="distinct-values(collection()[2]//*[self::text:span or self::text:a]/@text:style-name)">
+			<xsl:if test="not(.=$text_styles)">
 				<xsl:call-template name="text-style">
 					<xsl:with-param name="style:name" select="."/>
 				</xsl:call-template>
@@ -180,7 +175,7 @@
 				<xsl:element name="text:list-style">
 					<xsl:attribute name="style:name" select="."/>
 					<xsl:attribute name="style:display-name" select="style:display-name(.)"/>
-					<xsl:for-each select="(1,2,3,4,5,6,7,8,9,10)">
+					<xsl:for-each select="1 to 10">
 						<xsl:call-template name="text:list-level-style-bullet">
 							<xsl:with-param name="text:level" select="."/>
 							<xsl:with-param name="fo:margin-left" select=". * 0.1575"/>
@@ -196,23 +191,44 @@
 		<xsl:param name="text:level" as="xs:double"/>
 		<xsl:param name="fo:margin-left" as="xs:double"/>
 		<xsl:param name="fo:text-indent" as="xs:double"/>
-		<xsl:element name="text:list-level-style-bullet">
-			<xsl:attribute name="text:level" select="$text:level"/>
-			<xsl:attribute name="text:style-name" select="'Numbering_20_Symbols'"/>
-			<xsl:attribute name="text:bullet-char" select="'•'"/>
-			<xsl:element name="style:list-level-properties">
-				<xsl:attribute name="text:list-level-position-and-space-mode" select="'label-alignment'"/>
-				<xsl:element name="style:list-level-label-alignment">
-					<xsl:attribute name="text:label-followed-by" select="'listtab'"/>
-					<xsl:attribute name="text:list-tab-stop-position" select="format-number($fo:margin-left, '0.0000in')"/>
-					<xsl:attribute name="fo:margin-left" select="format-number($fo:margin-left, '0.0000in')"/>
-					<xsl:attribute name="fo:text-indent" select="format-number($fo:text-indent, '0.0000in')"/>
+		<xsl:choose>
+			<!--
+			    MS Word default
+			-->
+			<xsl:when test="true()">
+				<xsl:element name="text:list-level-style-bullet">
+					<xsl:attribute name="text:level" select="$text:level"/>
+					<xsl:attribute name="text:bullet-char" select="'•'"/>
+					<xsl:element name="style:list-level-properties">
+						<xsl:attribute name="text:list-level-position-and-space-mode" select="'label-width-and-position'"/>
+						<xsl:attribute name="text:min-label-width" select="format-number(max((0, - $fo:text-indent)), '0.0000in')"/>
+						<xsl:attribute name="text:min-label-distance" select="'0'"/>
+						<xsl:attribute name="text:space-before" select="format-number($fo:margin-left + $fo:text-indent, '0.0000in')"/>
+					</xsl:element>
 				</xsl:element>
-			</xsl:element>
-			<xsl:element name="style:text-properties">
-				<xsl:attribute name="style:font-name" select="'OpenSymbol'"/>
-			</xsl:element>
-		</xsl:element>
+			</xsl:when>
+			<!--
+			    LibreOffice default
+			-->
+			<xsl:otherwise>
+				<xsl:element name="text:list-level-style-bullet">
+					<xsl:attribute name="text:level" select="$text:level"/>
+					<xsl:attribute name="text:bullet-char" select="'•'"/>
+					<xsl:element name="style:list-level-properties">
+						<xsl:attribute name="text:list-level-position-and-space-mode" select="'label-alignment'"/>
+						<xsl:element name="style:list-level-label-alignment">
+							<xsl:attribute name="text:label-followed-by" select="'listtab'"/>
+							<xsl:attribute name="text:list-tab-stop-position" select="format-number($fo:margin-left, '0.0000in')"/>
+							<xsl:attribute name="fo:margin-left" select="format-number($fo:margin-left, '0.0000in')"/>
+							<xsl:attribute name="fo:text-indent" select="format-number($fo:text-indent, '0.0000in')"/>
+						</xsl:element>
+					</xsl:element>
+					<xsl:element name="style:text-properties">
+						<xsl:attribute name="style:font-name" select="'OpenSymbol'"/>
+					</xsl:element>
+				</xsl:element>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- ============== -->
