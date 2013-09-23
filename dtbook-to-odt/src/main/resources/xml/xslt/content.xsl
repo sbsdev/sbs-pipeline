@@ -656,7 +656,31 @@
 	</xsl:template>
 	
 	<xsl:template match="text()" mode="text:p text:h text:span text:a">
-		<xsl:sequence select="."/>
+		<xsl:param name="space" as="xs:string" tunnel="yes"/>
+		<xsl:choose>
+			<xsl:when test="$space='preserve'">
+				<xsl:analyze-string select="." regex="\S+">
+					<xsl:matching-substring>
+						<xsl:value-of select="."/>
+					</xsl:matching-substring>
+					<xsl:non-matching-substring>
+						<xsl:analyze-string select="." regex="\n">
+							<xsl:matching-substring>
+								<xsl:element name="text:line-break"/>
+							</xsl:matching-substring>
+							<xsl:non-matching-substring>
+								<xsl:element name="text:s">
+									<xsl:attribute name="text:c" select="string-length(.)"/>
+								</xsl:element>
+							</xsl:non-matching-substring>
+						</xsl:analyze-string>
+					</xsl:non-matching-substring>
+				</xsl:analyze-string>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:sequence select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template match="text()" mode="#all" priority="-1.4">
@@ -686,6 +710,20 @@
 		</xsl:next-match>
 	</xsl:template>
 	
+	<!-- ========== -->
+	<!-- WHITESPACE -->
+	<!-- ========== -->
+	
+	<xsl:template match="dtb:*"
+	              mode="office:text
+	                    text:h text:list text:list-item text:note-body text:p text:section text:span
+	                    table:table table:table-cell table:table-header-rows table:table-row"
+	              priority="1.2">
+		<xsl:next-match>
+			<xsl:with-param name="space" select="f:space(.)" tunnel="yes"/>
+		</xsl:next-match>
+	</xsl:template>
+	
 	<!-- ===== -->
 	<!-- STYLE -->
 	<!-- ===== -->
@@ -709,7 +747,7 @@
 	              mode="office:text
 	                    text:h text:list text:list-item text:note-body text:p text:section text:span
 	                    table:table table:table-cell table:table-header-rows table:table-row"
-	              priority="1.2">
+	              priority="1.3">
 		<xsl:next-match>
 			<xsl:with-param name="text_style" as="xs:string?" tunnel="yes">
 				<xsl:apply-templates select="." mode="text-style"/>

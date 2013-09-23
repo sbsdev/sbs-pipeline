@@ -77,6 +77,11 @@
 		<xsl:sequence select="string($node/ancestor-or-self::*[@xml:lang][1]/@xml:lang)"/>
 	</xsl:function>
 	
+	<xsl:function name="f:space" as="xs:string">
+		<xsl:param name="node" as="node()"/>
+		<xsl:sequence select="string($node/ancestor-or-self::*[@xml:space][1]/@xml:space)"/>
+	</xsl:function>
+	
 	<xsl:function name="dtb:style-name">
 		<xsl:param name="element" as="element()"/>
 		<xsl:sequence select="style:name(concat('dtb:', local-name($element)))"/>
