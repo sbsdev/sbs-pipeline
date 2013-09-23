@@ -90,10 +90,16 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="/office:document-content/office:body/office:text/text:sequence-decls" mode="template">
-		<xsl:sequence select="."/>
-		<xsl:apply-templates select="following-sibling::*" mode="template"/>
-		<xsl:apply-templates select="collection()[2]/*" mode="office:text"/>
+	<xsl:template match="@fo:language|@fo:country|
+	                     @style:language-asian|@style:country-asian|
+	                     @style:language-complex|@style:country-complex"
+	              mode="template"/>
+	
+	<xsl:template match="/office:document-content/office:body/office:text" mode="template">
+		<xsl:copy>
+			<xsl:apply-templates mode="template"/>
+			<xsl:apply-templates select="collection()[2]/*" mode="office:text"/>
+		</xsl:copy>
 	</xsl:template>
 	
 	<!-- =================== -->

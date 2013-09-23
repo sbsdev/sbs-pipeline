@@ -44,6 +44,7 @@
 	<xsl:template match="/office:document-styles/office:styles" mode="template">
 		<xsl:copy>
 			<xsl:apply-templates mode="template"/>
+			<xsl:call-template name="missing-default-style"/>
 			<xsl:call-template name="missing-paragraph-styles"/>
 			<xsl:call-template name="missing-text-styles"/>
 			<xsl:call-template name="missing-list-styles"/>
@@ -52,23 +53,57 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="//style:default-style//@fo:language" mode="template">
-		<xsl:variable name="lang" select="collection()[3]/dtb:dtbook/@xml:lang"/>
-		<xsl:if test="exists($lang)">
-			<xsl:attribute name="fo:language" select="fo:language($lang)"/>
-		</xsl:if>
+	<xsl:template match="style:default-style" mode="template">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="template"/>
+			<xsl:if test="not(style:text-properties)">
+				<xsl:element name="style:text-properties">
+					<xsl:call-template name="default-language-properties"/>
+				</xsl:element>
+			</xsl:if>
+		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template match="//style:default-style//@fo:country" mode="template">
-		<xsl:variable name="lang" select="collection()[3]/dtb:dtbook/@xml:lang"/>
-		<xsl:if test="exists($lang)">
-			<xsl:attribute name="fo:country" select="fo:country($lang)"/>
-		</xsl:if>
+	<xsl:template match="style:default-style/style:text-properties" mode="template">
+		<xsl:copy>
+			<xsl:apply-templates select="@*|node()" mode="template"/>
+			<xsl:call-template name="default-language-properties"/>
+		</xsl:copy>
 	</xsl:template>
+	
+	<!-- drop all language properties -->
+	<xsl:template match="@fo:language|@fo:country|
+	                     @style:language-asian|@style:country-asian|
+	                     @style:language-complex|@style:country-complex"
+	              mode="template"/>
 	
 	<xsl:variable name="all-styles" select="(collection()[1]//office:styles |
 	                                         collection()[1]//office:automatic-styles |
 	                                         collection()[2]//office:automatic-styles)"/>
+	
+	<!-- ============= -->
+	<!-- DEFAULT STYLE -->
+	<!-- ============= -->
+	
+	<xsl:template name="missing-default-style">
+		<xsl:if test="not(style:default-style[@style:family='paragraph'])">
+			<xsl:element name="style:default-style">
+				<xsl:attribute name="style:family" select="'paragraph'"/>
+				<xsl:element name="style:text-properties">
+					<xsl:call-template name="default-language-properties"/>
+				</xsl:element>
+			</xsl:element>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template name="default-language-properties">
+		<xsl:variable name="lang" select="collection()[3]/dtb:dtbook/@xml:lang"/>
+		<xsl:if test="exists($lang)">
+			<xsl:call-template name="language-properties">
+				<xsl:with-param name="lang" select="$lang"/>
+			</xsl:call-template>
+		</xsl:if>
+	</xsl:template>
 	
 	<!-- ================ -->
 	<!-- PARAGRAPH STYLES -->

@@ -93,4 +93,35 @@
 		                      ), '/')"/>
 	</xsl:function>
 	
+	<xsl:template name="generate-automatic-style-name" as="xs:string">
+		<xsl:param name="existing-style-names" as="xs:string*"/>
+		<xsl:param name="prefix" as="xs:string"/>
+		<xsl:param name="i" select="1"/>
+		<xsl:variable name="style-name" select="concat($prefix, $i)"/>
+		<xsl:choose>
+			<xsl:when test="not($style-name=$existing-style-names)">
+				<xsl:sequence select="$style-name"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="generate-automatic-style-name">
+					<xsl:with-param name="existing-style-names" select="$existing-style-names"/>
+					<xsl:with-param name="prefix" select="$prefix"/>
+					<xsl:with-param name="i" select="$i + 1"/>
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template name="language-properties">
+		<xsl:param name="lang" as="xs:string"/>
+		<xsl:variable name="fo:language" select="fo:language($lang)"/>
+		<xsl:variable name="fo:country" select="fo:country($lang)"/>
+		<xsl:attribute name="fo:language" select="$fo:language"/>
+		<xsl:attribute name="fo:country" select="$fo:country"/><!--
+		<xsl:attribute name="style:language-asian" select="$fo:language"/>
+		<xsl:attribute name="style:country-asian" select="$fo:country"/>
+		<xsl:attribute name="style:language-complex" select="$fo:language"/>
+		<xsl:attribute name="style:country-complex" select="$fo:country"/>-->
+	</xsl:template>
+	
 </xsl:stylesheet>

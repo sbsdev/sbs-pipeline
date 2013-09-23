@@ -37,8 +37,8 @@
 		 * section styles that are not declared yet are generated
 		 * ...
 	-->
-	<xsl:variable name="automatic-styles" as="element()*">
-		<xsl:call-template name="automatic-styles">
+	<xsl:variable name="automatic-language-styles" as="element()*">
+		<xsl:call-template name="automatic-language-styles">
 			<xsl:with-param name="elements" as="element()*">
 				<xsl:for-each-group select="//*[self::text:p or self::text:h or self::text:span or self::text:a][@xml:lang]" group-by="@xml:lang">
 					<xsl:for-each-group select="current-group()" group-by="string(@text:style-name)">
@@ -65,7 +65,9 @@
 	<xsl:template match="/office:document-content/office:automatic-styles">
 		<xsl:copy>
 			<xsl:apply-templates/>
-			<xsl:sequence select="$automatic-styles"/>
+			<xsl:for-each select="$automatic-language-styles">
+				<xsl:sequence select="style:style"/>
+			</xsl:for-each>
 			<xsl:call-template name="automatic-table-styles"/>
 		</xsl:copy>
 	</xsl:template>
@@ -75,14 +77,12 @@
 			<xsl:when test="@xml:lang">
 				<xsl:variable name="parent-style-name" select="string(@text:style-name)"/>
 				<xsl:variable name="family" select="style:family(.)"/>
-				<xsl:variable name="language" select="fo:language(@xml:lang)"/>
-				<xsl:variable name="country" select="fo:country(@xml:lang)"/>
+				<xsl:variable name="lang" select="@xml:lang"/>
 				<xsl:copy>
 					<xsl:apply-templates select="@*[not(name(.)='xml:lang')]"/>
 					<xsl:attribute name="text:style-name"
-					               select="$automatic-styles[@style:family=$family and
-					                                         string(@style:parent-style-name)=$parent-style-name and
-					                                         child::style:text-properties[@fo:language=$language and @fo:country=$country]]
+					               select="$automatic-language-styles[@xml:lang=$lang]
+					                         /style:style[@style:family=$family and string(@style:parent-style-name)=$parent-style-name]
 					                         /@style:name"/>
 					<xsl:apply-templates select="node()"/>
 				</xsl:copy>
@@ -109,18 +109,19 @@
 		</xsl:copy>
 	</xsl:template>
 	
-	<xsl:template name="automatic-styles" as="element()*">
+	<xsl:template name="automatic-language-styles" as="element()*">
 		<xsl:param name="elements" as="element()*"/>
 		<xsl:param name="existing-styles" as="element()*"/>
 		<xsl:if test="exists($elements)">
 			<xsl:variable name="element" select="$elements[1]"/>
+			<xsl:variable name="family" select="style:family($element)"/>
 			<xsl:variable name="style" as="element()?">
-				<xsl:if test="$element[self::text:p or self::text:h or self::text:span]">
-					<xsl:variable name="family" select="style:family($element)"/>
+				<xsl:element name="language-style">
+					<xsl:attribute name="xml:lang" select="$element/@xml:lang"/>
 					<xsl:element name="style:style">
 						<xsl:attribute name="style:name">
 							<xsl:call-template name="generate-automatic-style-name">
-								<xsl:with-param name="existing-style-names" select="$existing-styles[@style:family=$family]/@style:name"/>
+								<xsl:with-param name="existing-style-names" select="$existing-styles/style:style[@style:family=$family]/@style:name"/>
 								<xsl:with-param name="prefix" select="if ($family='paragraph') then 'P' else 'T'"/>
 							</xsl:call-template>
 						</xsl:attribute>
@@ -128,17 +129,16 @@
 						<xsl:if test="$element/@text:style-name">
 							<xsl:attribute name="style:parent-style-name" select="$element/@text:style-name"/>
 						</xsl:if>
-						<xsl:if test="$element/@xml:lang">
-							<xsl:element name="style:text-properties">
-								<xsl:attribute name="fo:language" select="fo:language($element/@xml:lang)"/>
-								<xsl:attribute name="fo:country" select="fo:country($element/@xml:lang)"/>
-							</xsl:element>
-						</xsl:if>
+						<xsl:element name="style:text-properties">
+							<xsl:call-template name="language-properties">
+								<xsl:with-param name="lang" select="$element/@xml:lang"/>
+							</xsl:call-template>
+						</xsl:element>
 					</xsl:element>
-				</xsl:if>
+				</xsl:element>
 			</xsl:variable>
 			<xsl:sequence select="$style"/>
-			<xsl:call-template name="automatic-styles">
+			<xsl:call-template name="automatic-language-styles">
 				<xsl:with-param name="elements" select="$elements[position() &gt; 1]"/>
 				<xsl:with-param name="existing-styles" select="($existing-styles, $style)"/>
 			</xsl:call-template>
@@ -158,29 +158,6 @@
 				<xsl:attribute name="style:family" select="'table-column'"/>
 			</xsl:element>
 		</xsl:for-each>
-	</xsl:template>
-	
-	<!-- ========= -->
-	<!-- UTILITIES -->
-	<!-- ========= -->
-	
-	<xsl:template name="generate-automatic-style-name" as="xs:string">
-		<xsl:param name="existing-style-names" as="xs:string*"/>
-		<xsl:param name="prefix" as="xs:string"/>
-		<xsl:param name="i" select="1"/>
-		<xsl:variable name="style-name" select="concat($prefix, $i)"/>
-		<xsl:choose>
-			<xsl:when test="not($style-name=$existing-style-names)">
-				<xsl:sequence select="$style-name"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:call-template name="generate-automatic-style-name">
-					<xsl:with-param name="existing-style-names" select="$existing-style-names"/>
-					<xsl:with-param name="prefix" select="$prefix"/>
-					<xsl:with-param name="i" select="$i + 1"/>
-				</xsl:call-template>
-			</xsl:otherwise>
-		</xsl:choose>
 	</xsl:template>
 	
 </xsl:stylesheet>
