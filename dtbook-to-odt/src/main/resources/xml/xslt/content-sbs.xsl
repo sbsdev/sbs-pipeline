@@ -242,13 +242,14 @@
 	<!-- BRAILLE STUFF -->
 	<!-- ============= -->
 	
-	<xsl:template match="brl:homograph|brl:place|brl:name|brl:v-form" mode="text:p text:h">
+	<xsl:template match="brl:homograph|brl:place|brl:name|brl:v-form|brl:num|brl:emph" mode="text:p text:h">
 		<xsl:apply-templates mode="#current">
 			<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
 		</xsl:apply-templates>
 	</xsl:template>
 	
-	<xsl:template match="brl:running-line|brl:toc-line|brl:volume|brl:when-braille" mode="#all"/>
+	<xsl:template match="brl:running-line|brl:toc-line|brl:volume|brl:when-braille|brl:separator"
+	              mode="#all"/>
 	
 	<xsl:template match="brl:select|brl:otherwise" mode="#all">
 		<xsl:apply-templates mode="#current">
