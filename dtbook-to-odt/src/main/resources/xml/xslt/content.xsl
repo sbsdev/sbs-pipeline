@@ -481,7 +481,8 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
-	<xsl:template match="dtb:doctitle|dtb:docauthor|dtb:byline|dtb:bridgehead|dtb:hd|dtb:covertitle"
+	<xsl:template match="dtb:doctitle|dtb:docauthor|dtb:byline|dtb:bridgehead|dtb:hd|
+	                     dtb:covertitle|dtb:author"
 	              mode="office:text text:section">
 		<xsl:call-template name="text:p"/>
 	</xsl:template>
