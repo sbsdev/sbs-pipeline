@@ -60,13 +60,13 @@
                 rm -rf target/generated-resources/templates
                 mkdir target/generated-resources/templates
                 for template in $(ls src/main/resources/templates); do
-                  zip_odt src/main/resources/templates/${template} $(pwd)/target/generated-resources/templates/${template}
+                  (zip_odt src/main/resources/templates/${template} $(pwd)/target/generated-resources/templates/${template})
                 done
-                </script>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
+              </script>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
   
