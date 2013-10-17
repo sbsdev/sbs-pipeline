@@ -233,38 +233,58 @@
 	
 	<xsl:template match="dtb:table" mode="office:text text:section">
 		<xsl:apply-templates select="dtb:caption" mode="#current"/>
-		<xsl:variable name="dtb:tr" as="element()*">
-			<xsl:call-template name="dtb:insert-covered-table-cells">
-				<xsl:with-param name="table_cells" select="dtb:tr/(dtb:td|dtb:th)"/>
-			</xsl:call-template>
-		</xsl:variable>
 		<xsl:element name="table:table">
 			<xsl:attribute name="table:name" select="concat('dtb:table#', count(preceding::dtb:table) + 1)"/>
 			<xsl:element name="table:table-column">
 				<xsl:attribute name="table:number-columns-repeated" select="max(.//dtb:tr/count(dtb:td|dtb:th))"/>
 			</xsl:element>
-			<xsl:apply-templates mode="table:table" select="(dtb:thead, $dtb:tr, dtb:tbody, dtb:tfoot)"/>
+			<xsl:apply-templates mode="table:table" select="(dtb:thead, ., dtb:tbody, dtb:tfoot)"/>
 		</xsl:element>
 	</xsl:template>
 	
 	<xsl:template match="dtb:thead" mode="table:table">
-		<xsl:variable name="dtb:tr" as="element()*">
-			<xsl:call-template name="dtb:insert-covered-table-cells">
-				<xsl:with-param name="table_cells" select="dtb:tr/(dtb:td|dtb:th)"/>
-			</xsl:call-template>
-		</xsl:variable>
 		<xsl:element name="table:table-header-rows">
-			<xsl:apply-templates mode="table:table-header-rows" select="$dtb:tr"/>
+			<xsl:apply-templates mode="table:table-header-rows" select="."/>
 		</xsl:element>
 	</xsl:template>
 	
+	<xsl:template match="dtb:table" mode="table:table">
+		<xsl:call-template name="dtb:tr-group"/>
+	</xsl:template>
+	
 	<xsl:template match="dtb:tbody|dtb:tfoot" mode="table:table">
-		<xsl:variable name="dtb:tr" as="element()*">
-			<xsl:call-template name="dtb:insert-covered-table-cells">
-				<xsl:with-param name="table_cells" select="dtb:tr/(dtb:td|dtb:th)"/>
-			</xsl:call-template>
-		</xsl:variable>
-		<xsl:apply-templates mode="#current" select="$dtb:tr"/>
+		<xsl:call-template name="dtb:tr-group"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:thead" mode="table:table-header-rows">
+		<xsl:call-template name="dtb:tr-group"/>
+	</xsl:template>
+	
+	<xsl:template name="dtb:tr-group">
+		<xsl:param name="table_rows_or_pagenums" as="element()*" select="dtb:tr|dtb:pagenum"/>
+		<xsl:if test="exists($table_rows_or_pagenums[self::dtb:tr])">
+			<xsl:variable name="table_width" as="xs:integer"
+			              select="xs:integer($table_rows_or_pagenums[self::dtb:tr][1]/sum((dtb:td|dtb:th)/((@colspan,1)[1])))"/>
+			<xsl:variable name="dtb:tr" as="element()*">
+				<xsl:call-template name="dtb:table-pagenums-as-rows">
+					<xsl:with-param name="table_rows_or_pagenums" select="$table_rows_or_pagenums"/>
+					<xsl:with-param name="table_width" select="$table_width"/>
+				</xsl:call-template>
+			</xsl:variable>
+			<xsl:variable name="dtb:tr" as="element()*">
+				<xsl:call-template name="dtb:insert-covered-table-cells">
+					<!--
+					    FIXME: `/` puts the tr's into document order, so any generated 'pagenum' tr's
+					    would normally be put at the bottom. `unordered` fixes that. however this
+					    solution might be ideal because the behaviour is implementation-dependent
+					    (see: http://www.w3.org/TR/xpath-functions/#func-unordered).
+					-->
+					<xsl:with-param name="table_cells" select="unordered($dtb:tr/(dtb:td|dtb:th))"/>
+					<xsl:with-param name="table_width" select="$table_width"/>
+				</xsl:call-template>
+			</xsl:variable>
+			<xsl:apply-templates mode="#current" select="$dtb:tr"/>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="dtb:tr" mode="table:table table:table-header-rows">
@@ -274,8 +294,8 @@
 	</xsl:template>
 	
 	<xsl:template match="dtb:td|dtb:th" mode="table:table-row">
-		<xsl:variable name="colspan" as="xs:integer" select="@colspan"/>
-		<xsl:variable name="rowspan" as="xs:integer" select="@rowspan"/>
+		<xsl:variable name="colspan" as="xs:integer" select="(@colspan,1)[1]"/>
+		<xsl:variable name="rowspan" as="xs:integer" select="(@rowspan,1)[1]"/>
 		<xsl:element name="table:table-cell">
 			<xsl:attribute name="office:value-type" select="'string'"/>
 			<xsl:if test="$colspan &gt; 1">
@@ -300,25 +320,49 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
+	<xsl:template name="dtb:table-pagenums-as-rows" as="element()*">
+		<xsl:param name="table_rows_or_pagenums" as="element()*"/>
+		<xsl:param name="table_width" as="xs:integer"/>
+		<xsl:for-each select="$table_rows_or_pagenums">
+			<xsl:choose>
+				<xsl:when test="self::dtb:pagenum">
+					<xsl:element name="dtb:tr">
+						<xsl:element name="dtb:td">
+							<xsl:sequence select="."/>
+						</xsl:element>
+						<xsl:for-each select="2 to $table_width">
+							<xsl:element name="dtb:td"/>
+						</xsl:for-each>
+					</xsl:element>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:sequence select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:for-each>
+	</xsl:template>
+	
 	<xsl:template name="dtb:insert-covered-table-cells" as="element()*">
 		<xsl:param name="table_cells" as="element()*"/>
 		<xsl:param name="covered_cells" as="element()*"/>
-		<xsl:param name="current_row" as="element()*"/>
+		<xsl:param name="current_row_cells" as="element()*"/>
 		<xsl:param name="row_count" as="xs:integer" select="0"/>
-		<xsl:variable name="cell_count" select="count($current_row)"/>
+		<xsl:param name="table_width" as="xs:integer"/>
+		<xsl:variable name="cell_count" select="count($current_row_cells)"/>
 		<xsl:choose>
 			<xsl:when test="$covered_cells[@row=($row_count+1) and @col=($cell_count+1)]">
 				<xsl:call-template name="dtb:insert-covered-table-cells">
 					<xsl:with-param name="table_cells" select="$table_cells"/>
-					<xsl:with-param name="current_row" select="($current_row, $covered_cells[@row=($row_count+1) and @col=($cell_count+1)])"/>
+					<xsl:with-param name="current_row_cells" select="($current_row_cells, $covered_cells[@row=($row_count+1) and @col=($cell_count+1)])"/>
 					<xsl:with-param name="row_count" select="$row_count"/>
 					<xsl:with-param name="covered_cells" select="$covered_cells[not(@row=($row_count+1) and @col=($cell_count+1))]"/>
+					<xsl:with-param name="table_width" select="$table_width"/>
 				</xsl:call-template>
 			</xsl:when>
-			<xsl:when test="$table_cells[1][count(parent::*/preceding-sibling::dtb:tr)=$row_count]">
+			<xsl:when test="$cell_count &lt; $table_width">
 				<xsl:variable name="new_covered_cells" as="element()*">
-					<xsl:variable name="colspan" as="xs:integer" select="$table_cells[1]/@colspan"/>
-					<xsl:variable name="rowspan" as="xs:integer" select="$table_cells[1]/@rowspan"/>
+					<xsl:variable name="colspan" as="xs:integer" select="$table_cells[1]/((@colspan,1)[1])"/>
+					<xsl:variable name="rowspan" as="xs:integer" select="$table_cells[1]/((@rowspan,1)[1])"/>
 					<xsl:if test="$colspan + $rowspan &gt; 2">
 						<xsl:sequence select="for $i in 1 to $rowspan return
 						                      for $j in 1 to $colspan return
@@ -327,22 +371,24 @@
 				</xsl:variable>
 				<xsl:call-template name="dtb:insert-covered-table-cells">
 					<xsl:with-param name="table_cells" select="$table_cells[position() &gt; 1]"/>
-					<xsl:with-param name="current_row" select="($current_row, $table_cells[1])"/>
+					<xsl:with-param name="current_row_cells" select="($current_row_cells, $table_cells[1])"/>
 					<xsl:with-param name="row_count" select="$row_count"/>
 					<xsl:with-param name="covered_cells" select="($covered_cells, $new_covered_cells)"/>
+					<xsl:with-param name="table_width" select="$table_width"/>
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:if test="exists($current_row)">
+				<xsl:if test="exists($current_row_cells)">
 					<xsl:element name="dtb:tr">
-						<xsl:sequence select="$current_row"/>
+						<xsl:sequence select="$current_row_cells"/>
 					</xsl:element>
 					<xsl:if test="exists($table_cells)">
 						<xsl:call-template name="dtb:insert-covered-table-cells">
 							<xsl:with-param name="table_cells" select="$table_cells"/>
-							<xsl:with-param name="current_row" select="()"/>
+							<xsl:with-param name="current_row_cells" select="()"/>
 							<xsl:with-param name="row_count" select="$row_count + 1"/>
 							<xsl:with-param name="covered_cells" select="$covered_cells"/>
+							<xsl:with-param name="table_width" select="$table_width"/>
 						</xsl:call-template>
 					</xsl:if>
 				</xsl:if>
@@ -578,7 +624,7 @@
 		<xsl:sequence select="dtb:style-name(.)"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:pagenum" mode="office:text text:section">
+	<xsl:template match="dtb:pagenum" mode="office:text text:section table:table-cell">
 		<xsl:param name="pagenum_done" as="xs:boolean" select="false()" tunnel="yes"/>
 		<xsl:param name="pagenum_prefix" as="node()*" tunnel="yes"/>
 		<xsl:if test="not($pagenum_done)">
@@ -834,7 +880,7 @@
 		<xsl:sequence select="false()"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:p|dtb:list|dtb:dl|dtb:table|dtb:imggroup|dtb:blockquote"
+	<xsl:template match="dtb:p|dtb:list|dtb:dl|dtb:table|dtb:imggroup|dtb:blockquote|dtb:pagenum"
 	              as="xs:boolean"
 	              mode="is-block-element">
 		<xsl:sequence select="true()"/>

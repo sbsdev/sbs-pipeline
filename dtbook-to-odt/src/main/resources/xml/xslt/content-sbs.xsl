@@ -192,7 +192,7 @@
 	<!-- PAGE NUMBERING -->
 	<!-- ============== -->
 	
-	<xsl:template match="dtb:pagenum" mode="office:text text:section">
+	<xsl:template match="dtb:pagenum" mode="office:text text:section table:table-cell">
 		<xsl:next-match>
 			<xsl:with-param name="pagenum_prefix" tunnel="yes">
 				<dtb:span xml:lang="de">\\Seite </dtb:span>
