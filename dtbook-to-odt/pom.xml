@@ -96,7 +96,7 @@
                       <src>target/${project.artifactId}-${project.version}.jar</src>
                       <mapper>
                         <type>perm</type>
-                        <prefix>/var/opt/daisy-pipeline2/modules</prefix>
+                        <prefix>/opt/daisy-pipeline2/modules</prefix>
                       </mapper>
                     </data>
                   </dataSet>
