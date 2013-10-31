@@ -804,25 +804,37 @@
 	
 	<xsl:template name="text:span">
 		<xsl:param name="lang" as="xs:string" tunnel="yes"/>
-		<xsl:param name="paragraph_lang" as="xs:string" tunnel="yes"/>
-		<xsl:param name="text_lang" as="xs:string?" tunnel="yes"/>
 		<xsl:param name="text_style" as="xs:string?" tunnel="yes"/>
+		<xsl:param name="cur_paragraph_lang" as="xs:string" tunnel="yes"/>
+		<xsl:param name="cur_text_lang" as="xs:string?" tunnel="yes"/>
+		<xsl:param name="cur_text_style" as="xs:string?" tunnel="yes"/>
 		<xsl:param name="apply-templates" as="node()*" select="*|text()"/>
 		<xsl:param name="sequence" as="node()*"/>
 		<xsl:choose>
-			<xsl:when test="$lang!=($text_lang,$paragraph_lang)[1] or $text_style">
+			<xsl:when test="$lang!=($cur_text_lang,$cur_paragraph_lang)[1] or $text_style">
 				<xsl:element name="text:span">
-					<xsl:if test="$lang!=($text_lang,$paragraph_lang)[1]">
+					<xsl:if test="$lang!=($cur_text_lang,$cur_paragraph_lang)[1]">
 						<xsl:attribute name="xml:lang" select="$lang"/>
 					</xsl:if>
 					<xsl:if test="$text_style">
 						<xsl:attribute name="text:style-name" select="$text_style"/>
 					</xsl:if>
+					<!--
+					    FIXME: don't give warning when inner most style is an automatic style!
+					-->
+					<xsl:if test="$cur_text_style and $text_style and $cur_text_style != $text_style">
+						<xsl:call-template name="office:annotation">
+							<xsl:with-param name="text"
+							                select="concat('Nested styles: `', style:display-name($text_style),
+							                        '` inside `', style:display-name($cur_text_style), '`')"/>
+						</xsl:call-template>
+					</xsl:if>
 					<xsl:sequence select="$sequence"/>
 					<xsl:if test="not(exists($sequence))">
 						<xsl:apply-templates select="$apply-templates" mode="text:span">
-							<xsl:with-param name="text_lang" select="$lang" tunnel="yes"/>
 							<xsl:with-param name="text_style" select="()" tunnel="yes"/>
+							<xsl:with-param name="cur_text_lang" select="$lang" tunnel="yes"/>
+							<xsl:with-param name="cur_text_style" select="$text_style" tunnel="yes"/>
 						</xsl:apply-templates>
 					</xsl:if>
 				</xsl:element>
@@ -838,15 +850,16 @@
 	
 	<xsl:template name="text:a">
 		<xsl:param name="lang" as="xs:string" tunnel="yes"/>
-		<xsl:param name="paragraph_lang" as="xs:string" tunnel="yes"/>
-		<xsl:param name="text_lang" as="xs:string?" tunnel="yes"/>
 		<xsl:param name="text_style" as="xs:string?" tunnel="yes"/>
+		<xsl:param name="cur_paragraph_lang" as="xs:string" tunnel="yes"/>
+		<xsl:param name="cur_text_lang" as="xs:string?" tunnel="yes"/>
+		<xsl:param name="cur_text_style" as="xs:string?" tunnel="yes"/>
 		<xsl:param name="xlink:href" as="xs:string"/>
 		<xsl:element name="text:a">
 			<xsl:attribute name="xlink:href" select="$xlink:href"/>
 			<xsl:attribute name="xlink:type" select="'simple'"/>
 			<xsl:choose>
-				<xsl:when test="$lang!=($text_lang,$paragraph_lang)[1] or $text_style">
+				<xsl:when test="$lang!=($cur_text_lang,$cur_paragraph_lang)[1] or $text_style">
 					<xsl:call-template name="text:span"/>
 				</xsl:when>
 				<xsl:otherwise>
@@ -872,7 +885,7 @@
 					<xsl:call-template name="text:span">
 						<xsl:with-param name="apply-templates" select="$apply-templates"/>
 						<xsl:with-param name="sequence" select="$sequence"/>
-						<xsl:with-param name="paragraph_lang" select="$lang" tunnel="yes"/>
+						<xsl:with-param name="cur_paragraph_lang" select="$lang" tunnel="yes"/>
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:when test="exists($sequence)">
@@ -880,7 +893,7 @@
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:apply-templates select="$apply-templates" mode="text:p">
-						<xsl:with-param name="paragraph_lang" select="$lang" tunnel="yes"/>
+						<xsl:with-param name="cur_paragraph_lang" select="$lang" tunnel="yes"/>
 					</xsl:apply-templates>
 				</xsl:otherwise>
 			</xsl:choose>
@@ -905,7 +918,7 @@
 					<xsl:call-template name="text:span">
 						<xsl:with-param name="apply-templates" select="$apply-templates"/>
 						<xsl:with-param name="sequence" select="$sequence"/>
-						<xsl:with-param name="paragraph_lang" select="$lang" tunnel="yes"/>
+						<xsl:with-param name="cur_paragraph_lang" select="$lang" tunnel="yes"/>
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:when test="exists($sequence)">
@@ -913,7 +926,7 @@
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:apply-templates select="$apply-templates" mode="text:h">
-						<xsl:with-param name="paragraph_lang" select="$lang" tunnel="yes"/>
+						<xsl:with-param name="cur_paragraph_lang" select="$lang" tunnel="yes"/>
 					</xsl:apply-templates>
 				</xsl:otherwise>
 			</xsl:choose>
