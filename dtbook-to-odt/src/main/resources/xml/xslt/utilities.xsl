@@ -129,4 +129,97 @@
 		<xsl:attribute name="style:country-complex" select="$fo:country"/>-->
 	</xsl:template>
 	
+	<!-- ================ -->
+	<!-- DTBOOK UTILITIES -->
+	<!-- ================ -->
+	
+	<xsl:template match="dtb:table|dtb:thead|dtb:tbody|dtb:tfoot" mode="insert-covered-table-cells">
+		<xsl:copy>
+			<xsl:sequence select="@*"/>
+			<xsl:for-each-group select="*" group-adjacent="boolean(self::dtb:tr)">
+				<xsl:choose>
+					<xsl:when test="current-grouping-key()">
+						<xsl:call-template name="dtb:insert-covered-table-cells">
+							<xsl:with-param name="rows_in" select="current-group()"/>
+						</xsl:call-template>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:for-each select="current-group()">
+							<xsl:apply-templates select="." mode="#current"/>
+						</xsl:for-each>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:for-each-group>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="dtb:pagenum|dtb:caption" mode="insert-covered-table-cells">
+		<xsl:sequence select="."/>
+	</xsl:template>
+	
+	<!--
+	    * add <dtb:td class="covered"/>
+	      => for every @colspan or @rowspan
+	      => can be used in subsequent step to create <table:covered-table-cell/>
+	-->
+	<xsl:template name="dtb:insert-covered-table-cells" as="element()*">
+		<xsl:param name="rows_in" as="element()*"/>
+		<xsl:param name="cells_in" as="element()*"/>
+		<xsl:param name="cells_out" as="element()*"/>
+		<xsl:param name="cells_covered" as="element()*"/>
+		<xsl:param name="row" as="xs:integer" select="0"/>
+		<xsl:param name="col" as="xs:integer" select="1"/>
+		<xsl:choose>
+			<xsl:when test="$cells_covered[@row=$row and @col=$col]">
+				<xsl:call-template name="dtb:insert-covered-table-cells">
+					<xsl:with-param name="rows_in" select="$rows_in"/>
+					<xsl:with-param name="cells_in" select="$cells_in"/>
+					<xsl:with-param name="cells_out" select="($cells_out, $cells_covered[@row=$row and @col=$col])"/>
+					<xsl:with-param name="cells_covered" select="$cells_covered[not(@row=$row and @col=$col)]"/>
+					<xsl:with-param name="row" select="$row"/>
+					<xsl:with-param name="col" select="$col + 1"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:when test="$cells_in[1]">
+				<xsl:variable name="new_cells_covered" as="element()*">
+					<xsl:variable name="colspan" as="xs:integer" select="$cells_in[1]/((@colspan,1)[1])"/>
+					<xsl:variable name="rowspan" as="xs:integer" select="$cells_in[1]/((@rowspan,1)[1])"/>
+					<xsl:if test="$colspan + $rowspan &gt; 2">
+						<xsl:sequence select="for $i in 1 to $rowspan return
+						                      for $j in 1 to $colspan return
+						                        if (not($i=1 and $j=1)) then dtb:covered-table-cell($row + $i - 1, $col + $j - 1) else ()"/>
+					</xsl:if>
+				</xsl:variable>
+				<xsl:call-template name="dtb:insert-covered-table-cells">
+					<xsl:with-param name="rows_in" select="$rows_in"/>
+					<xsl:with-param name="cells_in" select="$cells_in[position() &gt; 1]"/>
+					<xsl:with-param name="cells_out" select="($cells_out, $cells_in[1])"/>
+					<xsl:with-param name="cells_covered" select="($cells_covered, $new_cells_covered)"/>
+					<xsl:with-param name="row" select="$row"/>
+					<xsl:with-param name="col" select="$col + 1"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:if test="$row &gt; 0">
+					<xsl:element name="dtb:tr">
+						<xsl:sequence select="$cells_out"/>
+					</xsl:element>
+				</xsl:if>
+				<xsl:if test="exists($rows_in) or exists($cells_covered[@row &gt; $row])">
+					<xsl:call-template name="dtb:insert-covered-table-cells">
+						<xsl:with-param name="rows_in" select="$rows_in[position() &gt; 1]"/>
+						<xsl:with-param name="cells_in" select="$rows_in[1]/(dtb:td|dtb:th)"/>
+						<xsl:with-param name="cells_covered" select="$cells_covered"/>
+						<xsl:with-param name="row" select="$row + 1"/>
+					</xsl:call-template>
+				</xsl:if>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:function name="dtb:covered-table-cell">
+		<xsl:param name="row"/>
+		<xsl:param name="col"/>
+		<dtb:td class="covered" row="{$row}" col="{$col}"/>
+	</xsl:function>
 </xsl:stylesheet>
