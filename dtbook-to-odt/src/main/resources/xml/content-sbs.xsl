@@ -35,6 +35,7 @@
 	<xsl:param name="asciimath" as="xs:string" select="'ASCIIMATH'"/>
 	<xsl:param name="images" as="xs:string" select="'EMBED'"/>
 	<xsl:param name="answer" as="xs:string" select="'_..'"/>
+	<xsl:param name="line_numbers" as="xs:string" select="'true'"/>
 	
 	
 	<!-- ======== -->
@@ -236,16 +237,18 @@
 	<!-- ====================== -->
 	
 	<xsl:template match="dtb:linenum" mode="text:p text:h text:span">
-		<xsl:variable name="prefix" as="text()">
-			<xsl:text>Z</xsl:text>
-		</xsl:variable>
-		<xsl:call-template name="text:span">
-			<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
-			<xsl:with-param name="text_style" as="xs:string?" tunnel="yes">
-				<xsl:apply-templates select="." mode="text-style"/>
-			</xsl:with-param>
-			<xsl:with-param name="apply-templates" select="($prefix, *|text())"/>
-		</xsl:call-template>
+		<xsl:if test="$line_numbers='true'">
+			<xsl:variable name="prefix" as="text()">
+				<xsl:text>Z</xsl:text>
+			</xsl:variable>
+			<xsl:call-template name="text:span">
+				<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
+				<xsl:with-param name="text_style" as="xs:string?" tunnel="yes">
+					<xsl:apply-templates select="." mode="text-style"/>
+				</xsl:with-param>
+				<xsl:with-param name="apply-templates" select="($prefix, *|text())"/>
+			</xsl:call-template>
+		</xsl:if>
 	</xsl:template>
 	
 	<!-- ============= -->

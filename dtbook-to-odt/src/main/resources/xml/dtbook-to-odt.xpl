@@ -67,14 +67,14 @@
         </p:documentation>
     </p:option>
     
-    <p:option name="line-numbers" required="false" px:type="boolean" select="true()">
+    <p:option name="line-numbers" required="false" px:type="boolean" select="'true'">
         <p:documentation>
             <h2 px:role="name">line-numbers</h2>
             <p px:role="desc">Show line numbers or not.</p>
         </p:documentation>
     </p:option>
     
-    <p:option name="page-numbers" required="false" px:type="boolean" select="true()">
+    <p:option name="page-numbers" required="false" px:type="boolean" select="'true'">
         <p:documentation>
             <h2 px:role="name">page-numbers</h2>
             <p px:role="desc">Show page numbers or not.</p>
@@ -148,6 +148,8 @@
             <p:with-option name="images" select="if ($images=('LINK','DROP')) then $images else 'EMBED'"/>
             <p:with-option name="image-dpi" select="if ($image-dpi='') then '600' else $image-dpi"/>
             <p:with-option name="answer" select="if ($answer='') then '_..' else $answer"/>
+            <p:with-option name="page-numbers" select="$page-numbers"/>
+            <p:with-option name="line-numbers" select="$line-numbers"/>
         </sbs:dtbook-to-odt.convert>
         
         <!-- ========= -->

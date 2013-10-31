@@ -75,6 +75,7 @@
 	<!-- ======= -->
 	
 	<xsl:param name="image_dpi" as="xs:string" required="yes"/>
+	<xsl:param name="page_numbers" as="xs:string" select="'true'"/>
 	
 	<!-- ======== -->
 	<!-- TEMPLATE -->
@@ -270,7 +271,7 @@
 	
 	<xsl:template match="dtb:pagenum" mode="table:table">
 		<xsl:param name="pagenum_done" as="xs:boolean" select="false()" tunnel="yes"/>
-		<xsl:if test="not($pagenum_done)">
+		<xsl:if test="$page_numbers='true' and not($pagenum_done)">
 			<xsl:variable name="pagenum_row" as="element()">
 				<xsl:element name="dtb:tr">
 					<xsl:element name="dtb:td">
@@ -541,7 +542,7 @@
 	<xsl:template match="dtb:pagenum" mode="office:text text:section table:table-cell">
 		<xsl:param name="pagenum_done" as="xs:boolean" select="false()" tunnel="yes"/>
 		<xsl:param name="pagenum_prefix" as="node()*" tunnel="yes"/>
-		<xsl:if test="not($pagenum_done)">
+		<xsl:if test="$page_numbers='true' and not($pagenum_done)">
 			<xsl:call-template name="text:p">
 				<xsl:with-param name="apply-templates" select="($pagenum_prefix, *|text())"/>
 			</xsl:call-template>
@@ -550,7 +551,7 @@
 	
 	<xsl:template match="dtb:pagenum" mode="text:p text:h text:span">
 		<xsl:param name="pagenum_done" as="xs:boolean" select="false()" tunnel="yes"/>
-		<xsl:if test="not($pagenum_done)">
+		<xsl:if test="$page_numbers='true' and not($pagenum_done)">
 			<xsl:element name="text:span">
 				<xsl:attribute name="text:style-name" select="'ERROR'"/>
 				<xsl:call-template name="FIXME"/>
@@ -560,7 +561,7 @@
 	
 	<xsl:template match="dtb:pagenum" mode="#all" priority="-1.2">
 		<xsl:param name="pagenum_done" as="xs:boolean" select="false()" tunnel="yes"/>
-		<xsl:if test="not($pagenum_done)">
+		<xsl:if test="$page_numbers='true' and not($pagenum_done)">
 			<xsl:call-template name="TERMINATE"/>
 		</xsl:if>
 	</xsl:template>
@@ -570,7 +571,7 @@
 		<xsl:next-match>
 			<xsl:with-param name="pagenum_done" select="true()" tunnel="yes"/>
 		</xsl:next-match>
-		<xsl:if test="not($pagenum_done)">
+		<xsl:if test="$page_numbers='true' and not($pagenum_done)">
 			<xsl:apply-templates mode="#current" select=".//dtb:pagenum"/>
 		</xsl:if>
 	</xsl:template>
