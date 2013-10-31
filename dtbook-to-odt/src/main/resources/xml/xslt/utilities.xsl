@@ -161,6 +161,10 @@
 	    * add <dtb:td class="covered"/>
 	      => for every @colspan or @rowspan
 	      => can be used in subsequent step to create <table:covered-table-cell/>
+	    * add <dtb:td class="phantom"/>
+	      => for every @rowspan that makes a cell span across the bottom of the table
+	      => are not added to fill up rows equally (both MS Word and LibreOffice will
+	         handle the case where rows don't contain the same number of cells correctly)
 	-->
 	<xsl:template name="dtb:insert-covered-table-cells" as="element()*">
 		<xsl:param name="rows_in" as="element()*"/>
@@ -195,6 +199,18 @@
 					<xsl:with-param name="cells_in" select="$cells_in[position() &gt; 1]"/>
 					<xsl:with-param name="cells_out" select="($cells_out, $cells_in[1])"/>
 					<xsl:with-param name="cells_covered" select="($cells_covered, $new_cells_covered)"/>
+					<xsl:with-param name="row" select="$row"/>
+					<xsl:with-param name="col" select="$col + 1"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:when test="$cells_covered[@row=$row and @col &gt; $col]">
+				<xsl:variable name="phantom_cell" as="element()">
+					<dtb:td class="phantom"/>
+				</xsl:variable>
+				<xsl:call-template name="dtb:insert-covered-table-cells">
+					<xsl:with-param name="rows_in" select="$rows_in"/>
+					<xsl:with-param name="cells_out" select="($cells_out, $phantom_cell)"/>
+					<xsl:with-param name="cells_covered" select="$cells_covered"/>
 					<xsl:with-param name="row" select="$row"/>
 					<xsl:with-param name="col" select="$col + 1"/>
 				</xsl:call-template>

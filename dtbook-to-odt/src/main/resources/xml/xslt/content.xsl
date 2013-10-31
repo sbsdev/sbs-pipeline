@@ -234,8 +234,9 @@
 		</xsl:variable>
 		<xsl:apply-templates select="$dtb:table/dtb:caption" mode="#current"/>
 		<xsl:variable name="max_width" select="max($dtb:table//dtb:tr/count(dtb:td|dtb:th))"/>
-			<xsl:if test="some $width in $dtb:table//dtb:tr/count(dtb:td|dtb:th)
-			              satisfies $width != $max_width">
+			<xsl:if test="$dtb:table//dtb:td[@class='phantom']
+			              or (some $width in $dtb:table//dtb:tr/count(dtb:td|dtb:th)
+			                  satisfies $width != $max_width)">
 				<xsl:element name="text:p">
 					<xsl:attribute name="text:style-name" select="'ERROR'"/>
 					<xsl:call-template name="office:annotation">
