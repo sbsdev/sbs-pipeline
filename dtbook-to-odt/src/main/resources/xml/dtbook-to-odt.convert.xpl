@@ -27,6 +27,7 @@
     
     <p:option name="template" required="true"/>
     <p:option name="asciimath" required="true"/>
+    <p:option name="images" required="true"/>
     <p:option name="image-dpi" required="true"/>
     
     <!-- Empty temporary directory dedicated to this conversion -->
@@ -107,7 +108,7 @@
             <p:identity/>
         </p:otherwise>
     </p:choose>
-    <p:identity name="dtbook-maybe-convert-asciimath-to-mathml"/>
+    <p:identity name="maybe-convert-asciimath-to-mathml"/>
     
     <!-- ============================= -->
     <!-- MODIFY CONTENT, STYLES & META -->
@@ -116,12 +117,13 @@
     <p:xslt name="content.temp">
         <p:input port="source">
             <p:pipe step="template-content" port="result"/>
-            <p:pipe step="dtbook-maybe-convert-asciimath-to-mathml" port="result"/>
+            <p:pipe step="maybe-convert-asciimath-to-mathml" port="result"/>
         </p:input>
         <p:input port="stylesheet">
             <p:document href="content-sbs.xsl"/>
         </p:input>
         <p:with-param name="asciimath" select="$asciimath"/>
+        <p:with-param name="images" select="$images"/>
         <p:with-param name="image_dpi" select="$image-dpi"/>
     </p:xslt>
     
@@ -176,6 +178,45 @@
         </p:input>
     </odt:update-files>
     
+    <!-- ============ -->
+    <!-- EMBED IMAGES -->
+    <!-- ============ -->
+    
+    <p:choose name="maybe-embed-images">
+        <p:when test="$images='EMBED'">
+            <p:output port="fileset.out">
+                <p:pipe step="embed-images" port="fileset.out"/>
+            </p:output>
+            <p:output port="in-memory.out" sequence="true">
+                <p:pipe step="embed-images" port="in-memory.out"/>
+            </p:output>
+            <odt:embed-images name="embed-images">
+                <p:input port="fileset.in">
+                    <p:pipe step="update-files" port="fileset.out"/>
+                </p:input>
+                <p:input port="in-memory.in">
+                    <p:pipe step="update-files" port="in-memory.out"/>
+                </p:input>
+                <p:input port="original-fileset">
+                    <p:pipe step="convert" port="fileset.in"/>
+                </p:input>
+            </odt:embed-images>
+        </p:when>
+        <p:otherwise>
+            <p:output port="fileset.out">
+                <p:pipe step="update-files" port="fileset.out"/>
+            </p:output>
+            <p:output port="in-memory.out" sequence="true">
+                <p:pipe step="update-files" port="in-memory.out"/>
+            </p:output>
+            <p:sink>
+                <p:input port="source">
+                    <p:empty/>
+                </p:input>
+            </p:sink>
+        </p:otherwise>
+    </p:choose>
+    
     <!-- =============== -->
     <!-- SEPARATE MATHML -->
     <!-- =============== -->
@@ -184,10 +225,10 @@
     
     <odt:separate-mathml name="separate-mathml">
         <p:input port="fileset.in">
-            <p:pipe step="update-files" port="fileset.out"/>
+            <p:pipe step="maybe-embed-images" port="fileset.out"/>
         </p:input>
         <p:input port="in-memory.in">
-            <p:pipe step="update-files" port="in-memory.out"/>
+            <p:pipe step="maybe-embed-images" port="in-memory.out"/>
         </p:input>
     </odt:separate-mathml>
     

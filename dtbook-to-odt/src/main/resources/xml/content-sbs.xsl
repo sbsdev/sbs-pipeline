@@ -33,6 +33,7 @@
 	<!-- SIDEBAR -->
 	<!-- ======= -->
 	<xsl:param name="asciimath" as="xs:string" select="'ASCIIMATH'"/>
+	<xsl:param name="images" as="xs:string" select="'EMBED'"/>
 	
 	
 	<!-- ======== -->
@@ -141,6 +142,12 @@
 	<!-- ====== -->
 	<!-- IMAGES -->
 	<!-- ====== -->
+	
+	<xsl:template match="dtb:img|dtb:imggroup" mode="office:text text:section table:table-cell text:list-item">
+		<xsl:if test="not($images='DROP')">
+			<xsl:next-match/>
+		</xsl:if>
+	</xsl:template>
 	
 	<xsl:template match="dtb:imggroup/dtb:caption" mode="office:text text:section table:table-cell">
 		<xsl:call-template name="text:empty-p"/>

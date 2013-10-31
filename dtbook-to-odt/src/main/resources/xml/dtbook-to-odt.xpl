@@ -55,8 +55,8 @@
     <p:option name="images" required="false" px:type="string" select="''">
         <p:documentation>
             <h2 px:role="name">images</h2>
-            <p px:role="desc">How to render images? `EMBEDDED', `LINKED' or `NONE'. Default is `EMBEDDED'.</p>
-            <pre><code class="example">LINKED</code></pre>
+            <p px:role="desc">How to render images? `EMBED', `LINK' or `DROP'. Default is `EMBED'.</p>
+            <pre><code class="example">LINK</code></pre>
         </p:documentation>
     </p:option>
     
@@ -145,6 +145,7 @@
                 </p:inline>
             </p:with-option>
             <p:with-option name="asciimath" select="if ($asciimath=('MATHML','BOTH')) then $asciimath else 'ASCIIMATH'"/>
+            <p:with-option name="images" select="if ($images=('LINK','DROP')) then $images else 'EMBED'"/>
             <p:with-option name="image-dpi" select="if ($image-dpi='') then '600' else $image-dpi"/>
         </sbs:dtbook-to-odt.convert>
         
