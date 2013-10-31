@@ -107,7 +107,7 @@
             <p:pipe step="dtbook-with-mathml" port="result"/>
         </p:input>
         <p:input port="stylesheet">
-            <p:document href="../xslt/content-sbs.xsl"/>
+            <p:document href="content-sbs.xsl"/>
         </p:input>
         <p:input port="parameters">
             <p:empty/>
@@ -116,7 +116,7 @@
     
     <p:xslt name="content">
         <p:input port="stylesheet">
-            <p:document href="../xslt/automatic-styles.xsl"/>
+            <p:document href="automatic-styles.xsl"/>
         </p:input>
         <p:input port="parameters">
             <p:empty/>
@@ -130,7 +130,7 @@
             <p:pipe step="convert" port="in-memory.in"/>
         </p:input>
         <p:input port="stylesheet">
-            <p:document href="../xslt/styles.xsl"/>
+            <p:document href="styles.xsl"/>
         </p:input>
         <p:input port="parameters">
             <p:empty/>
@@ -144,7 +144,7 @@
             <p:pipe step="convert" port="in-memory.in"/>
         </p:input>
         <p:input port="stylesheet">
-            <p:document href="../xslt/meta.xsl"/>
+            <p:document href="meta.xsl"/>
         </p:input>
         <p:input port="parameters">
             <p:empty/>
