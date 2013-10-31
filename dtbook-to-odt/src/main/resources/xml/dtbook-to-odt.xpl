@@ -44,6 +44,14 @@
         </p:documentation>
     </p:option>
     
+    <p:option name="image-dpi" required="false" px:type="string" select="''">
+        <p:documentation>
+            <h2 px:role="name">image-dpi</h2>
+            <p px:role="desc">Resolution of images. Default is 600 DPI.</p>
+            <pre><code class="example">600</code></pre>
+        </p:documentation>
+    </p:option>
+    
     <p:import href="dtbook-to-odt.convert.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/dtbook-utils/dtbook-load.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/odt-utils/library.xpl"/>
@@ -91,6 +99,7 @@
                     <irrelevant/>
                 </p:inline>
             </p:with-option>
+            <p:with-option name="image-dpi" select="if ($image-dpi='') then '600' else $image-dpi"/>
         </sbs:dtbook-to-odt.convert>
         
         <!-- ========= -->

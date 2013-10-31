@@ -26,6 +26,7 @@
     </p:output>
     
     <p:option name="template" required="true"/>
+    <p:option name="image-dpi" required="true"/>
     
     <!-- Empty temporary directory dedicated to this conversion -->
     <p:option name="temp-dir" required="true"/>
@@ -109,9 +110,7 @@
         <p:input port="stylesheet">
             <p:document href="content-sbs.xsl"/>
         </p:input>
-        <p:input port="parameters">
-            <p:empty/>
-        </p:input>
+        <p:with-param name="image_dpi" select="$image-dpi"/>
     </p:xslt>
     
     <p:xslt name="content">

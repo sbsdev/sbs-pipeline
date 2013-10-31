@@ -74,7 +74,7 @@
 	<!-- OPTIONS -->
 	<!-- ======= -->
 	
-	<xsl:param name="image_dpi" select="300"/>
+	<xsl:param name="image_dpi" as="xs:string" required="yes"/>
 	
 	<!-- ======== -->
 	<!-- TEMPLATE -->
@@ -478,8 +478,8 @@
 					<xsl:attribute name="draw:style-name" select="dtb:style-name(.)"/>
 					<xsl:attribute name="text:anchor-type" select="'as-char'"/>
 					<xsl:attribute name="draw:z-index" select="'0'"/>
-					<xsl:attribute name="svg:width" select="format-number($image_dimensions[1] div $image_dpi, '0.0000in')"/>
-					<xsl:attribute name="svg:height" select="format-number($image_dimensions[2] div $image_dpi, '0.0000in')"/>
+					<xsl:attribute name="svg:width" select="format-number($image_dimensions[1] div number($image_dpi), '0.0000in')"/>
+					<xsl:attribute name="svg:height" select="format-number($image_dimensions[2] div number($image_dpi), '0.0000in')"/>
 					<xsl:element name="draw:image">
 						<xsl:attribute name="xlink:href" select="$src"/>
 						<xsl:attribute name="xlink:type" select="'simple'"/>
