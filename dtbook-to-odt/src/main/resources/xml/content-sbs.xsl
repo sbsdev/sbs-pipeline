@@ -32,6 +32,7 @@
 	<!-- ======= -->
 	<!-- SIDEBAR -->
 	<!-- ======= -->
+	<xsl:param name="asciimath" as="xs:string" select="'ASCIIMATH'"/>
 	
 	
 	<!-- ======== -->
@@ -181,10 +182,12 @@
 	
 	<xsl:template match="math:math" mode="text:p text:h text:span">
 		<xsl:next-match/>
-		<xsl:call-template name="text:span">
-			<xsl:with-param name="text_style" select="style:name('dtb:span_asciimath')" tunnel="yes"/>
-			<xsl:with-param name="sequence" select="math:semantics/math:annotation[@encoding='ASCIIMath']/text()"/>
-		</xsl:call-template>
+		<xsl:if test="$asciimath='BOTH' and math:semantics/math:annotation[@encoding='ASCIIMath']">
+			<xsl:call-template name="text:span">
+				<xsl:with-param name="text_style" select="style:name('dtb:span_asciimath')" tunnel="yes"/>
+				<xsl:with-param name="sequence" select="math:semantics/math:annotation[@encoding='ASCIIMath']/text()"/>
+			</xsl:call-template>
+		</xsl:if>
 	</xsl:template>
 	
 	<!-- ============== -->
@@ -276,7 +279,7 @@
 		<xsl:sequence select="'Hyperlink'"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:span[@class=('exercisenumber','exercisepart')]" mode="text-style">
+	<xsl:template match="dtb:span[@class=('exercisenumber','exercisepart','asciimath')]" mode="text-style">
 		<xsl:sequence select="style:name(concat('dtb:span_', @class))"/>
 	</xsl:template>
 	

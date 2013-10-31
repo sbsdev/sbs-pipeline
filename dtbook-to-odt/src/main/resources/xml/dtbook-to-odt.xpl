@@ -44,6 +44,14 @@
         </p:documentation>
     </p:option>
     
+    <p:option name="asciimath" required="false" px:type="string" select="''">
+        <p:documentation>
+            <h2 px:role="name">asciimath</h2>
+            <p px:role="desc">How to render ASCIIMath-encoded formulas? `ASCIIMATH', `MATHML' or `BOTH'. Default is `ASCIIMATH'.</p>
+            <pre><code class="example">MATHML</code></pre>
+        </p:documentation>
+    </p:option>
+    
     <p:option name="image-dpi" required="false" px:type="string" select="''">
         <p:documentation>
             <h2 px:role="name">image-dpi</h2>
@@ -99,6 +107,7 @@
                     <irrelevant/>
                 </p:inline>
             </p:with-option>
+            <p:with-option name="asciimath" select="if ($asciimath=('MATHML','BOTH')) then $asciimath else 'ASCIIMATH'"/>
             <p:with-option name="image-dpi" select="if ($image-dpi='') then '600' else $image-dpi"/>
         </sbs:dtbook-to-odt.convert>
         

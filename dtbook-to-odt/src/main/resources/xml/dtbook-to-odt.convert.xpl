@@ -26,6 +26,7 @@
     </p:output>
     
     <p:option name="template" required="true"/>
+    <p:option name="asciimath" required="true"/>
     <p:option name="image-dpi" required="true"/>
     
     <!-- Empty temporary directory dedicated to this conversion -->
@@ -89,14 +90,24 @@
     <!-- ASCIIMATH TO MATHML -->
     <!-- =================== -->
     
-    <p:viewport match="dtb:span[@class='asciimath']" name="dtbook-with-mathml">
-        <p:viewport-source>
+    <p:identity>
+        <p:input port="source">
             <p:pipe step="convert" port="in-memory.in"/>
-        </p:viewport-source>
-        <am:asciimathml>
-            <p:with-option name="asciimath" select="string(.)"/>
-        </am:asciimathml>
-    </p:viewport>
+        </p:input>
+    </p:identity>
+    <p:choose>
+        <p:when test="$asciimath=('MATHML', 'BOTH')">
+            <p:viewport match="dtb:span[@class='asciimath']">
+                <px:asciimathml>
+                    <p:with-option name="asciimath" select="string(.)"/>
+                </px:asciimathml>
+            </p:viewport>
+        </p:when>
+        <p:otherwise>
+            <p:identity/>
+        </p:otherwise>
+    </p:choose>
+    <p:identity name="dtbook-maybe-convert-asciimath-to-mathml"/>
     
     <!-- ============================= -->
     <!-- MODIFY CONTENT, STYLES & META -->
@@ -105,11 +116,12 @@
     <p:xslt name="content.temp">
         <p:input port="source">
             <p:pipe step="template-content" port="result"/>
-            <p:pipe step="dtbook-with-mathml" port="result"/>
+            <p:pipe step="dtbook-maybe-convert-asciimath-to-mathml" port="result"/>
         </p:input>
         <p:input port="stylesheet">
             <p:document href="content-sbs.xsl"/>
         </p:input>
+        <p:with-param name="asciimath" select="$asciimath"/>
         <p:with-param name="image_dpi" select="$image-dpi"/>
     </p:xslt>
     
