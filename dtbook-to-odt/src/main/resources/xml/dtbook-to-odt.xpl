@@ -52,6 +52,43 @@
         </p:documentation>
     </p:option>
     
+    <p:option name="images" required="false" px:type="string" select="''">
+        <p:documentation>
+            <h2 px:role="name">images</h2>
+            <p px:role="desc">How to render images? `EMBEDDED', `LINKED' or `NONE'. Default is `EMBEDDED'.</p>
+            <pre><code class="example">LINKED</code></pre>
+        </p:documentation>
+    </p:option>
+    
+    <p:option name="phonetics" required="false" px:type="boolean" select="true()">
+        <p:documentation>
+            <h2 px:role="name">phonetics</h2>
+            <p px:role="desc">Render phonetics or not.</p>
+        </p:documentation>
+    </p:option>
+    
+    <p:option name="line-numbers" required="false" px:type="boolean" select="true()">
+        <p:documentation>
+            <h2 px:role="name">line-numbers</h2>
+            <p px:role="desc">Show line numbers or not.</p>
+        </p:documentation>
+    </p:option>
+    
+    <p:option name="page-numbers" required="false" px:type="boolean" select="true()">
+        <p:documentation>
+            <h2 px:role="name">page-numbers</h2>
+            <p px:role="desc">Show page numbers or not.</p>
+        </p:documentation>
+    </p:option>
+    
+    <p:option name="answer" required="false" px:type="string" select="''">
+        <p:documentation>
+            <h2 px:role="name">answer</h2>
+            <p px:role="desc">How to indicate answer fields.</p>
+            <pre><code class="example">_..</code></pre>
+        </p:documentation>
+    </p:option>
+    
     <p:option name="image-dpi" required="false" px:type="string" select="''">
         <p:documentation>
             <h2 px:role="name">image-dpi</h2>
