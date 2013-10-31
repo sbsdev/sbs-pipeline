@@ -87,7 +87,7 @@
                   <goal>jdeb</goal>
                 </goals>
                 <configuration>
-                  <controlDir>src/deb/debian/</controlDir>
+                  <controlDir>src/main/deb/DEBIAN</controlDir>
                   <timestamped>true</timestamped>
                   <deb>target/${project.artifactId}-${project.version}.deb</deb>
                   <dataSet>
