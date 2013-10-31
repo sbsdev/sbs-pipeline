@@ -29,6 +29,7 @@
     <p:option name="asciimath" required="true"/>
     <p:option name="images" required="true"/>
     <p:option name="image-dpi" required="true"/>
+    <p:option name="answer" required="true"/>
     
     <!-- Empty temporary directory dedicated to this conversion -->
     <p:option name="temp-dir" required="true"/>
@@ -125,6 +126,7 @@
         <p:with-param name="asciimath" select="$asciimath"/>
         <p:with-param name="images" select="$images"/>
         <p:with-param name="image_dpi" select="$image-dpi"/>
+        <p:with-param name="answer" select="$answer"/>
     </p:xslt>
     
     <p:xslt name="content">

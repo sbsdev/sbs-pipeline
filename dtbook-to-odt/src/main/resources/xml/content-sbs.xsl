@@ -34,6 +34,7 @@
 	<!-- ======= -->
 	<xsl:param name="asciimath" as="xs:string" select="'ASCIIMATH'"/>
 	<xsl:param name="images" as="xs:string" select="'EMBED'"/>
+	<xsl:param name="answer" as="xs:string" select="'_..'"/>
 	
 	
 	<!-- ======== -->
@@ -178,7 +179,7 @@
 		<xsl:call-template name="text:span">
 			<xsl:with-param name="lang" select="'none'" tunnel="yes"/>
 			<xsl:with-param name="sequence">
-				<xsl:text>_..</xsl:text>
+				<xsl:value-of select="$answer"/>
 			</xsl:with-param>
 		</xsl:call-template>
 	</xsl:template>

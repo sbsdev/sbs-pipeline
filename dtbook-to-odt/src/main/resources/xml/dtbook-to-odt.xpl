@@ -147,6 +147,7 @@
             <p:with-option name="asciimath" select="if ($asciimath=('MATHML','BOTH')) then $asciimath else 'ASCIIMATH'"/>
             <p:with-option name="images" select="if ($images=('LINK','DROP')) then $images else 'EMBED'"/>
             <p:with-option name="image-dpi" select="if ($image-dpi='') then '600' else $image-dpi"/>
+            <p:with-option name="answer" select="if ($answer='') then '_..' else $answer"/>
         </sbs:dtbook-to-odt.convert>
         
         <!-- ========= -->
