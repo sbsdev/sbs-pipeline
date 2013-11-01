@@ -6,7 +6,6 @@
     xmlns:sbs="http://www.sbs.ch/pipeline"
     xmlns:odt="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
     xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
-    xmlns:am="http://www.asciimathml.com"
     exclude-inline-prefixes="#all"
     type="sbs:dtbook-to-odt.convert" name="convert" version="1.0">
     
@@ -38,7 +37,7 @@
     
     <p:import href="http://www.daisy.org/pipeline/modules/file-utils/xproc/file-library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/odt-utils/library.xpl"/>
-    <p:import href="http://www.daisy.org/pipeline/modules/asciimathml/library.xpl"/>
+    <p:import href="http://www.daisy.org/pipeline/modules/asciimath-utils/library.xpl"/>
     
     <!-- ============= -->
     <!-- LOAD TEMPLATE -->
