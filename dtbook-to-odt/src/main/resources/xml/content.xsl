@@ -618,10 +618,11 @@
 	</xsl:template>
 	
 	<xsl:template match="text()" mode="text:p text:h text:span text:a">
+		<xsl:param name="text" as="xs:string" select="."/>
 		<xsl:param name="space" as="xs:string" tunnel="yes"/>
 		<xsl:choose>
 			<xsl:when test="$space='preserve'">
-				<xsl:analyze-string select="." regex="\S+">
+				<xsl:analyze-string select="$text" regex="\S+">
 					<xsl:matching-substring>
 						<xsl:value-of select="."/>
 					</xsl:matching-substring>
@@ -640,7 +641,7 @@
 				</xsl:analyze-string>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:sequence select="."/>
+				<xsl:sequence select="$text"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>

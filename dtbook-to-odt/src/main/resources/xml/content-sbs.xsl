@@ -36,6 +36,7 @@
 	<xsl:param name="images" as="xs:string" select="'EMBED'"/>
 	<xsl:param name="answer" as="xs:string" select="'_..'"/>
 	<xsl:param name="line_numbers" as="xs:string" select="'true'"/>
+	<xsl:param name="phonetics" as="xs:string" select="'true'"/>
 	
 	
 	<!-- ======== -->
@@ -249,6 +250,23 @@
 				<xsl:with-param name="apply-templates" select="($prefix, *|text())"/>
 			</xsl:call-template>
 		</xsl:if>
+	</xsl:template>
+	
+	<!--
+	    Phonetics
+	-->
+	<xsl:template match="text()" mode="text:p text:h text:span text:a">
+		<xsl:choose>
+			<xsl:when test="$phonetics='false'">
+				<xsl:next-match>
+					<xsl:with-param name="text"
+					                select="replace(., '[\p{IsIPAExtensions}\p{IsSpacingModifierLetters}\p{IsPhoneticExtensions}\p{IsPhoneticExtensionsSupplement}\p{IsModifierToneLetters}]', '')"/>
+				</xsl:next-match>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:next-match/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<!-- ============= -->
