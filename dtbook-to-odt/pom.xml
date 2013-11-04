@@ -19,6 +19,12 @@
 
   <name>DAISY Pipeline 2 module :: sbs:dtbook-to-odt</name>
 
+  <properties>
+    <odt-utils.version>1.0.0-SNAPSHOT</odt-utils.version>
+    <libreoffice-uno.version>4.0.2-SNAPSHOT</libreoffice-uno.version>
+    <jodconverter-core.version>3.0-beta-4-SNAPSHOT</jodconverter-core.version>
+  </properties>
+
   <build>
     <resources>
       <resource>
@@ -75,6 +81,37 @@
       <id>deb</id>
       <build>
         <plugins>
+	  <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+		<id>copy-dependencies</id>
+                <phase>package</phase>
+		<goals>
+		  <goal>copy</goal>
+		</goals>
+		<configuration>
+		  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.daisy.pipeline.modules</groupId>
+                      <artifactId>odt-utils</artifactId>
+                      <version>${odt-utils.version}</version>
+                    </artifactItem>
+                    <artifactItem>
+                      <groupId>org.daisy.libs</groupId>
+                      <artifactId>libreoffice-uno</artifactId>
+                      <version>${libreoffice-uno.version}</version>
+                    </artifactItem>
+                    <artifactItem>
+                      <groupId>org.daisy.libs</groupId>
+                      <artifactId>jodconverter-core</artifactId>
+                      <version>${jodconverter-core.version}</version>
+                    </artifactItem>
+		  </artifactItems>
+		</configuration>
+              </execution>
+	    </executions>
+	  </plugin>
           <plugin>
             <groupId>org.vafer</groupId>
             <artifactId>jdeb</artifactId>
@@ -94,6 +131,19 @@
                     <data>
                       <type>file</type>
                       <src>target/${project.artifactId}-${project.version}.jar</src>
+                      <mapper>
+                        <type>perm</type>
+                        <prefix>/opt/daisy-pipeline2/modules</prefix>
+                      </mapper>
+                    </data>
+                    <data>
+                      <type>directory</type>
+                      <src>target/dependency</src>
+                      <includes>
+                        odt-utils-${odt-utils.version}.jar,
+                        libreoffice-uno-${libreoffice-uno.version}.jar,
+                        jodconverter-core-${jodconverter-core.version}.jar
+                      </includes>
                       <mapper>
                         <type>perm</type>
                         <prefix>/opt/daisy-pipeline2/modules</prefix>
