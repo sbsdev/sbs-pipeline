@@ -1,0 +1,73 @@
+* Build
+** pipeline-assembly					     :debian:package:
+#+BEGIN_SRC sh
+cd ~/src/pipeline-assembly
+mvn clean package -Dpipeline.ws.port=8182 -Dpipeline.ws.local=false
+#+END_SRC
+** sbs-pipeline
+#+BEGIN_SRC sh
+cd ~/src/sbs-pipeline
+mvn clean install
+#+END_SRC
+** dtbook-to-odt					     :debian:package:
+#+BEGIN_SRC sh
+cd ~/src/sbs-pipeline/dtbook-to-odt
+mvn clean install
+#+END_SRC
+** asciimathml					       :merged:with:pipeline:
+#+BEGIN_SRC sh
+git clone https://github.com/daisy-consortium/pipeline-modules-common.git
+cd ~/src/pipeline-modules-common
+git checkout origin-asciimathml
+cd asciimathml
+mvn clean package install
+#+END_SRC
+** jodconverter
+#+BEGIN_SRC sh
+git clone https://github.com/daisy-consortium/osgi-libs.git
+cd ~/src/osgi-libs
+git checkout origin-jodconverter
+cd jodconverter
+mvn clean install
+#+END_SRC
+** libreoffice
+#+BEGIN_SRC sh
+cd ~/src/osgi-libs
+git checkout origin-jodconverter
+cd libreoffice-uno
+mvn clean install
+#+END_SRC
+** odt-utils
+#+BEGIN_SRC sh
+git clone https://github.com/daisy-consortium/pipeline-scripts-utils.git
+cd ~/src/pipeline-scripts-utils
+git checkout origin-odt-utils
+cd dtbook-utils
+mvn clean install
+#+END_SRC
+** image-utils					       :merged:with:pipeline:
+#+BEGIN_SRC sh
+cd ~/src/pipeline-modules-common
+git checkout master
+cd image-utils
+mvn clean install
+#+END_SRC
+
+* Modify the assembly
+
+* Deploy
+#+BEGIN_SRC sh
+~/src/daisyproducer/apache/deploy.sh
+#+END_SRC
+
+There is a bug in the cli in that it needs write access to
+~/opt/daisy-pipeline/cli~. As a workaround do the following:
+
+#+BEGIN_SRC sh
+chmod o+w /opt/daisy-pipeline/cli
+#+END_SRC sh
+
+* install start script
+#+BEGIN_SRC sh
+/sbin/insserv daisy-pipeline
+#+END_SRC sh
