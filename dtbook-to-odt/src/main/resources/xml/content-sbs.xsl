@@ -54,7 +54,7 @@
 	<!-- LISTS -->
 	<!-- ===== -->
 	
-	<xsl:template match="dtb:list" mode="office:text text:section table:table-cell">
+	<xsl:template match="dtb:list" mode="office:text office:annotation text:section table:table-cell">
 		<xsl:call-template name="text:empty-p"/>
 		<xsl:next-match/>
 		<xsl:call-template name="text:empty-p"/>
@@ -146,13 +146,13 @@
 	<!-- IMAGES -->
 	<!-- ====== -->
 	
-	<xsl:template match="dtb:img|dtb:imggroup" mode="office:text text:section table:table-cell text:list-item">
+	<xsl:template match="dtb:img|dtb:imggroup" mode="office:text office:annotation text:section table:table-cell text:list-item">
 		<xsl:if test="not($images='DROP')">
 			<xsl:next-match/>
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="dtb:imggroup/dtb:caption" mode="office:text text:section table:table-cell">
+	<xsl:template match="dtb:imggroup/dtb:caption" mode="office:text office:annotation text:section table:table-cell">
 		<xsl:call-template name="text:empty-p"/>
 		<xsl:next-match>
 			<xsl:with-param name="caption_suffix" tunnel="yes">
@@ -165,7 +165,7 @@
 	<!-- PRODNOTE -->
 	<!-- ======== -->
 	
-	<xsl:template match="dtb:prodnote" mode="office:text text:section">
+	<xsl:template match="dtb:prodnote" mode="office:text office:annotation text:section">
 		<xsl:next-match>
 			<xsl:with-param name="prodnote_announcement" tunnel="yes">
 				<dtb:p class="announcement" xml:lang="de">[Anmerkung e-text]</dtb:p>
@@ -204,7 +204,7 @@
 	<!-- PAGE NUMBERING -->
 	<!-- ============== -->
 	
-	<xsl:template match="dtb:pagenum" mode="office:text text:section table:table-cell">
+	<xsl:template match="dtb:pagenum" mode="office:text office:annotation text:section table:table-cell">
 		<xsl:next-match>
 			<xsl:with-param name="pagenum_prefix" tunnel="yes">
 				<dtb:span xml:lang="de">\\Seite </dtb:span>
@@ -227,7 +227,7 @@
 		</xsl:next-match>
 	</xsl:template>
 	
-	<xsl:template match="dtb:blockquote|dtb:epigraph|dtb:poem" mode="office:text text:section">
+	<xsl:template match="dtb:blockquote|dtb:epigraph|dtb:poem" mode="office:text office:annotation text:section">
 		<xsl:call-template name="text:empty-p"/>
 		<xsl:next-match/>
 		<xsl:call-template name="text:empty-p"/>

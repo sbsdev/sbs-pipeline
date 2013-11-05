@@ -87,15 +87,17 @@
 		<xsl:sequence select="style:name(concat('dtb:', local-name($element)))"/>
 	</xsl:function>
 	
-	<xsl:function name="f:node-trace">
-		<xsl:param name="node" as="node()"/>
-		<xsl:sequence select="string-join(('',
-		                        $node/ancestor::*/name(),
-		                        if ($node/self::element()) then name($node)
-		                          else if ($node/self::attribute()) then concat('@', name($node))
-		                          else if ($node/self::text()) then 'text()'
-		                          else '?'
-		                      ), '/')"/>
+	<xsl:function name="f:node-trace" as="xs:string">
+		<xsl:param name="node" as="node()?"/>
+		<xsl:sequence select="if ($node)
+		                      then concat(
+		                             f:node-trace($node/parent::*), '/',
+		                             if ($node/self::element())
+		                               then concat(name($node), '[', count($node/preceding-sibling::*[name()=name($node)]) + 1, ']')
+		                               else if ($node/self::attribute()) then concat('@', name($node))
+		                               else if ($node/self::text()) then 'text()'
+		                               else '?')
+		                      else ''"/>
 	</xsl:function>
 	
 	<xsl:template name="generate-automatic-style-name" as="xs:string">

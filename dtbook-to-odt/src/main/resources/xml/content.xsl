@@ -144,11 +144,11 @@
 		<xsl:sequence select="($paragraph_style, dtb:style-name(.))[1]"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:p[.//dtb:pagenum]" mode="office:text text:section" priority="1">
+	<xsl:template match="dtb:p[.//dtb:pagenum]" mode="office:text office:annotation text:section" priority="1">
 		<xsl:call-template name="insert-pagenum-after"/>
 	</xsl:template>
 		
-	<xsl:template match="dtb:p" mode="office:text text:section text:list-item table:table-cell text:note-body">
+	<xsl:template match="dtb:p" mode="office:text office:annotation text:section text:list-item table:table-cell text:note-body">
 		<xsl:call-template name="text:p"/>
 	</xsl:template>
 	
@@ -176,7 +176,7 @@
 		<xsl:call-template name="insert-pagenum-after"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:list" mode="office:text text:section table:table-cell text:list-item">
+	<xsl:template match="dtb:list" mode="office:text office:annotation text:section table:table-cell text:list-item">
 		<xsl:call-template name="text:list"/>
 	</xsl:template>
 	
@@ -188,11 +188,11 @@
 		</xsl:element>
 	</xsl:template>
 	
-	<xsl:template match="dtb:lic" mode="text:p">
+	<xsl:template match="dtb:lic" mode="text:p text:span">
 		<xsl:apply-templates mode="#current"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:dl" mode="office:text text:section">
+	<xsl:template match="dtb:dl" mode="office:text office:annotation text:section">
 		<xsl:call-template name="text:list"/>
 	</xsl:template>
 	
@@ -241,8 +241,9 @@
 				<xsl:element name="text:p">
 					<xsl:attribute name="text:style-name" select="'ERROR'"/>
 					<xsl:call-template name="office:annotation">
-						<xsl:with-param name="text"
-						                select="'Not every row in this tables contains the same number of cells!'"/>
+						<xsl:with-param name="apply-templates">
+							<dtb:span xml:lang="en">Not every row in this tables contains the same number of cells!</dtb:span>
+						</xsl:with-param>
 					</xsl:call-template>
 					<xsl:text>FIX THE FOLLOWING TABLE!</xsl:text>
 				</xsl:element>
@@ -431,11 +432,11 @@
 		</xsl:call-template>
 	</xsl:template>
 	
-	<xsl:template match="dtb:blockquote|dtb:epigraph|dtb:poem" mode="office:text text:section">
+	<xsl:template match="dtb:blockquote|dtb:epigraph|dtb:poem" mode="office:text office:annotation text:section">
 		<xsl:apply-templates mode="#current"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:prodnote" mode="office:text text:section">
+	<xsl:template match="dtb:prodnote" mode="office:text office:annotation text:section">
 		<xsl:param name="prodnote_announcement" as="node()*" tunnel="yes"/>
 		<xsl:apply-templates select="$group-inline-nodes" mode="#current">
 			<xsl:with-param name="select" select="($prodnote_announcement, *|text())"/>
@@ -444,15 +445,15 @@
 	
 	<xsl:template match="dtb:doctitle|dtb:docauthor|dtb:byline|dtb:bridgehead|dtb:hd|
 	                     dtb:covertitle|dtb:author"
-	              mode="office:text text:section">
+	              mode="office:text office:annotation text:section">
 		<xsl:call-template name="text:p"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:linegroup" mode="office:text text:section">
+	<xsl:template match="dtb:linegroup" mode="office:text office:annotation text:section">
 		<xsl:apply-templates mode="#current"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:line" mode="office:text text:section">
+	<xsl:template match="dtb:line" mode="office:text office:annotation text:section">
 		<xsl:call-template name="text:p"/>
 	</xsl:template>
 	
@@ -464,12 +465,12 @@
 		<xsl:sequence select="dtb:style-name(.)"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:imggroup" mode="office:text text:section table:table-cell text:list-item">
+	<xsl:template match="dtb:imggroup" mode="office:text office:annotation text:section table:table-cell text:list-item">
 		<xsl:apply-templates select="dtb:caption" mode="#current"/>
 		<xsl:apply-templates select="*[not(self::dtb:caption)]" mode="#current"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:img" mode="office:text text:section table:table-cell text:list-item">
+	<xsl:template match="dtb:img" mode="office:text office:annotation text:section table:table-cell text:list-item">
 		<xsl:variable name="src" select="resolve-uri(@src, base-uri(collection()[2]/dtb:dtbook))"/>
 		<xsl:variable name="image_dimensions" as="xs:integer*" select="pf:image-dimensions($src)"/>
 		<xsl:call-template name="text:p">
@@ -497,7 +498,7 @@
 		</xsl:call-template>
 	</xsl:template>
 	
-	<xsl:template match="dtb:imggroup/dtb:caption" mode="office:text text:section table:table-cell text:list-item">
+	<xsl:template match="dtb:imggroup/dtb:caption" mode="office:text office:annotation text:section table:table-cell text:list-item">
 		<xsl:param name="caption_prefix" as="node()*" tunnel="yes"/>
 		<xsl:param name="caption_suffix" as="node()*" tunnel="yes"/>
 		<xsl:apply-templates select="$group-inline-nodes" mode="#current">
@@ -539,7 +540,7 @@
 		<xsl:sequence select="dtb:style-name(.)"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:pagenum" mode="office:text text:section table:table-cell">
+	<xsl:template match="dtb:pagenum" mode="office:text office:annotation text:section table:table-cell">
 		<xsl:param name="pagenum_done" as="xs:boolean" select="false()" tunnel="yes"/>
 		<xsl:param name="pagenum_prefix" as="node()*" tunnel="yes"/>
 		<xsl:if test="$page_numbers='true' and not($pagenum_done)">
@@ -596,7 +597,7 @@
 		<xsl:call-template name="text:span"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:code|dtb:samp" mode="office:text text:section text:list-item table:table-cell text:note-body">
+	<xsl:template match="dtb:code|dtb:samp" mode="office:text office:annotation text:section text:list-item table:table-cell text:note-body">
 		<xsl:call-template name="text:p"/>
 	</xsl:template>
 	
@@ -742,7 +743,7 @@
 	
 	<xsl:template match="dtb:head" mode="#all"/>
 	
-	<xsl:template match="*" mode="office:text text:section text:list-item table:table-cell text:note-body" priority="-1.3">
+	<xsl:template match="*" mode="office:text office:annotation text:section text:list-item table:table-cell text:note-body" priority="-1.3">
 		<xsl:element name="text:p">
 			<xsl:attribute name="text:style-name" select="'ERROR'"/>
 			<xsl:call-template name="FIXME"/>
@@ -840,9 +841,14 @@
 					-->
 					<xsl:if test="$cur_text_style and $text_style and $cur_text_style != $text_style">
 						<xsl:call-template name="office:annotation">
-							<xsl:with-param name="text"
-							                select="concat('Nested styles: `', style:display-name($text_style),
-							                        '` inside `', style:display-name($cur_text_style), '`')"/>
+							<xsl:with-param name="apply-templates">
+								<dtb:span xml:lang="en">
+									Nested styles:
+									<dtb:strong><xsl:value-of select="style:display-name($text_style)"/></dtb:strong>
+									inside
+									<dtb:strong><xsl:value-of select="style:display-name($cur_text_style)"/></dtb:strong>
+								</dtb:span>
+							</xsl:with-param>
 						</xsl:call-template>
 					</xsl:if>
 					<xsl:choose>
@@ -970,33 +976,65 @@
 	</xsl:template>
 	
 	<xsl:template name="office:annotation">
-		<xsl:param name="text" as="xs:string"/>
-		<xsl:element name="office:annotation">
-			<xsl:element name="dc:creator">
-				<xsl:text>sbs:dtbook-to-odt</xsl:text>
-			</xsl:element>
-			<xsl:element name="dc:date">
-				<xsl:sequence select="current-dateTime()"/>
-			</xsl:element>
-			<xsl:element name="text:p">
-				<xsl:element name="text:span">
-					<xsl:sequence select="$text"/>
+		<xsl:param name="apply-templates" as="node()*" select="*|text()"/>
+		<!--
+		    avoid nested annotations
+		-->
+		<xsl:param name="inside_annotation" as="xs:boolean" tunnel="yes" select="false()"/>
+		<xsl:if test="not($inside_annotation)">
+			<xsl:element name="office:annotation">
+				<xsl:element name="dc:creator">
+					<xsl:text>sbs:dtbook-to-odt</xsl:text>
 				</xsl:element>
+				<xsl:element name="dc:date">
+					<xsl:sequence select="current-dateTime()"/>
+				</xsl:element>
+				<xsl:apply-templates select="$group-inline-nodes" mode="office:annotation">
+					<xsl:with-param name="select" select="$apply-templates"/>
+					<xsl:with-param name="inside_annotation" tunnel="yes" select="true()"/>
+					<!--
+					    reset styling
+					-->
+					<xsl:with-param name="text_style" select="()" tunnel="yes"/>
+					<xsl:with-param name="paragraph_style" select="()" tunnel="yes"/>
+					<xsl:with-param name="list_style" select="()" tunnel="yes"/>
+				</xsl:apply-templates>
 			</xsl:element>
-		</xsl:element>
+		</xsl:if>
 	</xsl:template>
 	
 	<!-- ====================================================== -->
 	
 	<xsl:template name="FIXME">
+		<xsl:param name="inside_annotation" as="xs:boolean" tunnel="yes" select="false()"/>
 		<xsl:message>
-			<xsl:text>FIXME!! </xsl:text>
+			<xsl:text>[ODT] FIXME!! </xsl:text>
+			<xsl:text>Some content cannot be rendered here. </xsl:text>
+			<xsl:text>Trace: </xsl:text>
 			<xsl:sequence select="f:node-trace(.)"/>
 		</xsl:message>
-		<xsl:call-template name="office:annotation">
-			<xsl:with-param name="text" select="f:node-trace(.)"/>
-		</xsl:call-template>
-		<xsl:text>FIXME!!</xsl:text>
+		<xsl:choose>
+			<xsl:when test="not($inside_annotation)">
+				<xsl:call-template name="office:annotation">
+					<xsl:with-param name="apply-templates">
+						<dtb:p xml:lang="en">Some content cannot be rendered here.</dtb:p>
+						<dtb:p xml:lang="en">
+							<dtb:strong>Content:</dtb:strong>
+						</dtb:p>
+						<xsl:sequence select="."/>
+						<dtb:p xml:lang="en">
+							<dtb:strong>Trace:</dtb:strong>
+							<xsl:text> </xsl:text>
+							<xsl:value-of select="f:node-trace(.)"/>
+						</dtb:p>
+					</xsl:with-param>
+				</xsl:call-template>
+				<xsl:text>FIXME!!</xsl:text>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:text> ? </xsl:text>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template name="TERMINATE">
