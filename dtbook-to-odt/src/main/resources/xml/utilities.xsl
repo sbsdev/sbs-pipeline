@@ -61,6 +61,17 @@
 		                      if ($element[self::text:span or self::text:a]) then 'text' else ''"/>
 	</xsl:function>
 	
+	<!--
+	    Assume collection()[1] is the template content.xml
+	    TODO: what about automatic-styles in styles.xml?
+	-->
+	<xsl:function name="style:is-automatic-style" as="xs:boolean">
+		<xsl:param name="style-name" as="xs:string"/>
+		<xsl:param name="family" as="xs:string"/>
+		<xsl:sequence select="boolean(collection()[1]//office:automatic-styles/style:style
+		                      [@style:name=$style-name and @style:family=$family])"/>
+	</xsl:function>
+	
 	<xsl:function name="fo:language">
 		<xsl:param name="lang" as="xs:string"/>
 		<xsl:sequence select="lower-case(replace($lang, '^([^-_]+).*', '$1'))"/>

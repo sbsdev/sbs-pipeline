@@ -839,7 +839,9 @@
 					<!--
 					    FIXME: don't give warning when inner most style is an automatic style!
 					-->
-					<xsl:if test="$cur_text_style and $text_style and $cur_text_style != $text_style">
+					<xsl:if test="$cur_text_style and $text_style
+					              and $cur_text_style != $text_style
+					              and not(style:is-automatic-style($text_style, 'text'))">
 						<xsl:call-template name="office:annotation">
 							<xsl:with-param name="apply-templates">
 								<dtb:span xml:lang="en">
