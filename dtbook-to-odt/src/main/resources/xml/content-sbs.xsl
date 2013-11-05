@@ -133,12 +133,26 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="dtb:annotation/dtb:p" as="xs:boolean" mode="is-block-element">
+	<xsl:template match="dtb:note/dtb:p|dtb:annotation/dtb:p" as="xs:boolean" mode="is-block-element">
 		<xsl:sequence select="false()"/>
 	</xsl:template>
 	
 	<xsl:template match="dtb:annotation/dtb:p" mode="text:p text:h text:span">
 		<xsl:apply-templates mode="#current"/>
+	</xsl:template>
+	
+	<xsl:template match="dtb:note/dtb:p" mode="text:p text:h text:span">
+		<xsl:choose>
+			<!--
+			    if only one paragraph in a note, treat like inline
+			-->
+			<xsl:when test="normalize-space(string(.))=normalize-space(string(parent::*))">
+				<xsl:apply-templates mode="#current"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:next-match/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	
