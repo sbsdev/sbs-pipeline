@@ -1,0 +1,63 @@
+* Build
+** pipeline-assembly
+#+BEGIN_SRC sh
+cd ~/src/pipeline-assembly
+mvn clean package -P deb
+#+END_SRC
+** sbs-pipeline
+#+BEGIN_SRC sh
+cd ~/src/sbs-pipeline
+mvn clean install
+#+END_SRC
+** jodconverter
+#+BEGIN_SRC sh
+git clone https://github.com/daisy-consortium/osgi-libs.git
+cd ~/src/osgi-libs
+git checkout origin-jodconverter
+cd jodconverter
+mvn clean install
+#+END_SRC
+** libreoffice
+#+BEGIN_SRC sh
+cd ~/src/osgi-libs
+git checkout origin-jodconverter
+cd libreoffice-uno
+mvn clean install
+#+END_SRC
+** odt-utils
+#+BEGIN_SRC sh
+git clone https://github.com/daisy-consortium/pipeline-scripts-utils.git
+cd ~/src/pipeline-scripts-utils
+git checkout origin-odt-utils
+cd dtbook-utils
+mvn clean install
+#+END_SRC
+** dtbook-to-odt
+#+BEGIN_SRC sh
+cd ~/src/sbs-pipeline/dtbook-to-odt
+mvn clean package -P deb
+#+END_SRC
+
+* Deployment
+#+BEGIN_SRC sh
+~/src/daisyproducer/apache/deploy.sh
+#+END_SRC
+
+There is a bug in the cli in that it needs write access to
+~/opt/daisy-pipeline/cli~. As a workaround do the following:
+
+#+BEGIN_SRC sh
+chmod o+w /opt/daisy-pipeline/cli
+#+END_SRC sh
+
+* Configuration
+Modify ~/etc/default/pipeline2d~.
+
+#+BEGIN_SRC sh
+#export JAVA_MAX_MEM=1G
+#+END_SRC sh
+
+#+BEGIN_SRC sh
+export JAVA_MAX_MEM=2G
+#+END_SRC sh
+
