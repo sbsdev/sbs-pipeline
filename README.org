@@ -1,26 +1,13 @@
 * Build
-** pipeline-assembly					     :debian:package:
+** pipeline-assembly
 #+BEGIN_SRC sh
 cd ~/src/pipeline-assembly
-mvn clean package -Dpipeline.ws.port=8182 -Dpipeline.ws.local=false
+mvn clean package -P deb
 #+END_SRC
 ** sbs-pipeline
 #+BEGIN_SRC sh
 cd ~/src/sbs-pipeline
 mvn clean install
-#+END_SRC
-** dtbook-to-odt					     :debian:package:
-#+BEGIN_SRC sh
-cd ~/src/sbs-pipeline/dtbook-to-odt
-mvn clean install
-#+END_SRC
-** asciimathml					       :merged:with:pipeline:
-#+BEGIN_SRC sh
-git clone https://github.com/daisy-consortium/pipeline-modules-common.git
-cd ~/src/pipeline-modules-common
-git checkout origin-asciimathml
-cd asciimathml
-mvn clean package install
 #+END_SRC
 ** jodconverter
 #+BEGIN_SRC sh
@@ -45,17 +32,13 @@ git checkout origin-odt-utils
 cd dtbook-utils
 mvn clean install
 #+END_SRC
-** image-utils					       :merged:with:pipeline:
+** dtbook-to-odt
 #+BEGIN_SRC sh
-cd ~/src/pipeline-modules-common
-git checkout master
-cd image-utils
-mvn clean install
+cd ~/src/sbs-pipeline/dtbook-to-odt
+mvn clean package -P deb
 #+END_SRC
 
-* Modify the assembly
-
-* Deploy
+* Deployment
 #+BEGIN_SRC sh
 ~/src/daisyproducer/apache/deploy.sh
 #+END_SRC
@@ -67,7 +50,14 @@ There is a bug in the cli in that it needs write access to
 chmod o+w /opt/daisy-pipeline/cli
 #+END_SRC sh
 
-* install start script
+* Configuration
+Modify ~/etc/default/pipeline2d~.
+
 #+BEGIN_SRC sh
-/sbin/insserv daisy-pipeline
+#export JAVA_MAX_MEM=1G
 #+END_SRC sh
+
+#+BEGIN_SRC sh
+export JAVA_MAX_MEM=2G
+#+END_SRC sh
+
