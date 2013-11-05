@@ -661,7 +661,7 @@
 	<!-- LANGUAGE -->
 	<!-- ======== -->
 	
-	<xsl:variable name="document_lang" select="string(/dtb:dtbook/@xml:lang)"/>
+	<xsl:variable name="document_lang" select="string(collection()[2]/dtb:dtbook/@xml:lang)"/>
 	
 	<xsl:template match="dtb:*"
 	              mode="office:text
@@ -807,20 +807,34 @@
 	<xsl:template name="text:span">
 		<xsl:param name="lang" as="xs:string" tunnel="yes"/>
 		<xsl:param name="text_style" as="xs:string?" tunnel="yes"/>
-		<xsl:param name="cur_paragraph_lang" as="xs:string" tunnel="yes"/>
 		<xsl:param name="cur_text_lang" as="xs:string?" tunnel="yes"/>
 		<xsl:param name="cur_text_style" as="xs:string?" tunnel="yes"/>
 		<xsl:param name="apply-templates" as="node()*" select="*|text()"/>
 		<xsl:param name="sequence" as="node()*"/>
 		<xsl:choose>
-			<xsl:when test="$lang!=($cur_text_lang,$cur_paragraph_lang)[1] or $text_style">
+			<xsl:when test="$lang!=($cur_text_lang,$document_lang)[1]">
 				<xsl:element name="text:span">
-					<xsl:if test="$lang!=($cur_text_lang,$cur_paragraph_lang)[1]">
-						<xsl:attribute name="xml:lang" select="$lang"/>
-					</xsl:if>
-					<xsl:if test="$text_style">
-						<xsl:attribute name="text:style-name" select="$text_style"/>
-					</xsl:if>
+					<xsl:attribute name="xml:lang" select="$lang"/>
+					<xsl:choose>
+						<xsl:when test="$text_style">
+							<xsl:call-template name="text:span">
+								<xsl:with-param name="cur_text_lang" select="$lang" tunnel="yes"/>
+								<xsl:with-param name="apply-templates" select="$apply-templates"/>
+								<xsl:with-param name="sequence" select="$sequence"/>
+							</xsl:call-template>
+						</xsl:when>
+						<xsl:when test="exists($sequence)">
+							<xsl:sequence select="$sequence"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates select="$apply-templates" mode="text:span"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:element>
+			</xsl:when>
+			<xsl:when test="$text_style">
+				<xsl:element name="text:span">
+					<xsl:attribute name="text:style-name" select="$text_style"/>
 					<!--
 					    FIXME: don't give warning when inner most style is an automatic style!
 					-->
@@ -831,21 +845,24 @@
 							                        '` inside `', style:display-name($cur_text_style), '`')"/>
 						</xsl:call-template>
 					</xsl:if>
-					<xsl:sequence select="$sequence"/>
-					<xsl:if test="not(exists($sequence))">
-						<xsl:apply-templates select="$apply-templates" mode="text:span">
-							<xsl:with-param name="text_style" select="()" tunnel="yes"/>
-							<xsl:with-param name="cur_text_lang" select="$lang" tunnel="yes"/>
-							<xsl:with-param name="cur_text_style" select="$text_style" tunnel="yes"/>
-						</xsl:apply-templates>
-					</xsl:if>
+					<xsl:choose>
+						<xsl:when test="exists($sequence)">
+							<xsl:sequence select="$sequence"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates select="$apply-templates" mode="text:span">
+								<xsl:with-param name="text_style" select="()" tunnel="yes"/>
+								<xsl:with-param name="cur_text_style" select="$text_style" tunnel="yes"/>
+							</xsl:apply-templates>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:element>
 			</xsl:when>
-			<xsl:otherwise>
+			<xsl:when test="exists($sequence)">
 				<xsl:sequence select="$sequence"/>
-				<xsl:if test="not(exists($sequence))">
-					<xsl:apply-templates select="$apply-templates" mode="#current"/>
-				</xsl:if>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates select="$apply-templates" mode="#current"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -853,15 +870,13 @@
 	<xsl:template name="text:a">
 		<xsl:param name="lang" as="xs:string" tunnel="yes"/>
 		<xsl:param name="text_style" as="xs:string?" tunnel="yes"/>
-		<xsl:param name="cur_paragraph_lang" as="xs:string" tunnel="yes"/>
 		<xsl:param name="cur_text_lang" as="xs:string?" tunnel="yes"/>
-		<xsl:param name="cur_text_style" as="xs:string?" tunnel="yes"/>
 		<xsl:param name="xlink:href" as="xs:string"/>
 		<xsl:element name="text:a">
 			<xsl:attribute name="xlink:href" select="$xlink:href"/>
 			<xsl:attribute name="xlink:type" select="'simple'"/>
 			<xsl:choose>
-				<xsl:when test="$lang!=($cur_text_lang,$cur_paragraph_lang)[1] or $text_style">
+				<xsl:when test="$text_style or $lang!=($cur_text_lang,$document_lang)[1]">
 					<xsl:call-template name="text:span"/>
 				</xsl:when>
 				<xsl:otherwise>
@@ -878,25 +893,21 @@
 		<xsl:param name="apply-templates" as="node()*" select="*|text()"/>
 		<xsl:param name="sequence" as="node()*"/>
 		<xsl:element name="text:p">
-			<xsl:if test="$lang!=$document_lang">
-				<xsl:attribute name="xml:lang" select="$lang"/>
-			</xsl:if>
 			<xsl:attribute name="text:style-name" select="($paragraph_style, 'Standard')[1]"/>
 			<xsl:choose>
-				<xsl:when test="$text_style">
+				<xsl:when test="$text_style or $lang!=$document_lang">
 					<xsl:call-template name="text:span">
 						<xsl:with-param name="apply-templates" select="$apply-templates"/>
 						<xsl:with-param name="sequence" select="$sequence"/>
-						<xsl:with-param name="cur_paragraph_lang" select="$lang" tunnel="yes"/>
+						<xsl:with-param name="cur_text_lang" select="()" tunnel="yes"/>
+						<xsl:with-param name="cur_text_style" select="()" tunnel="yes"/>
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:when test="exists($sequence)">
 					<xsl:sequence select="$sequence"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:apply-templates select="$apply-templates" mode="text:p">
-						<xsl:with-param name="cur_paragraph_lang" select="$lang" tunnel="yes"/>
-					</xsl:apply-templates>
+					<xsl:apply-templates select="$apply-templates" mode="text:p"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:element>
@@ -910,26 +921,22 @@
 		<xsl:param name="apply-templates" as="node()*" select="*|text()"/>
 		<xsl:param name="sequence" as="node()*"/>
 		<xsl:element name="text:h">
-			<xsl:if test="$lang!=$document_lang">
-				<xsl:attribute name="xml:lang" select="$lang"/>
-			</xsl:if>
 			<xsl:attribute name="text:outline-level" select="$text:outline-level"/>
 			<xsl:attribute name="text:style-name" select="($paragraph_style, style:name(concat('Heading ', $text:outline-level)))[1]"/>
 			<xsl:choose>
-				<xsl:when test="$text_style">
+				<xsl:when test="$text_style or $lang!=$document_lang">
 					<xsl:call-template name="text:span">
 						<xsl:with-param name="apply-templates" select="$apply-templates"/>
 						<xsl:with-param name="sequence" select="$sequence"/>
-						<xsl:with-param name="cur_paragraph_lang" select="$lang" tunnel="yes"/>
+						<xsl:with-param name="cur_text_lang" select="()" tunnel="yes"/>
+						<xsl:with-param name="cur_text_style" select="()" tunnel="yes"/>
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:when test="exists($sequence)">
 					<xsl:sequence select="$sequence"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:apply-templates select="$apply-templates" mode="text:h">
-						<xsl:with-param name="cur_paragraph_lang" select="$lang" tunnel="yes"/>
-					</xsl:apply-templates>
+					<xsl:apply-templates select="$apply-templates" mode="text:h"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:element>
