@@ -81,17 +81,17 @@
       <id>deb</id>
       <build>
         <plugins>
-	  <plugin>
+          <plugin>
             <artifactId>maven-dependency-plugin</artifactId>
             <executions>
               <execution>
-		<id>copy-dependencies</id>
+                <id>copy-dependencies</id>
                 <phase>package</phase>
-		<goals>
-		  <goal>copy</goal>
-		</goals>
-		<configuration>
-		  <artifactItems>
+                <goals>
+                  <goal>copy</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
                     <artifactItem>
                       <groupId>org.daisy.pipeline.modules</groupId>
                       <artifactId>odt-utils</artifactId>
@@ -107,11 +107,11 @@
                       <artifactId>jodconverter-core</artifactId>
                       <version>${jodconverter-core.version}</version>
                     </artifactItem>
-		  </artifactItems>
-		</configuration>
+                  </artifactItems>
+                </configuration>
               </execution>
-	    </executions>
-	  </plugin>
+            </executions>
+          </plugin>
           <plugin>
             <groupId>org.vafer</groupId>
             <artifactId>jdeb</artifactId>
