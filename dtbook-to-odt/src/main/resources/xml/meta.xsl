@@ -108,9 +108,13 @@
 	<xsl:template name="generator">
 		<xsl:if test="not(meta:generator)">
 			<xsl:element name="meta:generator">
-				<xsl:text>ch.sbs.pipeline.modules/dtbook-to-odt/1.0.0-SNAPSHOT</xsl:text>
+				<xsl:text>${project.groupId}/${project.artifactId}/${project.detailedVersion}</xsl:text>
 			</xsl:element>
 		</xsl:if>
+		<xsl:element name="meta:user-defined">
+			<xsl:attribute name="meta:name" select="'sbs:dtbook-to-odt.version'"/>
+			<xsl:text>${project.detailedVersion}</xsl:text>
+		</xsl:element>
 	</xsl:template>
 	
 	<!-- ========= -->

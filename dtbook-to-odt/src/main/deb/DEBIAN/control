@@ -1,5 +1,5 @@
 Package: ${project.artifactId}
-Version: ${deb.version}
+Version: ${project.detailedVersion}
 Section: text
 Priority: optional
 Architecture: all

@@ -31,6 +31,7 @@
         <directory>src/main/resources</directory>
         <excludes>
           <exclude>templates/**</exclude>
+          <exclude>xml/meta.xsl</exclude>
         </excludes>
       </resource>
       <resource>
@@ -38,6 +39,14 @@
         <includes>
           <include>templates/**</include>
         </includes>
+      </resource>
+      <!--
+          Simply using `<filtering>` wouldn't work here, because then for some reason
+          maven-bundle-plugin doesn't pick up the properties defined in the generated
+          detailed-version.properties. Therefore this workaround.
+      -->
+      <resource>
+        <directory>target/filtered-resources/resources</directory>
       </resource>
     </resources>
     <plugins>
@@ -48,6 +57,33 @@
           <chmod>true</chmod>
         </configuration>
         <executions>
+          <execution>
+            <id>generate-detailed-version-filter</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>shell</goal>
+            </goals>
+            <configuration>
+              <workDir>${project.basedir}</workDir>
+              <script>
+                #!/bin/bash
+                PROJECT_VERSION=${project.version}
+                PROPERTIES_FILE=target/filters/detailed-version.properties
+                rm -rf $PROPERTIES_FILE
+                mkdir -p $( dirname $PROPERTIES_FILE )
+                printf 'project.detailedVersion=' >> $PROPERTIES_FILE
+                case $PROJECT_VERSION in
+                  *-SNAPSHOT)
+                    printf ${PROJECT_VERSION%-SNAPSHOT}~$( date +"%Y%m%d.%H%M%S" )-$( git describe --tags --always --dirty ) >> $PROPERTIES_FILE
+                    ;;
+                  *)
+                   printf $PROJECT_VERSION >> $PROPERTIES_FILE
+                   ;;
+                 esac
+                printf '\n' >> $PROPERTIES_FILE
+              </script>
+            </configuration>
+          </execution>
           <execution>
             <id>generate-ott</id>
             <phase>generate-resources</phase>
@@ -69,6 +105,34 @@
                   (zip_odt src/main/resources/templates/${template} $(pwd)/target/generated-resources/templates/${template})
                 done
               </script>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>filter-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/filtered-resources</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/resources</directory>
+                  <includes>
+                    <include>xml/meta.xsl</include>
+                  </includes>
+                  <targetPath>resources</targetPath>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+              <filters>
+                <filter>target/filters/detailed-version.properties</filter>
+              </filters>
             </configuration>
           </execution>
         </executions>
@@ -113,47 +177,22 @@
             </executions>
           </plugin>
           <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.1</version>
-            <executions>
-              <execution>
-                <id>gen-deb-version</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <executable>tools/gen-deb-version.sh</executable>
-              <arguments>
-                <argument>${project.version}</argument>
-              </arguments>
-              <outputFile>target/filters/deb-version.properties</outputFile>
-            </configuration>
-          </plugin>
-          <plugin>
             <artifactId>maven-resources-plugin</artifactId>
             <executions>
               <execution>
-                <id>filter-debian-resources</id>
-                <phase>package</phase>
+                <id>filter-resources</id>
+                <phase>process-resources</phase>
                 <goals>
                   <goal>copy-resources</goal>
                 </goals>
                 <configuration>
-                  <outputDirectory>target/filtered-resources</outputDirectory>
-                  <resources>
+                  <resources combine.children="append">
                     <resource>
                       <directory>src/main/deb</directory>
                       <targetPath>deb</targetPath>
                       <filtering>true</filtering>
                     </resource>
                   </resources>
-                  <filters>
-                    <filter>target/filters/deb-version.properties</filter>
-                  </filters>
                 </configuration>
               </execution>
             </executions>
