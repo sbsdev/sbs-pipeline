@@ -6,24 +6,18 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>ch.sbs.pipeline.modules</groupId>
+    <groupId>ch.sbs.pipeline</groupId>
     <artifactId>sbs-modules-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <relativePath>../</relativePath>
+    <relativePath>../sbs-modules-parent/</relativePath>
   </parent>
 
-  <groupId>ch.sbs.pipeline.modules</groupId>
+  <groupId>ch.sbs.pipeline</groupId>
   <artifactId>dtbook-to-odt</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
 
   <name>DAISY Pipeline 2 module :: sbs:dtbook-to-odt</name>
-
-  <properties>
-    <odt-utils.version>1.0.0-SNAPSHOT</odt-utils.version>
-    <libreoffice-uno.version>4.0.2-SNAPSHOT</libreoffice-uno.version>
-    <jodconverter-core.version>3.0-beta-4-SNAPSHOT</jodconverter-core.version>
-  </properties>
 
   <build>
     <resources>
@@ -53,37 +47,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>shell-maven-plugin</artifactId>
-        <configuration>
-          <chmod>true</chmod>
-        </configuration>
         <executions>
-          <execution>
-            <id>generate-detailed-version-filter</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>shell</goal>
-            </goals>
-            <configuration>
-              <workDir>${project.basedir}</workDir>
-              <script>
-                #!/bin/bash
-                PROJECT_VERSION=${project.version}
-                PROPERTIES_FILE=target/filters/detailed-version.properties
-                rm -rf $PROPERTIES_FILE
-                mkdir -p $( dirname $PROPERTIES_FILE )
-                printf 'project.detailedVersion=' >> $PROPERTIES_FILE
-                case $PROJECT_VERSION in
-                  *-SNAPSHOT)
-                    printf ${PROJECT_VERSION%-SNAPSHOT}~$( date +"%Y%m%d.%H%M%S" )-$( git describe --tags --always --dirty ) >> $PROPERTIES_FILE
-                    ;;
-                  *)
-                   printf $PROJECT_VERSION >> $PROPERTIES_FILE
-                   ;;
-                 esac
-                printf '\n' >> $PROPERTIES_FILE
-              </script>
-            </configuration>
-          </execution>
           <execution>
             <id>generate-ott</id>
             <phase>generate-resources</phase>
@@ -92,6 +56,7 @@
             </goals>
             <configuration>
               <workDir>${project.basedir}</workDir>
+              <chmod>true</chmod>
               <script>
                 #!/bin/sh
                 zip_odt() {
@@ -159,17 +124,14 @@
                     <artifactItem>
                       <groupId>org.daisy.pipeline.modules</groupId>
                       <artifactId>odt-utils</artifactId>
-                      <version>${odt-utils.version}</version>
                     </artifactItem>
                     <artifactItem>
                       <groupId>org.daisy.libs</groupId>
                       <artifactId>libreoffice-uno</artifactId>
-                      <version>${libreoffice-uno.version}</version>
                     </artifactItem>
                     <artifactItem>
                       <groupId>org.daisy.libs</groupId>
                       <artifactId>jodconverter-core</artifactId>
-                      <version>${jodconverter-core.version}</version>
                     </artifactItem>
                   </artifactItems>
                 </configuration>
@@ -200,7 +162,6 @@
           <plugin>
             <groupId>org.vafer</groupId>
             <artifactId>jdeb</artifactId>
-            <version>1.0</version>
             <executions>
               <execution>
                 <id>package-deb</id>
@@ -210,7 +171,6 @@
                 </goals>
                 <configuration>
                   <controlDir>target/filtered-resources/deb/DEBIAN</controlDir>
-                  <timestamped>true</timestamped>
                   <deb>target/${project.artifactId}-${project.version}.deb</deb>
                   <dataSet>
                     <data>
@@ -243,19 +203,5 @@
       </build>
     </profile>
   </profiles>
-
-  <repositories>
-    <repository>
-      <id>sonatype-nexus-snapshots</id>
-      <name>Sonatype Nexus Snapshots</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
+  
 </project>

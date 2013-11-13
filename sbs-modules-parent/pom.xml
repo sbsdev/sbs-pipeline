@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.daisy.pipeline.modules</groupId>
+    <artifactId>modules-parent</artifactId>
+    <version>1.0</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>ch.sbs.pipeline</groupId>
+  <artifactId>sbs-modules-parent</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>DAISY Pipeline 2 :: SBS Modules Parent POM</name>
+
+  <developers>
+    <developer>
+      <id>eglic</id>
+      <name>Christian Egli</name>
+      <email>christian.egli@sbs.ch</email>
+      <organization>SBS - Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte</organization>
+      <organizationUrl>http://www.sbs.ch/</organizationUrl>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <timezone>UTC+01:00</timezone>
+    </developer>
+    <developer>
+      <id>bertfrees</id>
+      <name>Bert Frees</name>
+      <email>bertfrees@gmail.com</email>
+      <organization>SBS - Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte</organization>
+      <organizationUrl>http://www.sbs.ch/</organizationUrl>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <timezone>UTC+01:00</timezone>
+    </developer>
+  </developers>
+  
+  <properties>
+    <odt-utils.version>1.0.0-SNAPSHOT</odt-utils.version>
+    <jodconverter-core.version>3.0-beta-4-SNAPSHOT</jodconverter-core.version>
+    <libreoffice-uno.version>4.0.2-SNAPSHOT</libreoffice-uno.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>ch.sbs.pipeline</groupId>
+        <artifactId>dtbook-to-odt</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.daisy.pipeline.modules</groupId>
+        <artifactId>odt-utils</artifactId>
+        <version>${odt-utils.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.daisy.libs</groupId>
+        <artifactId>jodconverter-core</artifactId>
+        <version>${jodconverter-core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.daisy.libs</groupId>
+        <artifactId>libreoffice-uno</artifactId>
+        <version>${libreoffice-uno.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.vafer</groupId>
+          <artifactId>jdeb</artifactId>
+          <version>1.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>shell-maven-plugin</artifactId>
+          <version>1.0-beta-1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>shell-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-detailed-snapshot-version-filter</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>shell</goal>
+            </goals>
+            <configuration>
+              <workDir>${project.basedir}</workDir>
+              <chmod>true</chmod>
+              <script>
+                #!/bin/bash
+                PROJECT_VERSION=${project.version}
+                PROPERTIES_FILE=target/filters/detailed-version.properties
+                rm -rf $PROPERTIES_FILE
+                mkdir -p $( dirname $PROPERTIES_FILE )
+                printf 'project.detailedVersion=' >> $PROPERTIES_FILE
+                case $PROJECT_VERSION in
+                  *-SNAPSHOT)
+                    printf ${PROJECT_VERSION%-SNAPSHOT}~$( date +"%Y%m%d.%H%M%S" )-$( git describe --tags --always --dirty ) >> $PROPERTIES_FILE
+                    ;;
+                  *)
+                    printf $PROJECT_VERSION >> $PROPERTIES_FILE
+                    ;;
+                esac
+                printf '\n' >> $PROPERTIES_FILE
+              </script>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    <filters>
+      <filter>target/filters/detailed-version.properties</filter>
+    </filters>
+  </build>
+  
+  <repositories>
+    <repository>
+      <id>sbs-nexus-snapshots</id>
+      <name>SBS Nexus Snapshots</name>
+      <url>http://xmlp-test:8081/nexus/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>sbs-nexus-releases</id>
+      <name>SBS Nexus Releases</name>
+      <url>http://xmlp-test:8081/nexus/content/repositories/releases/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+  <distributionManagement>
+    <snapshotRepository>
+      <id>sbs-nexus-snapshots</id>
+      <name>SBS Nexus Snapshots</name>
+      <url>http://xmlp-test:8081/nexus/content/repositories/snapshots/</url>
+    </snapshotRepository>
+    <repository>
+      <id>sbs-nexus-releases</id>
+      <name>SBS Nexus Releases</name>
+      <url>http://xmlp-test:8081/nexus/content/repositories/releases/</url>
+    </repository>
+  </distributionManagement>
+
+</project>
