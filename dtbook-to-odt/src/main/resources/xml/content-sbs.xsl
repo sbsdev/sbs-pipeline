@@ -50,6 +50,25 @@
 		<xsl:call-template name="text:empty-p"/>
 	</xsl:template>
 	
+	<xsl:template match="dtb:p[child::dtb:span[@class='linenum']]"
+	              mode="office:text office:annotation text:section" priority="0.6">
+		<xsl:choose>
+			<xsl:when test="$line_numbers='true'">
+				<xsl:for-each-group group-starting-with="dtb:span[@class='linenum']" select="*|text()">
+					<xsl:if test="position() &gt; 0
+					              or current-group()/*
+					              or normalize-space(string-join(current-group()/string(.), ''))!=''">
+						<xsl:call-template name="text:p">
+							<xsl:with-param name="apply-templates" select="current-group()"/>
+						</xsl:call-template>
+					</xsl:if>
+				</xsl:for-each-group>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:next-match/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	
 	<!-- ===== -->
 	<!-- LISTS -->
@@ -242,7 +261,7 @@
 	<!-- INLINE ELEMENTS & TEXT -->
 	<!-- ====================== -->
 	
-	<xsl:template match="dtb:linenum" mode="text:p text:h text:span" priority="0.6">
+	<xsl:template match="dtb:linenum|dtb:span[@class='linenum']" mode="text:p text:h text:span" priority="0.6">
 		<xsl:if test="$line_numbers='true'">
 			<xsl:variable name="prefix" as="text()">
 				<xsl:text>Z</xsl:text>
