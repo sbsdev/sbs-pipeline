@@ -27,7 +27,7 @@
 		xmlns:f="functions"
 		exclude-result-prefixes="#all">
 	
-	<xsl:import href="content.xsl"/>
+	<xsl:include href="content.xsl"/>
 	
 	<!-- ======= -->
 	<!-- SIDEBAR -->
@@ -43,7 +43,8 @@
 	<!-- HEADINGS -->
 	<!-- ======== -->
 	
-	<xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6" mode="office:text text:list-item text:section">
+	<xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6"
+	              mode="office:text text:list-item text:section" priority="0.6">
 		<xsl:call-template name="text:empty-p"/>
 		<xsl:next-match/>
 		<xsl:call-template name="text:empty-p"/>
@@ -54,7 +55,8 @@
 	<!-- LISTS -->
 	<!-- ===== -->
 	
-	<xsl:template match="dtb:list" mode="office:text office:annotation text:section table:table-cell">
+	<xsl:template match="dtb:list" mode="office:text office:annotation text:section table:table-cell"
+	              priority="0.6">
 		<xsl:call-template name="text:empty-p"/>
 		<xsl:next-match/>
 		<xsl:call-template name="text:empty-p"/>
@@ -64,7 +66,7 @@
 	<!-- NOTES -->
 	<!-- ===== -->
 	
-	<xsl:template match="dtb:noteref" mode="text:p text:h text:span">
+	<xsl:template match="dtb:noteref" mode="text:p text:h text:span" priority="0.6">
 		<xsl:variable name="id" select="translate(@idref,'#','')"/>
 		<xsl:variable name="asterisk" as="text()?">
 			<xsl:if test="not(starts-with(normalize-space(string(.)), '*'))">
@@ -72,10 +74,6 @@
 			</xsl:if>
 		</xsl:variable>
 		<xsl:call-template name="text:span">
-			<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
-			<xsl:with-param name="text_style" as="xs:string?" tunnel="yes">
-				<xsl:apply-templates select="." mode="text-style"/>
-			</xsl:with-param>
 			<xsl:with-param name="apply-templates" select="($asterisk, *|text())"/>
 		</xsl:call-template>
 		<xsl:text> </xsl:text>
@@ -84,16 +82,12 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
-	<xsl:template match="dtb:annoref" mode="text:p text:h text:span">
+	<xsl:template match="dtb:annoref" mode="text:p text:h text:span" priority="0.6">
 		<xsl:variable name="id" select="translate(@idref,'#','')"/>
 		<xsl:variable name="asterisk" as="text()">
 			<xsl:text>*</xsl:text>
 		</xsl:variable>
 		<xsl:call-template name="text:span">
-			<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
-			<xsl:with-param name="text_style" as="xs:string?" tunnel="yes">
-				<xsl:apply-templates select="." mode="text-style"/>
-			</xsl:with-param>
 			<xsl:with-param name="apply-templates" select="(*|text(), $asterisk)"/>
 		</xsl:call-template>
 		<xsl:text> </xsl:text>
@@ -102,7 +96,7 @@
 		</xsl:apply-templates>
 	</xsl:template>
 	
-	<xsl:template match="dtb:note|dtb:annotation" mode="text:p text:h text:span">
+	<xsl:template match="dtb:note|dtb:annotation" mode="text:p text:h text:span" priority="0.6">
 		<xsl:param name="skip_notes" as="xs:boolean" select="true()" tunnel="yes"/>
 		<xsl:choose>
 			<xsl:when test="not($skip_notes)">
@@ -118,10 +112,6 @@
 					<xsl:text>)</xsl:text>
 				</xsl:variable>
 				<xsl:call-template name="text:span">
-					<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
-					<xsl:with-param name="text_style" as="xs:string?" tunnel="yes">
-						<xsl:apply-templates select="." mode="text-style"/>
-					</xsl:with-param>
 					<xsl:with-param name="skip_notes" select="true()" tunnel="yes"/>
 					<xsl:with-param name="apply-templates" select="($open_bracket, $asterisk, *|text(), $close_bracket)"/>
 				</xsl:call-template>
@@ -133,15 +123,12 @@
 	</xsl:template>
 	
 	
-	<xsl:template match="dtb:note/dtb:p|dtb:annotation/dtb:p" as="xs:boolean" mode="is-block-element">
+	<xsl:template match="dtb:note/dtb:p|dtb:annotation/dtb:p" as="xs:boolean" mode="is-block-element"
+	              priority="0.6">
 		<xsl:sequence select="false()"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:annotation/dtb:p" mode="text:p text:h text:span">
-		<xsl:apply-templates mode="#current"/>
-	</xsl:template>
-	
-	<xsl:template match="dtb:note/dtb:p" mode="text:p text:h text:span">
+	<xsl:template match="dtb:annotation/dtb:p|dtb:note/dtb:p" mode="text:p text:h text:span" priority="0.7">
 		<xsl:choose>
 			<!--
 			    if only one paragraph in a note, treat like inline
@@ -160,13 +147,15 @@
 	<!-- IMAGES -->
 	<!-- ====== -->
 	
-	<xsl:template match="dtb:img|dtb:imggroup" mode="office:text office:annotation text:section table:table-cell text:list-item">
+	<xsl:template match="dtb:img|dtb:imggroup" priority="0.6"
+	              mode="office:text office:annotation text:section table:table-cell text:list-item">
 		<xsl:if test="not($images='DROP')">
 			<xsl:next-match/>
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="dtb:imggroup/dtb:caption" mode="office:text office:annotation text:section table:table-cell">
+	<xsl:template match="dtb:imggroup/dtb:caption" priority="0.6"
+	              mode="office:text office:annotation text:section table:table-cell">
 		<xsl:call-template name="text:empty-p"/>
 		<xsl:next-match>
 			<xsl:with-param name="caption_suffix" tunnel="yes">
@@ -179,7 +168,7 @@
 	<!-- PRODNOTE -->
 	<!-- ======== -->
 	
-	<xsl:template match="dtb:prodnote" mode="office:text office:annotation text:section">
+	<xsl:template match="dtb:prodnote" mode="office:text office:annotation text:section" priority="0.6">
 		<xsl:next-match>
 			<xsl:with-param name="prodnote_announcement" tunnel="yes">
 				<dtb:p class="announcement" xml:lang="de">[Anmerkung e-text]</dtb:p>
@@ -204,7 +193,7 @@
 	<!-- MATH -->
 	<!-- ==== -->
 	
-	<xsl:template match="math:math" mode="text:p text:h text:span">
+	<xsl:template match="math:math" mode="text:p text:h text:span" priority="0.6">
 		<xsl:next-match/>
 		<xsl:if test="$asciimath='BOTH' and math:semantics/math:annotation[@encoding='ASCIIMath']">
 			<xsl:call-template name="text:span">
@@ -218,7 +207,8 @@
 	<!-- PAGE NUMBERING -->
 	<!-- ============== -->
 	
-	<xsl:template match="dtb:pagenum" mode="office:text office:annotation text:section table:table-cell">
+	<xsl:template match="dtb:pagenum" mode="office:text office:annotation text:section table:table-cell"
+	              priority="0.6">
 		<xsl:next-match>
 			<xsl:with-param name="pagenum_prefix" tunnel="yes">
 				<dtb:span xml:lang="de">\\Seite </dtb:span>
@@ -230,7 +220,7 @@
 	<!-- OTHER BLOCK ELEMENTS -->
 	<!-- ==================== -->
 	
-	<xsl:template match="dtb:sidebar" mode="office:text text:section">
+	<xsl:template match="dtb:sidebar" mode="office:text text:section" priority="0.6">
 		<xsl:next-match>
 			<xsl:with-param name="sidebar_announcement" tunnel="yes">
 				<dtb:p class="announcement" xml:lang="en">[Begin of sidebar]</dtb:p>
@@ -241,7 +231,8 @@
 		</xsl:next-match>
 	</xsl:template>
 	
-	<xsl:template match="dtb:blockquote|dtb:epigraph|dtb:poem" mode="office:text office:annotation text:section">
+	<xsl:template match="dtb:blockquote|dtb:epigraph|dtb:poem" mode="office:text office:annotation text:section"
+	              priority="0.6">
 		<xsl:call-template name="text:empty-p"/>
 		<xsl:next-match/>
 		<xsl:call-template name="text:empty-p"/>
@@ -251,16 +242,12 @@
 	<!-- INLINE ELEMENTS & TEXT -->
 	<!-- ====================== -->
 	
-	<xsl:template match="dtb:linenum" mode="text:p text:h text:span">
+	<xsl:template match="dtb:linenum" mode="text:p text:h text:span" priority="0.6">
 		<xsl:if test="$line_numbers='true'">
 			<xsl:variable name="prefix" as="text()">
 				<xsl:text>Z</xsl:text>
 			</xsl:variable>
 			<xsl:call-template name="text:span">
-				<xsl:with-param name="lang" select="f:lang(.)" tunnel="yes"/>
-				<xsl:with-param name="text_style" as="xs:string?" tunnel="yes">
-					<xsl:apply-templates select="." mode="text-style"/>
-				</xsl:with-param>
 				<xsl:with-param name="apply-templates" select="($prefix, *|text())"/>
 			</xsl:call-template>
 		</xsl:if>
@@ -269,7 +256,7 @@
 	<!--
 	    Phonetics
 	-->
-	<xsl:template match="text()" mode="text:p text:h text:span text:a">
+	<xsl:template match="text()" mode="text:p text:h text:span text:a" priority="0.6">
 		<xsl:choose>
 			<xsl:when test="$phonetics='false'">
 				<xsl:next-match>
@@ -306,19 +293,19 @@
 	<!-- STYLE -->
 	<!-- ===== -->
 	
-	<xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6" mode="paragraph-style">
+	<xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6" mode="paragraph-style" priority="0.6">
 		<xsl:sequence select="concat('Überschrift_20_', substring(local-name(.),2,1))"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:list|dtb:dl" mode="list-style">
+	<xsl:template match="dtb:list|dtb:dl" mode="list-style" priority="0.6">
 		<xsl:sequence select="'LFO3'"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:list|dtb:dl" mode="paragraph-style">
+	<xsl:template match="dtb:list|dtb:dl" mode="paragraph-style" priority="0.6">
 		<xsl:sequence select="'Liste1'"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:a[@href]" mode="text-style">
+	<xsl:template match="dtb:a[@href]" mode="text-style" priority="0.6">
 		<xsl:sequence select="'Hyperlink'"/>
 	</xsl:template>
 	
@@ -326,27 +313,15 @@
 		<xsl:sequence select="style:name(concat('dtb:span_', @class))"/>
 	</xsl:template>
 	
-	<xsl:template match="dtb:prodnote|dtb:th|dtb:caption|dtb:pagenum" mode="paragraph-style">
+	<xsl:template match="dtb:prodnote|dtb:th|dtb:caption|dtb:pagenum" mode="paragraph-style" priority="0.6">
 		<xsl:sequence select="dtb:style-name(.)"/>
 	</xsl:template>
 	
 	<xsl:template match="dtb:sub|dtb:sup|dtb:strong|dtb:em|dtb:dt|dtb:note|dtb:annotation|
 	                     dtb:cite|dtb:q|dtb:author|dtb:title|dtb:acronym|dtb:abbr|dtb:kbd|
 	                     dtb:code|dtb:samp|dtb:linenum"
-	              mode="text-style">
+	              mode="text-style" priority="0.6">
 		<xsl:sequence select="dtb:style-name(.)"/>
-	</xsl:template>
-	
-	<xsl:template match="dtb:*" as="xs:string?" mode="text-style" priority="-1.1">
-		<xsl:call-template name="inherit-text-style"/>
-	</xsl:template>
-	
-	<xsl:template match="dtb:*" as="xs:string?" mode="paragraph-style" priority="-1.1">
-		<xsl:call-template name="inherit-paragraph-style"/>
-	</xsl:template>
-	
-	<xsl:template match="dtb:*" as="xs:string?" mode="list-style" priority="-1.1">
-		<xsl:call-template name="inherit-list-style"/>
 	</xsl:template>
 	
 	<!-- ========= -->
