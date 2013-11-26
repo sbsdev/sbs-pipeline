@@ -2,23 +2,29 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
     xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
+  
   <modelVersion>4.0.0</modelVersion>
-
+  
   <parent>
     <groupId>ch.sbs.pipeline</groupId>
     <artifactId>sbs-modules-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
     <relativePath>../sbs-modules-parent/</relativePath>
   </parent>
-
+  
   <groupId>ch.sbs.pipeline</groupId>
   <artifactId>dtbook-to-odt</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
-
+  
   <name>DAISY Pipeline 2 module :: sbs:dtbook-to-odt</name>
-
+  
+  <properties>
+    <odt-utils.version>1.0.0-SNAPSHOT</odt-utils.version>
+    <jodconverter-core.version>3.0-beta-4-SNAPSHOT</jodconverter-core.version>
+    <libreoffice-uno.version>4.0.2-SNAPSHOT</libreoffice-uno.version>
+  </properties>
+  
   <build>
     <resources>
       <resource>
@@ -32,15 +38,8 @@
         <directory>target/generated-resources</directory>
         <includes>
           <include>templates/**</include>
+          <include>xml/meta.xsl</include>
         </includes>
-      </resource>
-      <!--
-          Simply using `<filtering>` wouldn't work here, because then for some reason
-          maven-bundle-plugin doesn't pick up the properties defined in the generated
-          detailed-version.properties. Therefore this workaround.
-      -->
-      <resource>
-        <directory>target/filtered-resources/resources</directory>
       </resource>
     </resources>
     <plugins>
@@ -84,14 +83,13 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>target/filtered-resources</outputDirectory>
+              <outputDirectory>target/generated-resources</outputDirectory>
               <resources>
                 <resource>
                   <directory>src/main/resources</directory>
                   <includes>
                     <include>xml/meta.xsl</include>
                   </includes>
-                  <targetPath>resources</targetPath>
                   <filtering>true</filtering>
                 </resource>
               </resources>
@@ -102,106 +100,78 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <useBaseVersion>true</useBaseVersion>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.daisy.pipeline.modules</groupId>
+                  <artifactId>odt-utils</artifactId>
+                  <version>${odt-utils.version}</version>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.daisy.libs</groupId>
+                  <artifactId>libreoffice-uno</artifactId>
+                  <version>${libreoffice-uno.version}</version>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.daisy.libs</groupId>
+                  <artifactId>jodconverter-core</artifactId>
+                  <version>${jodconverter-core.version}</version>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.vafer</groupId>
+        <artifactId>jdeb</artifactId>
+        <configuration>
+          <dataSet>
+            <data>
+              <type>file</type>
+              <src>target/${project.artifactId}-${project.version}.jar</src>
+              <mapper>
+                <type>perm</type>
+                <prefix>/opt/daisy-pipeline2/modules</prefix>
+              </mapper>
+            </data>
+            <data>
+              <type>file</type>
+              <src>target/dependency/odt-utils-${odt-utils.version}.jar</src>
+              <mapper>
+                <type>perm</type>
+                <prefix>/opt/daisy-pipeline2/modules</prefix>
+              </mapper>
+            </data>
+            <data>
+              <type>file</type>
+              <src>target/dependency/libreoffice-uno-${libreoffice-uno.version}.jar</src>
+              <mapper>
+                <type>perm</type>
+                <prefix>/opt/daisy-pipeline2/modules</prefix>
+              </mapper>
+            </data><data>
+              <type>file</type>
+              <src>target/dependency/jodconverter-core-${jodconverter-core.version}.jar</src>
+              <mapper>
+                <type>perm</type>
+                <prefix>/opt/daisy-pipeline2/modules</prefix>
+              </mapper>
+            </data>
+          </dataSet>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>deb</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>copy-dependencies</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>copy</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>org.daisy.pipeline.modules</groupId>
-                      <artifactId>odt-utils</artifactId>
-                    </artifactItem>
-                    <artifactItem>
-                      <groupId>org.daisy.libs</groupId>
-                      <artifactId>libreoffice-uno</artifactId>
-                    </artifactItem>
-                    <artifactItem>
-                      <groupId>org.daisy.libs</groupId>
-                      <artifactId>jodconverter-core</artifactId>
-                    </artifactItem>
-                  </artifactItems>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <artifactId>maven-resources-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>filter-resources</id>
-                <phase>process-resources</phase>
-                <goals>
-                  <goal>copy-resources</goal>
-                </goals>
-                <configuration>
-                  <resources combine.children="append">
-                    <resource>
-                      <directory>src/main/deb</directory>
-                      <targetPath>deb</targetPath>
-                      <filtering>true</filtering>
-                    </resource>
-                  </resources>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.vafer</groupId>
-            <artifactId>jdeb</artifactId>
-            <executions>
-              <execution>
-                <id>package-deb</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>jdeb</goal>
-                </goals>
-                <configuration>
-                  <controlDir>target/filtered-resources/deb/DEBIAN</controlDir>
-                  <deb>target/${project.artifactId}-${project.version}.deb</deb>
-                  <dataSet>
-                    <data>
-                      <type>file</type>
-                      <src>target/${project.artifactId}-${project.version}.jar</src>
-                      <mapper>
-                        <type>perm</type>
-                        <prefix>/opt/daisy-pipeline2/modules</prefix>
-                      </mapper>
-                    </data>
-                    <data>
-                      <type>directory</type>
-                      <src>target/dependency</src>
-                      <includes>
-                        odt-utils-${odt-utils.version}.jar,
-                        libreoffice-uno-${libreoffice-uno.version}.jar,
-                        jodconverter-core-${jodconverter-core.version}.jar
-                      </includes>
-                      <mapper>
-                        <type>perm</type>
-                        <prefix>/opt/daisy-pipeline2/modules</prefix>
-                      </mapper>
-                    </data>
-                  </dataSet>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
   
 </project>
