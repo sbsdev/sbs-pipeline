@@ -1,0 +1,6 @@
+[submodule "sbs-hyphenation-tables"]
+	path = sbs-hyphenation-tables
+	url = https://github.com/sbsdev/sbs-hyphenation-tables.git
+[submodule "dtbook-to-sbsform"]
+	path = dtbook-to-sbsform
+	url = https://github.com/sbsdev/dtbook2sbsform.git
