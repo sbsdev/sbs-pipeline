@@ -160,7 +160,8 @@
                 </goals>
                 <configuration>
                   <controlDir>target/generated-resources/deb/DEBIAN</controlDir>
-                  <deb>target/${project.artifactId}-${project.version}.deb</deb>
+                  <classifier>all</classifier>
+                  <deb>target/${project.artifactId}_${project.version}_all.deb</deb>
                 </configuration>
               </execution>
             </executions>
