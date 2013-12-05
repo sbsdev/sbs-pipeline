@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -9,18 +7,19 @@
     <groupId>org.daisy.pipeline.modules</groupId>
     <artifactId>modules-parent</artifactId>
     <version>1.0</version>
-    <relativePath/>
+    <relativePath />
   </parent>
 
   <groupId>ch.sbs.pipeline</groupId>
   <artifactId>sbs-modules-parent</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <packaging>pom</packaging>
 
   <name>DAISY Pipeline 2 :: SBS Modules Parent POM</name>
 
   <scm>
     <developerConnection>scm:git:ssh://git@github.com:sbsdev/sbs-pipeline.git</developerConnection>
+    <tag>v1.0</tag>
   </scm>
 
   <developers>
@@ -102,16 +101,16 @@
                 PROPERTIES_FILE=target/filters/detailed-version.properties
                 rm -rf $PROPERTIES_FILE
                 mkdir -p $( dirname $PROPERTIES_FILE )
-                printf 'project.detailedVersion=' >> $PROPERTIES_FILE
+                printf 'project.detailedVersion=' &gt;&gt; $PROPERTIES_FILE
                 case $PROJECT_VERSION in
                   *-SNAPSHOT)
-                    printf ${PROJECT_VERSION%-SNAPSHOT}~$( date +"%Y%m%d.%H%M%S" )-$( git describe --tags --always --dirty ) >> $PROPERTIES_FILE
+                    printf ${PROJECT_VERSION%-SNAPSHOT}~$( date +"%Y%m%d.%H%M%S" )-$( git describe --tags --always --dirty ) &gt;&gt; $PROPERTIES_FILE
                     ;;
                   *)
-                    printf $PROJECT_VERSION >> $PROPERTIES_FILE
+                    printf $PROJECT_VERSION &gt;&gt; $PROPERTIES_FILE
                     ;;
                 esac
-                printf '\n' >> $PROPERTIES_FILE
+                printf '\n' &gt;&gt; $PROPERTIES_FILE
               </script>
             </configuration>
           </execution>
