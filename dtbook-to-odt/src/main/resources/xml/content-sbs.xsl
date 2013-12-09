@@ -29,15 +29,11 @@
 	
 	<xsl:include href="content.xsl"/>
 	
-	<!-- ======= -->
-	<!-- SIDEBAR -->
-	<!-- ======= -->
 	<xsl:param name="asciimath" as="xs:string" select="'ASCIIMATH'"/>
 	<xsl:param name="images" as="xs:string" select="'EMBED'"/>
 	<xsl:param name="answer" as="xs:string" select="'_..'"/>
 	<xsl:param name="line_numbers" as="xs:string" select="'true'"/>
 	<xsl:param name="phonetics" as="xs:string" select="'true'"/>
-	
 	
 	<!-- ======== -->
 	<!-- HEADINGS -->

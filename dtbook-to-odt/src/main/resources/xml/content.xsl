@@ -837,7 +837,8 @@
 				<xsl:element name="text:span">
 					<xsl:attribute name="text:style-name" select="$text_style"/>
 					<!--
-					    FIXME: don't give warning when inner most style is an automatic style!
+					    In MS Word, when a named style appears inside of another named or automatic style,
+					    the inner style will be applied and will 'overwrite' the outer style.
 					-->
 					<xsl:if test="$cur_text_style and $text_style
 					              and $cur_text_style != $text_style

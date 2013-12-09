@@ -1,2 +1,8 @@
 *~
 /dtbook-to-odt/target
+/dtbook-to-sbsform/target
+/dtbook-to-sbsform/.classpath
+/dtbook-to-sbsform/.project
+/dtbook-to-sbsform/.settings
+/dtbook-to-sbsform/test.log
+/sbs-modules/parent/target
