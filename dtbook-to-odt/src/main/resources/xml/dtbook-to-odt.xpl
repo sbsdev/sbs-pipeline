@@ -131,6 +131,9 @@
         <!-- ===================== -->
         
         <sbs:dtbook-to-odt.convert name="odt">
+            <p:input port="content.xsl">
+                <p:document href="content-sbs.xsl"/>
+            </p:input>
             <p:input port="fileset.in">
                 <p:pipe step="dtbook" port="fileset.out"/>
             </p:input>

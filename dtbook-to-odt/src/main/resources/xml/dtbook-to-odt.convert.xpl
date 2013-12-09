@@ -19,6 +19,10 @@
     <p:input port="in-memory.in" sequence="false"/>
     <p:input port="meta" sequence="true"/>
     
+    <p:input port="content.xsl">
+        <p:documentation> The main XSLT </p:documentation>
+    </p:input>
+    
     <p:output port="fileset.out" primary="true">
         <p:pipe step="separate-mathml" port="fileset.out"/>
     </p:output>
@@ -125,7 +129,7 @@
             <p:pipe step="maybe-convert-asciimath-to-mathml" port="result"/>
         </p:input>
         <p:input port="stylesheet">
-            <p:document href="content-sbs.xsl"/>
+            <p:pipe step="main" port="content.xsl"/>
         </p:input>
         <p:with-param name="asciimath" select="$asciimath"/>
         <p:with-param name="images" select="$images"/>
