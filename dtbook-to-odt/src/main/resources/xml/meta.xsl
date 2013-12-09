@@ -46,8 +46,30 @@
 			<xsl:call-template name="dtb:date"/>
 			<xsl:call-template name="dtb:title"/>
 			<xsl:call-template name="dtb:subject"/>
-			<xsl:call-template name="generator"/>
 		</xsl:copy>
+	</xsl:template>
+	
+	<!--
+	    Merge metadata from template with generated metadata. If there are two meta tags with the
+	    same name, only keep the first occurence.
+	-->
+	
+	<xsl:template match="/office:document-meta/office:meta/*" mode="template" priority="1">
+		<xsl:variable name="node-name" as="xs:QName" select="node-name(.)"/>
+		<xsl:if test="not(preceding-sibling::*[node-name(.)=$node-name])">
+			<xsl:copy>
+				<xsl:apply-templates select="@*|node()" mode="template"/>
+			</xsl:copy>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="/office:document-meta/office:meta/meta:user-defined" mode="template" priority="1.1">
+		<xsl:variable name="name" select="string(@meta:name)"/>
+		<xsl:if test="not(preceding-sibling::meta:user-defined[@meta:name=$name])">
+			<xsl:copy>
+				<xsl:apply-templates select="@*|node()" mode="template"/>
+			</xsl:copy>
+		</xsl:if>
 	</xsl:template>
 	
 	<!-- =============== -->
@@ -99,22 +121,6 @@
 				<xsl:sequence select="$subject"/>
 			</xsl:element>
 		</xsl:if>
-	</xsl:template>
-	
-	<!-- ============== -->
-	<!-- OTHER METADATA -->
-	<!-- ============== -->
-	
-	<xsl:template name="generator">
-		<xsl:if test="not(meta:generator)">
-			<xsl:element name="meta:generator">
-				<xsl:text>${project.groupId}/${project.artifactId}/${project.detailedVersion}</xsl:text>
-			</xsl:element>
-		</xsl:if>
-		<xsl:element name="meta:user-defined">
-			<xsl:attribute name="meta:name" select="'sbs:dtbook-to-odt.version'"/>
-			<xsl:text>${project.detailedVersion}</xsl:text>
-		</xsl:element>
 	</xsl:template>
 	
 	<!-- ========= -->

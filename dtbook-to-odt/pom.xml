@@ -31,14 +31,14 @@
         <directory>src/main/resources</directory>
         <excludes>
           <exclude>templates/**</exclude>
-          <exclude>xml/meta.xsl</exclude>
+          <exclude>xml/dtbook-to-odt.xpl</exclude>
         </excludes>
       </resource>
       <resource>
         <directory>target/generated-resources</directory>
         <includes>
           <include>templates/**</include>
-          <include>xml/meta.xsl</include>
+          <include>xml/dtbook-to-odt.xpl</include>
         </includes>
       </resource>
     </resources>
@@ -88,7 +88,7 @@
                 <resource>
                   <directory>src/main/resources</directory>
                   <includes>
-                    <include>xml/meta.xsl</include>
+                    <include>xml/dtbook-to-odt.xpl</include>
                   </includes>
                   <filtering>true</filtering>
                 </resource>

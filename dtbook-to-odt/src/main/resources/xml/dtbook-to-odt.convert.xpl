@@ -5,9 +5,10 @@
     xmlns:c="http://www.w3.org/ns/xproc-step"
     xmlns:sbs="http://www.sbs.ch/pipeline"
     xmlns:odt="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+    xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
     xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
     exclude-inline-prefixes="#all"
-    type="sbs:dtbook-to-odt.convert" name="convert" version="1.0">
+    type="sbs:dtbook-to-odt.convert" name="main" version="1.0">
     
     <!-- WARNING! This converter doesn't produce valid OpenDocument Text as such.
        It relies on LibreOffice to do some fixing. Opening the ODT file in MS Word
@@ -16,6 +17,7 @@
     -->
     <p:input port="fileset.in" primary="true"/>
     <p:input port="in-memory.in" sequence="false"/>
+    <p:input port="meta" sequence="true"/>
     
     <p:output port="fileset.out" primary="true">
         <p:pipe step="separate-mathml" port="fileset.out"/>
@@ -45,7 +47,7 @@
     <!-- ============= -->
     
     <p:variable name="save-dir" select="resolve-uri(concat(replace(p:base-uri(/),'^.*/([^/]*)\.[^/\.]*$','$1'), '.odt/'), $temp-dir)">
-        <p:pipe step="convert" port="in-memory.in"/>
+        <p:pipe step="main" port="in-memory.in"/>
     </p:variable>
     <p:variable name="template-copy" select="resolve-uri(replace($template, '^.*/([^/]+)$','$1'), $temp-dir)"/>
     
@@ -96,7 +98,7 @@
     
     <p:identity>
         <p:input port="source">
-            <p:pipe step="convert" port="in-memory.in"/>
+            <p:pipe step="main" port="in-memory.in"/>
         </p:input>
     </p:identity>
     <p:choose>
@@ -147,7 +149,7 @@
         <p:input port="source">
             <p:pipe step="template-styles" port="result"/>
             <p:pipe step="content.temp" port="result"/>
-            <p:pipe step="convert" port="in-memory.in"/>
+            <p:pipe step="main" port="in-memory.in"/>
         </p:input>
         <p:input port="stylesheet">
             <p:document href="styles.xsl"/>
@@ -158,10 +160,19 @@
     </p:xslt>
     <p:sink/>
     
-    <p:xslt name="meta">
+    <p:insert name="meta.temp" match="/office:document-meta/office:meta" position="first-child">
         <p:input port="source">
             <p:pipe step="template-meta" port="result"/>
-            <p:pipe step="convert" port="in-memory.in"/>
+        </p:input>
+        <p:input port="insertion">
+            <p:pipe step="main" port="meta"/>
+        </p:input>
+    </p:insert>
+    
+    <p:xslt name="meta">
+        <p:input port="source">
+            <p:pipe step="meta.temp" port="result"/>
+            <p:pipe step="main" port="in-memory.in"/>
         </p:input>
         <p:input port="stylesheet">
             <p:document href="meta.xsl"/>
@@ -205,7 +216,7 @@
                     <p:pipe step="update-files" port="in-memory.out"/>
                 </p:input>
                 <p:input port="original-fileset">
-                    <p:pipe step="convert" port="fileset.in"/>
+                    <p:pipe step="main" port="fileset.in"/>
                 </p:input>
             </odt:embed-images>
         </p:when>

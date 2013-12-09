@@ -6,6 +6,7 @@
     xmlns:sbs="http://www.sbs.ch/pipeline"
     xmlns:c="http://www.w3.org/ns/xproc-step"
     xmlns:odt="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+	xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0"
     exclude-inline-prefixes="#all"
     type="sbs:dtbook-to-odt" name="dtbook-to-odt" version="1.0">
     
@@ -135,6 +136,14 @@
             </p:input>
             <p:input port="in-memory.in">
                 <p:pipe step="dtbook" port="in-memory.out"/>
+            </p:input>
+            <p:input port="meta">
+                <p:inline>
+                    <meta:generator>${project.groupId}/${project.artifactId}/${project.detailedVersion}</meta:generator>
+                </p:inline>
+                <p:inline>
+                    <meta:user-defined meta:name="sbs:dtbook-to-odt.version">${project.detailedVersion}</meta:user-defined>
+                </p:inline>
             </p:input>
             <p:with-option name="temp-dir" select="$temp-dir">
                 <p:pipe step="temp-dir" port="result"/>
