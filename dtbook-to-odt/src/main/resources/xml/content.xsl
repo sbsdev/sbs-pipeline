@@ -28,7 +28,7 @@
 		xmlns:f="functions"
 		exclude-result-prefixes="#all">
 	
-	<xsl:include href="http://www.daisy.org/pipeline/modules/file-utils/xslt/uri-functions.xsl"/>
+	<xsl:include href="http://www.daisy.org/pipeline/modules/file-utils/uri-functions.xsl"/>
 	<xsl:include href="utilities.xsl"/>
 	
 	<!-- ========================== -->

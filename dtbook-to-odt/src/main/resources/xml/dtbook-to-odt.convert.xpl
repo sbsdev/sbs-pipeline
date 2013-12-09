@@ -42,7 +42,7 @@
     <!-- Empty temporary directory dedicated to this conversion -->
     <p:option name="temp-dir" required="true"/>
     
-    <p:import href="http://www.daisy.org/pipeline/modules/file-utils/xproc/file-library.xpl"/>
+    <p:import href="http://www.daisy.org/pipeline/modules/file-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/odt-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/asciimath-utils/library.xpl"/>
     
