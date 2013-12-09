@@ -18,6 +18,7 @@
     <p:input port="fileset.in" primary="true"/>
     <p:input port="in-memory.in" sequence="false"/>
     <p:input port="meta" sequence="true"/>
+    <p:input port="parameters" kind="parameter"/>
     
     <p:input port="content.xsl">
         <p:documentation> The main XSLT </p:documentation>
@@ -30,14 +31,21 @@
         <p:pipe step="separate-mathml" port="in-memory.out"/>
     </p:output>
     
-    <p:option name="template" required="true"/>
-    <p:option name="asciimath" required="true"/>
-    <p:option name="images" required="true"/>
-    <p:option name="image-dpi" required="true"/>
-    <p:option name="answer" required="true"/>
-    <p:option name="page-numbers" required="true"/>
-    <p:option name="line-numbers" required="true"/>
-    <p:option name="phonetics" required="true"/>
+    <p:option name="template" required="true">
+        <p:documentation>
+            OpenOffice template file (.ott) that contains the style definitions.
+        </p:documentation>
+    </p:option>
+    <p:option name="asciimath" required="true">
+        <p:documentation>
+            How to render ASCIIMath-encoded formulas? `ASCIIMATH', `MATHML' or `BOTH'.
+        </p:documentation>
+    </p:option>
+    <p:option name="images" required="true">
+        <p:documentation>
+            How to render images? `EMBED', `LINK' or `DROP'.
+        </p:documentation>
+    </p:option>
     
     <!-- Empty temporary directory dedicated to this conversion -->
     <p:option name="temp-dir" required="true"/>
@@ -131,13 +139,11 @@
         <p:input port="stylesheet">
             <p:pipe step="main" port="content.xsl"/>
         </p:input>
-        <p:with-param name="asciimath" select="$asciimath"/>
-        <p:with-param name="images" select="$images"/>
-        <p:with-param name="image_dpi" select="$image-dpi"/>
-        <p:with-param name="answer" select="$answer"/>
-        <p:with-param name="page_numbers" select="$page-numbers"/>
-        <p:with-param name="line_numbers" select="$line-numbers"/>
-        <p:with-param name="phonetics" select="$phonetics"/>
+        <p:input port="parameters">
+            <p:pipe step="main" port="parameters"/>
+        </p:input>
+        <p:with-param port="parameters" name="asciimath" select="$asciimath"/>
+        <p:with-param port="parameters" name="images" select="$images"/>
     </p:xslt>
     
     <p:xslt name="content">

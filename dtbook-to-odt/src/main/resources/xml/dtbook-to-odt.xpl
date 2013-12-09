@@ -158,11 +158,11 @@
             </p:with-option>
             <p:with-option name="asciimath" select="if ($asciimath=('MATHML','BOTH')) then $asciimath else 'ASCIIMATH'"/>
             <p:with-option name="images" select="if ($images=('LINK','DROP')) then $images else 'EMBED'"/>
-            <p:with-option name="image-dpi" select="if ($image-dpi='') then '600' else $image-dpi"/>
-            <p:with-option name="answer" select="if ($answer='') then '_..' else $answer"/>
-            <p:with-option name="page-numbers" select="$page-numbers"/>
-            <p:with-option name="line-numbers" select="$line-numbers"/>
-            <p:with-option name="phonetics" select="$phonetics"/>
+            <p:with-param port="parameters" name="image_dpi" select="if ($image-dpi='') then '600' else $image-dpi"/>
+            <p:with-param port="parameters" name="answer" select="if ($answer='') then '_..' else $answer"/>
+            <p:with-param port="parameters" name="page_numbers" select="$page-numbers"/>
+            <p:with-param port="parameters" name="line_numbers" select="$line-numbers"/>
+            <p:with-param port="parameters" name="phonetics" select="$phonetics"/>
         </sbs:dtbook-to-odt.convert>
         
         <!-- ========= -->
