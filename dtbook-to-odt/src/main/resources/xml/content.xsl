@@ -37,37 +37,54 @@
 	<!--
 	    This stylesheet provides only a basic conversion but is designed to be easily extended.
 	    
-	    At the core of the stylesheet are the `text:span`, `text:a`, `text:p` and `text:h`
-	    templates, which create the respective basic odt elements. The templates have a number
-	    of tunnel parameters which can be reset anywhere up the call stack. `lang` should be
-	    reset whenever the language in the DTBook changes. The styling is controlled by
-	    `paragraph_style' and `text_style`.
+	    At the core of the stylesheet are the `text:span`, `text:a`, `text:p`, `text:h` and
+	    `text:list` templates, with which the respective basic ODT elements are created. These
+	    templates have a number of tunnel parameters which can be reset anywhere up the call
+	    stack. For example, the styling is controlled by the tunnel parameters `paragraph_style',
+	    `text_style` and `list_style`. These are set automatically in 'implicit' templates (see
+	    below).
 	    
-	    Most other templates are build upon these core templates. Heavy use is made of styles:
-	    most DTBook elements get their own style in the ODT.
+	    Most other templates are build upon these core templates. Heavy use is made of styles; by
+	    default most DTBook elements get their own style in the ODT.
 	    
-	    XSLT modes are used exclusively for indicating the current context in the output
-	    document. Always knowing the context makes the output more predictable and makes it
-	    easier to avoid creating invalid ODT. When no template matches a given input element -
-	    output context combination, the convertor tries to insert a 'FIXME' comment, and when
-	    failing to do that, terminates the conversion.
+	    XSLT modes are mainly used for indicating the current context in the output document.
+	    Always knowing the context makes the output more predictable and makes it easier to avoid
+	    creating invalid ODT. When no template matches a given 'input element/output context'
+	    combination, the stylesheet tries to insert a 'FIXME' comment, and when failing to do that,
+	    terminates the conversion.
 	    
-	    The only other use of XSLT modes is for determining the rendering 'type' of a DTBook
-	    node. Templates with the mode `is-block-element` should return a boolean value that
-	    indicates whether the matched node is a block element or not. This information is used
-	    e.g. by the `group-inline-nodes` template, which groups adjacent inline nodes in a
-	    `text:p`.
+	    A second use of XSLT modes is for determining the rendering 'type' of a DTBook node.
+	    Templates with the mode `is-block-element` should return a boolean value that indicates
+	    whether the matched node is a block element or not. This information is used e.g. by the
+	    `group-inline-nodes` template, which groups adjacent inline nodes in a `text:p`.
 	    
-	    In order to extend this stylesheet, it is recommended that you import or include it
-	    in your own stylesheet and that you use `xsl:next-match` as much as possible, and not
-	    completely override templates. A lot of templates are configurable with tunnel
-	    parameters. If you have to override templates anyway, keep in mind that templates in
-	    an importing stylesheet always have higher priority than templates in an imported
-	    stylesheet, so you are possibly overriding more than you intended. (One example is
-	    that some 'implicit' templates, such as the template that resets the `lang` tunnel
-	    parameter for each new DTBook element encountered, will not be called anymore, so you
-	    have to account for this in your overriding template by setting the `lang` parameter
-	    explicitely.)
+	    Finally, the `text-style`, `paragraph-style` and `list-style` modes are responsible for the
+	    styling of a DTBook node. Templates with these modes should return an optional 'style name'
+	    string. The information is used to set the corresponding tunnel parameters `text_style`,
+	    `paragraph_style` and `list_style`. Decoupling the content generation and the styling allows
+	    for much more flexibility.
+	    
+	    In order to use this stylesheet, it is recommended that you include (not import) it in
+	    another stylesheet and extend it with your own templates. With the exception of modes
+	    `text-style`, `paragraph-style`, `list-style` and `is-block-element`, you should use
+	    `xsl:next-match` (or `apply-imports`) as much as possible, and try to avoid completely
+	    overriding templates. Most templates are configurable with tunnel parameters.
+	    
+	    A special word has to be said about template priorities. This stylesheet subdivides its
+	    templates into a number of priority ranges, and any custom extension should do the same.
+	    The normal priority range is [ -1 .. 1 ]. Everything above 1 is reserved for 'implicit'
+	    templates that should be matched no matter what. These are typically responsible for setting
+	    various tunnel parameters on each DTBook element encountered. For instance, `lang` is reset
+	    whenever the language in the DTBook changes. The parameters `paragraph_style', `text_style`
+	    and `list_style` are reset whenever a node matches a 'style' template. Everything below -1
+	    is reserved for 'defaults', which are typically used to capture unmatched nodes and issue
+	    warnings or errors.
+	    
+	    Using xsl:include is preferred over xsl:import because templates in an 'importing'
+	    stylesheet always have higher priority than templates in the imported stylesheet. So if you
+	    are using xml:import and overriding templates without `xsl:next-match`, keep in mind that
+	    you are also overriding implicit templates. The downside of using xsl:include is that you
+	    have to explicitely set a high enough priority on you custom templates.
 	-->
 	
 	<!-- ======= -->
