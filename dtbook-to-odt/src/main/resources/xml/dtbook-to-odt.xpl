@@ -11,7 +11,7 @@
     type="sbs:dtbook-to-odt" name="dtbook-to-odt" version="1.0">
     
     <p:documentation xmlns="http://www.w3.org/1999/xhtml">
-        <h1 px:role="name">DTBook to ODT</h1>
+        <h1 px:role="name">DTBook to ODT (SBS)</h1>
         <p px:role="desc">Transforms a DTBook (DAISY 3 XML) document into an ODT (Open Document Text).</p>
         <dl px:role="author">
             <dt>Name:</dt>
@@ -34,14 +34,6 @@
         <p:documentation>
             <h2 px:role="name">output-dir</h2>
             <p px:role="desc">Directory for storing result files.</p>
-        </p:documentation>
-    </p:option>
-    
-    <p:option name="template" required="false" px:type="string" select="''">
-        <p:documentation>
-            <h2 px:role="name">template</h2>
-            <p px:role="desc">OpenOffice template file (.ott) that contains the style definitions.</p>
-            <pre><code class="example">default.ott</code></pre>
         </p:documentation>
     </p:option>
     
@@ -98,7 +90,7 @@
         </p:documentation>
     </p:option>
     
-    <p:import href="dtbook-to-odt.convert.xpl"/>
+    <p:import href="http://www.daisy.org/pipeline/modules/dtbook-to-odt/dtbook-to-odt.convert.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/dtbook-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/odt-utils/library.xpl"/>
     <p:import href="http://www.daisy.org/pipeline/modules/file-utils/library.xpl"/>
@@ -130,7 +122,7 @@
         <!-- CONVERT DTBOOK TO ODT -->
         <!-- ===================== -->
         
-        <sbs:dtbook-to-odt.convert name="odt">
+        <px:dtbook-to-odt.convert name="odt">
             <p:input port="content.xsl">
                 <p:document href="content-sbs.xsl"/>
             </p:input>
@@ -151,7 +143,7 @@
             <p:with-option name="temp-dir" select="$temp-dir">
                 <p:pipe step="temp-dir" port="result"/>
             </p:with-option>
-            <p:with-option name="template" select="if ($template!='') then $template else resolve-uri('../templates/etext.ott')">
+            <p:with-option name="template" select="resolve-uri('../templates/etext.ott')">
                 <p:inline>
                     <irrelevant/>
                 </p:inline>
@@ -163,7 +155,7 @@
             <p:with-param port="parameters" name="page_numbers" select="$page-numbers"/>
             <p:with-param port="parameters" name="line_numbers" select="$line-numbers"/>
             <p:with-param port="parameters" name="phonetics" select="$phonetics"/>
-        </sbs:dtbook-to-odt.convert>
+        </px:dtbook-to-odt.convert>
         
         <!-- ========= -->
         <!-- STORE ODT -->

@@ -27,7 +27,7 @@
 		xmlns:f="functions"
 		exclude-result-prefixes="#all">
 	
-	<xsl:include href="content.xsl"/>
+	<xsl:include href="http://www.daisy.org/pipeline/modules/dtbook-to-odt/content.xsl"/>
 	
 	<xsl:param name="asciimath" as="xs:string" select="'ASCIIMATH'"/>
 	<xsl:param name="images" as="xs:string" select="'EMBED'"/>
@@ -156,7 +156,6 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
 	
 	<!-- ====== -->
 	<!-- IMAGES -->

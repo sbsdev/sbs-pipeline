@@ -20,6 +20,7 @@
   <name>DAISY Pipeline 2 module :: sbs:dtbook-to-odt</name>
   
   <properties>
+    <dtbook-to-odt.version>1.0.0-SNAPSHOT</dtbook-to-odt.version>
     <odt-utils.version>1.0.0-SNAPSHOT</odt-utils.version>
     <jodconverter-core.version>3.0-beta-4-SNAPSHOT</jodconverter-core.version>
     <libreoffice-uno.version>4.0.2-SNAPSHOT</libreoffice-uno.version>
@@ -111,7 +112,13 @@
             </goals>
             <configuration>
               <useBaseVersion>true</useBaseVersion>
+              <prependGroupId>true</prependGroupId>
               <artifactItems>
+                <artifactItem>
+                  <groupId>org.daisy.pipeline.modules</groupId>
+                  <artifactId>dtbook-to-odt</artifactId>
+                  <version>${dtbook-to-odt.version}</version>
+                </artifactItem>
                 <artifactItem>
                   <groupId>org.daisy.pipeline.modules</groupId>
                   <artifactId>odt-utils</artifactId>
@@ -147,7 +154,7 @@
             </data>
             <data>
               <type>file</type>
-              <src>target/dependency/odt-utils-${odt-utils.version}.jar</src>
+              <src>target/dependency/org.daisy.pipeline.modules.dtbook-to-odt-${dtbook-to-odt.version}.jar</src>
               <mapper>
                 <type>perm</type>
                 <prefix>/opt/daisy-pipeline2/modules</prefix>
@@ -155,14 +162,22 @@
             </data>
             <data>
               <type>file</type>
-              <src>target/dependency/libreoffice-uno-${libreoffice-uno.version}.jar</src>
+              <src>target/dependency/org.daisy.pipeline.modules.odt-utils-${odt-utils.version}.jar</src>
+              <mapper>
+                <type>perm</type>
+                <prefix>/opt/daisy-pipeline2/modules</prefix>
+              </mapper>
+            </data>
+            <data>
+              <type>file</type>
+              <src>target/dependency/org.daisy.libs.libreoffice-uno-${libreoffice-uno.version}.jar</src>
               <mapper>
                 <type>perm</type>
                 <prefix>/opt/daisy-pipeline2/modules</prefix>
               </mapper>
             </data><data>
               <type>file</type>
-              <src>target/dependency/jodconverter-core-${jodconverter-core.version}.jar</src>
+              <src>target/dependency/org.daisy.libs.jodconverter-core-${jodconverter-core.version}.jar</src>
               <mapper>
                 <type>perm</type>
                 <prefix>/opt/daisy-pipeline2/modules</prefix>
