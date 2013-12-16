@@ -7,9 +7,9 @@
   
   <parent>
     <groupId>ch.sbs.pipeline</groupId>
-    <artifactId>sbs-modules-parent</artifactId>
+    <artifactId>modules-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <relativePath>../sbs-modules-parent/</relativePath>
+    <relativePath />
   </parent>
   
   <groupId>ch.sbs.pipeline</groupId>
@@ -23,8 +23,13 @@
     <odt-utils.version>1.0.0-SNAPSHOT</odt-utils.version>
     <jodconverter-core.version>3.0-beta-4-SNAPSHOT</jodconverter-core.version>
     <libreoffice-uno.version>4.0.2-SNAPSHOT</libreoffice-uno.version>
+    <tagNameFormat>v@{project.version}</tagNameFormat>
   </properties>
   
+  <scm>
+    <developerConnection>scm:git:ssh://git@github.com:sbsdev/sbs-pipeline.git</developerConnection>
+  </scm>
+
   <build>
     <resources>
       <resource>
