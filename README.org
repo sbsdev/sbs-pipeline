@@ -2,12 +2,14 @@
 ** pipeline-assembly
 #+BEGIN_SRC sh
 cd ~/src/pipeline-assembly
-mvn clean package -P deb
+mvn clean deploy -P deb \
+  -DaltReleaseDeploymentRepository=sbs-nexus-releases::default::http://xmlp-test:8081/nexus/content/repositories/releases/ \
+  -DaltSnapshotDeploymentRepository=sbs-nexus-snapshots::default::http://xmlp-test:8081/nexus/content/repositories/snapshots/
 #+END_SRC
 ** sbs-modules-parent
 #+BEGIN_SRC sh
 cd ~/src/sbs-pipeline/sbs-modules-parent
-mvn clean install
+mvn clean deploy
 #+END_SRC
 ** jodconverter
 #+BEGIN_SRC sh
@@ -15,14 +17,18 @@ git clone https://github.com/daisy-consortium/osgi-libs.git
 cd ~/src/osgi-libs
 git checkout origin-jodconverter
 cd jodconverter
-mvn clean install
+mvn clean deploy \
+  -DaltReleaseDeploymentRepository=sbs-nexus-releases::default::http://xmlp-test:8081/nexus/content/repositories/releases/ \
+  -DaltSnapshotDeploymentRepository=sbs-nexus-snapshots::default::http://xmlp-test:8081/nexus/content/repositories/snapshots/
 #+END_SRC
-** libreoffice
+** libreoffice UNO
 #+BEGIN_SRC sh
 cd ~/src/osgi-libs
 git checkout origin-jodconverter
 cd libreoffice-uno
-mvn clean install
+mvn clean deploy \
+  -DaltReleaseDeploymentRepository=sbs-nexus-releases::default::http://xmlp-test:8081/nexus/content/repositories/releases/ \
+  -DaltSnapshotDeploymentRepository=sbs-nexus-snapshots::default::http://xmlp-test:8081/nexus/content/repositories/snapshots/
 #+END_SRC
 ** odt-utils
 #+BEGIN_SRC sh
@@ -30,7 +36,9 @@ git clone https://github.com/daisy-consortium/pipeline-scripts-utils.git
 cd ~/src/pipeline-scripts-utils
 git checkout origin-odt-utils
 cd dtbook-utils
-mvn clean install
+mvn clean deploy \
+  -DaltReleaseDeploymentRepository=sbs-nexus-releases::default::http://xmlp-test:8081/nexus/content/repositories/releases/ \
+  -DaltSnapshotDeploymentRepository=sbs-nexus-snapshots::default::http://xmlp-test:8081/nexus/content/repositories/snapshots/
 #+END_SRC
 ** dtbook-to-odt
 #+BEGIN_SRC sh
@@ -38,12 +46,14 @@ git clone https://github.com/daisy-consortium/pipeline-scripts.git
 cd ~/src/sbs-pipeline/pipeline-scripts
 git checkout -b dtbook-to-odt origin/dtbook-to-odt
 cd dtbook-to-odt
-mvn clean install
+mvn clean deploy \
+  -DaltReleaseDeploymentRepository=sbs-nexus-releases::default::http://xmlp-test:8081/nexus/content/repositories/releases/ \
+  -DaltSnapshotDeploymentRepository=sbs-nexus-snapshots::default::http://xmlp-test:8081/nexus/content/repositories/snapshots/
 #+END_SRC
 ** dtbook-to-odt (SBS)
 #+BEGIN_SRC sh
 cd ~/src/sbs-pipeline/dtbook-to-odt
-mvn clean package
+mvn clean deploy
 #+END_SRC
 
 * Deployment
@@ -59,6 +69,12 @@ chmod o+w /opt/daisy-pipeline/cli
 #+END_SRC sh
 
 * Configuration
+Modify ~/etc/opt/daisy-pipeline2/system.properties~
+
+#+BEGIN_SRC sh
+#org.daisy.pipeline.liblouis.external=true
+#+END_SRC sh
+
 Modify ~/etc/default/pipeline2d~.
 
 #+BEGIN_SRC sh
