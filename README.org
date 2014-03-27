@@ -17,8 +17,6 @@ cd ~/src/sbs-maven-parents/modules-parent
 mvn clean deploy
 #+END_SRC
 ** dtbook-to-odt
-This should be merged so that I could use it from standard pipeline
-*** TODO Create a pull request
 #+BEGIN_SRC sh
 git clone https://github.com/daisy-consortium/pipeline-scripts.git
 cd ~/src/sbs-pipeline/pipeline-scripts
