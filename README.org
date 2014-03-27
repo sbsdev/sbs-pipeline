@@ -3,57 +3,46 @@
 #+BEGIN_SRC sh
 cd ~/src/pipeline-assembly
 mvn clean deploy -P deb \
-  -DaltReleaseDeploymentRepository=sbs-nexus-releases::default::http://xmlp-test:8081/nexus/content/repositories/releases/ \
-  -DaltSnapshotDeploymentRepository=sbs-nexus-snapshots::default::http://xmlp-test:8081/nexus/content/repositories/snapshots/
+  -DaltDeploymentRepository=sbs-nexus-releases::default::http://repo:8081/nexus/content/repositories/releases/ \
+  -DaltSnapshotDeploymentRepository=sbs-nexus-snapshots::default::http://repo:8081/nexus/content/repositories/snapshots/
 #+END_SRC
-** sbs-modules-parent
+** super-parent
 #+BEGIN_SRC sh
-cd ~/src/sbs-pipeline/sbs-modules-parent
+cd ~/src/sbs-maven-parents/super-parent
 mvn clean deploy
 #+END_SRC
-** jodconverter
+** modules-parent
 #+BEGIN_SRC sh
-git clone https://github.com/daisy-consortium/osgi-libs.git
-cd ~/src/osgi-libs
-git checkout origin-jodconverter
-cd jodconverter
-mvn clean deploy \
-  -DaltReleaseDeploymentRepository=sbs-nexus-releases::default::http://xmlp-test:8081/nexus/content/repositories/releases/ \
-  -DaltSnapshotDeploymentRepository=sbs-nexus-snapshots::default::http://xmlp-test:8081/nexus/content/repositories/snapshots/
-#+END_SRC
-** libreoffice UNO
-#+BEGIN_SRC sh
-cd ~/src/osgi-libs
-git checkout origin-jodconverter
-cd libreoffice-uno
-mvn clean deploy \
-  -DaltReleaseDeploymentRepository=sbs-nexus-releases::default::http://xmlp-test:8081/nexus/content/repositories/releases/ \
-  -DaltSnapshotDeploymentRepository=sbs-nexus-snapshots::default::http://xmlp-test:8081/nexus/content/repositories/snapshots/
-#+END_SRC
-** odt-utils
-#+BEGIN_SRC sh
-git clone https://github.com/daisy-consortium/pipeline-scripts-utils.git
-cd ~/src/pipeline-scripts-utils
-git checkout origin-odt-utils
-cd dtbook-utils
-mvn clean deploy \
-  -DaltReleaseDeploymentRepository=sbs-nexus-releases::default::http://xmlp-test:8081/nexus/content/repositories/releases/ \
-  -DaltSnapshotDeploymentRepository=sbs-nexus-snapshots::default::http://xmlp-test:8081/nexus/content/repositories/snapshots/
+cd ~/src/sbs-maven-parents/modules-parent
+mvn clean deploy
 #+END_SRC
 ** dtbook-to-odt
+This should be merged so that I could use it from standard pipeline
+*** TODO Create a pull request
 #+BEGIN_SRC sh
 git clone https://github.com/daisy-consortium/pipeline-scripts.git
 cd ~/src/sbs-pipeline/pipeline-scripts
 git checkout -b dtbook-to-odt origin/dtbook-to-odt
 cd dtbook-to-odt
 mvn clean deploy \
-  -DaltReleaseDeploymentRepository=sbs-nexus-releases::default::http://xmlp-test:8081/nexus/content/repositories/releases/ \
+  -DaltDeploymentRepository=sbs-nexus-releases::default::http://xmlp-test:8081/nexus/content/repositories/releases/ \
   -DaltSnapshotDeploymentRepository=sbs-nexus-snapshots::default::http://xmlp-test:8081/nexus/content/repositories/snapshots/
 #+END_SRC
 ** dtbook-to-odt (SBS)
 #+BEGIN_SRC sh
-cd ~/src/sbs-pipeline/dtbook-to-odt
+cd ~/src/dtbook-to-odt
 mvn clean deploy
+#+END_SRC
+** odt-utils
+Make sure you do not deploy a newer version
+#+BEGIN_SRC sh
+git clone https://github.com/daisy-consortium/pipeline-scripts-utils.git
+cd ~/src/pipeline-scripts-utils
+git checkout origin-odt-utils
+cd dtbook-utils
+mvn clean deploy \
+  -DaltDeploymentRepository=sbs-nexus-releases::default::http://repo:8081/nexus/content/repositories/releases/ \
+  -DaltSnapshotDeploymentRepository=sbs-nexus-snapshots::default::http://repo:8081/nexus/content/repositories/snapshots/
 #+END_SRC
 
 * Deployment
@@ -61,25 +50,15 @@ mvn clean deploy
 ~/src/daisyproducer/apache/deploy.sh
 #+END_SRC
 
-There is a bug in the cli in that it needs write access to
-~/opt/daisy-pipeline/cli~. As a workaround do the following:
-
-#+BEGIN_SRC sh
-chmod o+w /opt/daisy-pipeline/cli
-#+END_SRC sh
-
 * Configuration
-Modify ~/etc/opt/daisy-pipeline2/system.properties~
+Modify ~/etc/opt/daisy-pipeline2/system.properties~ and add the
+following line:
 
 #+BEGIN_SRC sh
-#org.daisy.pipeline.liblouis.external=true
+org.daisy.pipeline.liblouis.external=true
 #+END_SRC sh
 
-Modify ~/etc/default/pipeline2d~.
-
-#+BEGIN_SRC sh
-#export JAVA_MAX_MEM=1G
-#+END_SRC sh
+Modify ~/etc/default/pipeline2d~:
 
 #+BEGIN_SRC sh
 export JAVA_MAX_MEM=2G
